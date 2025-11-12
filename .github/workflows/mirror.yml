@@ -1,0 +1,40 @@
+﻿name: Mirror to read-only repo
+on:
+  push:
+    branches: ["**"]
+    tags: ["**"]
+  delete:
+    branches: ["**"]
+    tags: ["**"]
+  create:
+    branches: ["**"]
+    tags: ["**"]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: mirror-${{ github.run_id }}
+  cancel-in-progress: false
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (shallow ok)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Expand to all refs from origin (heads+tags, prune)
+        run: |
+          git fetch --prune --tags origin +refs/heads/*:refs/heads/* +refs/tags/*:refs/tags/*
+      - name: Setup SSH for mirroring
+        env:
+          MIRROR_SSH_KEY: ${{ secrets.MIRROR_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$MIRROR_SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+      - name: Push --mirror (prune deleted refs)
+        run: |
+          git remote add mirror git@github.com:bthwani1/bthwani-platform-mirror.git || true
+          git push --prune --mirror mirror
