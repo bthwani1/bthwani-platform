@@ -4,9 +4,9 @@ on:
   pull_request: { branches: [ main ] }
   workflow_dispatch:
 jobs:
-  contracts: { name: "gates / contracts", runs-on: ubuntu-latest, steps: [ {uses: actions/checkout@v4}, {run: 'echo contracts ok'} ] }
-  security:  { name: "gates / security",  runs-on: ubuntu-latest, steps: [ {run: 'echo security ok'} ] }
-  perf:      { name: "gates / perf",      runs-on: ubuntu-latest, steps: [ {run: 'echo perf ok'} ] }
-  supply:    { name: "gates / supply",    runs-on: ubuntu-latest, steps: [ {run: 'echo supply ok'} ] }
-  aggregate: { name: "gates / aggregate", runs-on: ubuntu-latest, steps: [ {run: 'echo aggregate ok'} ] }
-  release_gate: { name: "release-gate / G-OPA-RELEASE", runs-on: ubuntu-latest, steps: [ {run: 'echo release gate ok'} ] }
+  contracts:     { name: "gates / contracts", runs-on: ubuntu-latest, steps: [ {uses: actions/checkout@v4}, {run: 'echo contracts ok'} ] }
+  security:      { name: "gates / security",  runs-on: ubuntu-latest, steps: [ {run: 'echo security ok'} ] }
+  perf:          { name: "gates / perf",      runs-on: ubuntu-latest, steps: [ {run: 'echo perf ok'} ] }
+  supply:        { name: "gates / supply",    runs-on: ubuntu-latest, steps: [ {run: 'echo supply ok'} ] }
+  aggregate:     { name: "gates / aggregate", runs-on: ubuntu-latest, steps: [ {run: 'echo aggregate ok'} ] }
+  release_gate:  { name: "release-gate / G-OPA-RELEASE", runs-on: ubuntu-latest, steps: [ {run: 'echo release gate ok'} ] }
