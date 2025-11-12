@@ -1,0 +1,22 @@
+﻿# Windows noise
+AppData/
+NTUSER.DAT
+NTUSER.DAT.LOG*
+Thumbs.db
+Desktop.ini
+
+# User big dirs
+Downloads/
+OneDrive/
+*.log
+
+# Tools/cache
+.cache/
+node_modules/
+dist/
+reports/
+evidence/
+
+# IDE
+.vscode/
+.idea/
