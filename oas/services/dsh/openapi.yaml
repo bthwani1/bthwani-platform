@@ -1,8 +1,19 @@
-﻿openapi: 3.0.3
+openapi: 3.0.3
 info:
-  title: "BThwani — Delivery & Shopping (DSH) API"
+  description: PLACEHOLDER_SERVICE_DESCRIPTION
+  contact:
+    name: BThwani Support
+    email: PLACEHOLDER_CONTACT_EMAIL  title: "BThwani — Delivery & Shopping (DSH) API"
   version: "0.0.0-seed"
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+
+servers:
+  - url: https://api-dev.bthwani.com
+    description: Dev
+  - url: https://api-stage.bthwani.com
+    description: Stage
+  - url: https://api.bthwani.com
+    description: Prod
