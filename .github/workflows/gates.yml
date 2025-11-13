@@ -3,33 +3,47 @@ on:
   pull_request:
   push:
     branches: [ main, "release/**" ]
+
 jobs:
   gates_contracts:
     name: "gates / contracts"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo contracts ok
+      - uses: stoplightio/spectral-action@v0
+        with:
+          file_glob: "oas/**/*.yaml"
+
   gates_security:
     name: "gates / security"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo security ok
+
   gates_perf:
     name: "gates / perf"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo perf ok
+
   gates_supply:
     name: "gates / supply"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo supply ok
+
+  gates_aggregate:
+    name: "gates / aggregate"
+    runs-on: ubuntu-latest
+    needs: [gates_contracts, gates_security, gates_perf, gates_supply]
+    steps:
+      - run: echo all gates passed
+
   release_gate:
-    if: startsWith(github.ref, "refs/heads/release/")
+    if: startsWith(github.ref, 'refs/heads/release/')
     name: "release-gate / G-OPA-RELEASE"
     runs-on: ubuntu-latest
     steps:
