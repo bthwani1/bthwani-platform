@@ -1,0 +1,591 @@
+
+# BThwani — AI Development Guide (v1.1)
+
+> هذا الدليل يحدد طريقة تطوير منصة بثواني داخل الريبو (وخاصة عبر Cursor Pro) بشكل منظم، دقيق، وآمن، مع احترام الـ SSoT والحُرّاس.  
+> الـ SSoT الخارجي (وثائق الحوكمة والقرارات الرسمية) هو المصدر الأعلى، وهذا الدليل + ملفات SSoT في الريبو هما نسخة ملفّية منه.  
+> أي AI أو أداة تطوير تعتبر مساعدًا؛ وليست مصدر الحقيقة الوحيد.
+
+---
+
+## 1) الهوية والنطاق
+
+### 1.1 ما هي بثواني؟
+
+منصة خدمات متعدّدة (Multi-Service Platform) موجهة للسوق اليمني، تشمل:
+
+#### أ) الخدمات (Services) — Service Codes
+
+> يجب استخدام المسميات والـ Codes التالية كما هي:
+
+- **DSH** — Delivery & Shopping (التسوّق والتوصيل)
+- **KNZ** — Marketplace (كنز / سوق المنتجات)
+- **AMN** — Safe Taxi (أمَنّي للنقل الآمن)
+- **KWD** — Jobs (كوادر — منصة وظائف وفرص عمل)
+- **SND** — سند (مساعدة فورية وخدمات متخصصة)
+- **MRF** — معروف (Lost & Found / مفقودات)
+- **ESF** — اسعِفني (Blood Donation P2P)
+- **ARB** — عربون (Escrow / Booking للعروض والحجوزات)
+- **WLT** — Wallet (محفظة / دفتر ذمم داخلي)
+
+#### ب) التطبيقات (Apps)
+
+- **APP-USER** — تطبيق المستخدم النهائي.
+- **APP-PARTNER** — تطبيق الشريك (المتجر / مزود الخدمة).
+- **APP-CAPTAIN** — تطبيق الكابتن / السائق.
+- **APP-FIELD** — Field App (التطبيق الميداني للفريق/المسوقين).
+
+#### ج) لوحات التحكم (Dashboards)
+
+اللوحات الأساسية المعتمدة:
+
+- Admin, Ops, Finance, Support, Marketing, Fleet, Partner, BI, SSOT, Security
+
+أي لوحة جديدة أو تقسيم جديد يجب أن يُسجَّل أولًا في SSoT قبل التنفيذ.
+
+#### د) واجهات الويب (Web Surfaces)
+
+- `bthwani.com`  
+  - موقع تعريفي / Landing / Info.
+- `app.bthwani.com`  
+  - Web-App للمستخدم (مكافئ APP-USER، بدون فهرسة SEO).
+- `admin.bthwani.com`, `ops.bthwani.com`, `fin.bthwani.com`, `crm.bthwani.com` …  
+  - لوحات داخلية بحسب الدور (Admin/Ops/Finance/Support/…).
+- `partner.bthwani.com`  
+  - **Partner Web Portal** للشريك، تعكس قدرات APP-PARTNER (إدارة الطلبات، الكatalog، الأسعار، التقارير…).  
+  - يمكن إطلاقها على مراحل، لكنها سطح رسمي ضمن المنصة.
+
+---
+
+## 2) مصادر الحقيقة (SSoT)
+
+### 2.1 ترتيب المصادر (من الأقوى إلى الأضعف)
+
+1. **الـ SSoT الخارجي (Global SSoT / Governance Workspace)**  
+   - قرارات الخدمات (SRV-*)، القرارات المالية، سياسات الخصوصية والأمن، وثائق الـ BRD، قرارات DEC-*.  
+   - تُدار خارج هذا الريبو (مثلاً في مستودع وثائق أو أداة حوكمة).
+
+2. **ملفات الـ SSoT داخل الريبو**  
+   - `registry/SSOT_INDEX.json`
+   - `docs/SERVICES_OVERVIEW.md`
+   - `docs/DASHBOARDS_OVERVIEW.md`
+   - أي ملفات قرارات/`DECISIONS` خاصة بالخدمات أو اللوحات.
+
+3. **OpenAPI لكل خدمة (Per-service OAS)**  
+   - `oas/services/<service_code>/openapi.yaml`  
+   - هذه الملفات هي المصدر الحقيقي لمسارات الـ API لكل خدمة.
+
+4. **Master OpenAPI (تجميعي)**  
+   - `oas/master/Master_OpenAPI.yaml`  
+   - يُبنى آليًا من ملفات الخدمات في `oas/services/*`.  
+   - يمكن أن يحتوي Skeleton عام (info, tags, securitySchemes…) لكن المسارات (paths) يجب أن تأتي من الـ per-service.
+
+5. **الكود الفعلي**  
+   - داخل `services/*`, `apps/*`, `dashboards/*` (NestJS, Prisma, Next.js, React Native…).
+
+6. **أي شيء آخر**  
+   - ملاحظات، TODO، تعليقات عشوائية → تعتبر `[TBD]` حتى يتم توثيقها واعتمادها رسميًا في الـ SSoT.
+
+### 2.2 قواعد عند وجود نقص أو تعارض
+
+- لا يُسمح بالتصرف بالتخمين.
+- عند عدم وضوح معلومة أو وجود تناقض:
+  - تُستخدم علامة `[TBD]` مع تعليق واضح في الكود أو الـ OpenAPI أو الـ Docs، مثال:
+
+    ```yaml
+    # [TBD] confirm allowed payment modes for ARB in Sana'a before enabling this field.
+    ```
+
+  - تُسجَّل النقاط في ملف مثل:  
+    `docs/QUESTIONS_TBD.md`  
+    أو في وصف الـ PR.
+  - لا تُعتبر أي نقطة LOCKED حتى تُحسم في الـ SSoT الخارجي ويتم تحديث الملفات في الريبو.
+
+---
+
+## 3) حوكمة ثابتة (Invariants)
+
+### 3.1 مالية (Finance Invariants)
+
+هذه خطوط حمراء لا تُكسَر إلا بقرار SSoT جديد ومُوثّق:
+
+- **Wallet = Ledger داخلي**
+  - المحفظة = دفتر ذمم داخلي (Wallet=Ledger)، ليس بنكًا.
+  - لا توجد تحويلات بنكية مباشرة من الكود؛ كل شيء يمر عبر Ledger + تسويات بنكية خارجية بتوقيعين.
+
+- **Dual-Sign Bank Payouts**
+  - أي صرف بنكي من محفظة المنصة يتطلب توقيعين (مثلاً Finance + Admin).
+  - لا يُكتب أو يُصمَّم كود يتجاوز هذه الخطوة.
+
+- **Idempotency-Key (لكل العمليات الحرجة في كل الخدمات)**  
+  - إلزامي لكل طلب **POST / PATCH / DELETE** Transactional / Stateful، مثل:
+    - إنشاء طلب.
+    - إغلاق طلب.
+    - تحصيل.
+    - تسوية.
+    - أي عملية مالية أو تغيير حالة رئيسية (stateful) في أي خدمة (DSH, ARB, WLT, ESF, …).
+  - لا يُطلب عادةً لطلبات GET أو عمليات غير حرجة إلا إذا قرّرت SSoT خلاف ذلك.
+
+- **Webhook HMAC + Replay ≤ 300s**
+  - أي Webhook خارجي يجب أن:
+    - يكون موقّعًا بـ HMAC.
+    - يملك نافذة إعادة إرسال (Replay Window) ≤ 300 ثانية.
+
+- **No in-app direct card/bank outside WLT**
+  - أي مدفوعات بنكية/بطائق تمر عبر WLT والـ Ledger.
+  - ممنوع تصميم “تحويل مباشر للبنك” من داخل التطبيق دون المرور بسياسات WLT والحوكمة المعتمدة.
+
+### 3.2 خصوصية وأمن (Privacy & Security Invariants)
+
+- **إخفاء أرقام الهاتف والـ PII في الخدمات الحساسة**
+  - ESF, MRF, SND, ARB وغيرها حسب SSoT.
+  - لا تُعرض أرقام الهواتف raw داخل الـ APIs أو الـ UI في هذه الخدمات.
+
+- **تشفير محتوى الدردشة الحساسة**
+  - استخدام تشفير على مستوى الحقل (Field-level encryption)، مثل AES-GCM، لحقول الرسائل في الخدمات الحساسة.
+
+- **Secrets = 0 في الكود والريبو**
+  - لا تُخزَّن مفاتيح API أو كلمات مرور أو Tokens داخل الكود أو ملفات الإعداد.
+  - أي سر يُشار له بـ `vault/...` أو `PLACEHOLDER`.
+
+- **الحد الأدنى للأمن**
+  - لا اتصالات خارجية جديدة (External APIs) إلا بقرار واضح.
+  - Logging بلا تسريب بيانات حساسة (لا أرقام هواتف، لا PII خام).
+
+---
+
+## 4) هيكلة الريبو (Monorepo Layout — Reference)
+
+يمكن تنفيذ الهيكلة باستخدام Nx أو أي تنظيم آخر، لكن المرجع هو:
+
+```text
+apps/
+  user/
+  partner/
+  captain/
+  field/
+
+dashboards/
+  admin/
+  ops/
+  finance/
+  support/
+  marketing/
+  fleet/
+  partner/
+  bi/
+  ssot/
+  security/
+
+services/
+  dsh/
+  knz/
+  amn/
+  kwd/
+  snd/
+  mrf/
+  esf/
+  arb/
+  wlt/
+
+oas/
+  master/
+    Master_OpenAPI.yaml
+  services/
+    dsh/openapi.yaml
+    knz/openapi.yaml
+    amn/openapi.yaml
+    kwd/openapi.yaml
+    snd/openapi.yaml
+    mrf/openapi.yaml
+    esf/openapi.yaml
+    arb/openapi.yaml
+    wlt/openapi.yaml
+
+registry/
+  SSOT_INDEX.json
+
+runtime/
+  RUNTIME_VARS_CATALOG.csv
+  ...
+
+docs/
+  AI_GUIDE.md
+  GOVERNANCE.md
+  SERVICES_OVERVIEW.md
+  DASHBOARDS_OVERVIEW.md
+  QUESTIONS_TBD.md   # اختياري لتجميع الأسئلة المفتوحة
+
+.github/
+  workflows/
+    gates.yml
+    release-gate.yml
+```
+
+أي ملف جديد/مجلد جديد يجب أن يحترم هذه الهيكلة قدر الإمكان.
+
+---
+
+## 5) GitHub Governance — الفروع و PR والحُرّاس
+
+### 5.1 الفروع (Branches)
+
+- **main** — فرع محمي:
+  - لا دفع مباشر (no direct push).
+  - دمج عبر Pull Request فقط.
+
+- **release/** — فروع إصدارات:
+  - أمثلة: `release/0.1.0`, `release/1.0.0`.
+
+- **feature branches (للتطوير اليومي)**:
+  - أمثلة:
+    - `feat/dsh-openapi-v2-2`
+    - `feat/app-user-screens`
+    - `feat/dash-admin-ledger`
+    - `feat/runtime-vars-baseline`
+
+### 5.2 الحماية (Rulesets / Branch Protection)
+
+- **protect-main**
+  - Require PR before merge.
+  - Required status checks:
+    - `gates / contracts`
+    - `gates / security`
+    - `gates / perf`
+    - `gates / supply`
+    - `gates / aggregate` (إن وُجد)
+  - Require linear history (Squash / Rebase).
+  - Require signed commits.
+  - Block force pushes.
+
+- **protect-release**
+  - نفس حماية main +
+  - Check إضافي:
+    - `release-gate / G-OPA-RELEASE`
+
+### 5.3 GitHub Actions أساسية (gates.yml — نسخة مبدئية)
+
+ملف: `.github/workflows/gates.yml` (قابل للتطوير لاحقًا):
+
+```yaml
+name: gates
+
+on:
+  pull_request:
+  push:
+    branches: [ main, "release/**" ]
+
+jobs:
+  gates_contracts:
+    name: "gates / contracts"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo contracts ok
+
+  gates_security:
+    name: "gates / security"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo security ok
+
+  gates_perf:
+    name: "gates / perf"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo perf ok
+
+  gates_supply:
+    name: "gates / supply"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo supply ok
+
+  release_gate:
+    if: startsWith(github.ref, 'refs/heads/release/')
+    name: "release-gate / G-OPA-RELEASE"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo release gate ok
+```
+
+لاحقًا تُستبدل أوامر `echo` بتشغيل حقيقي لـ:
+
+- Spectral (OpenAPI Lint)
+- Semgrep (Security)
+- gitleaks (Secrets)
+- Tests (unit/integration/e2e)
+- OPA policies وغيرها…
+
+---
+
+## 6) قواعد OpenAPI
+
+### 6.1 أماكن الملفات
+
+- لكل خدمة:
+  - `oas/services/<service_code>/openapi.yaml`
+- الملف الرئيسي (Master):
+  - `oas/master/Master_OpenAPI.yaml`
+  - يُبنى آليًا من ملفات الخدمات، ويمكن أن يحتوي skeleton عام، لكن **لا يُدار المسارات يدويًا** إلا عبر مهام خاصة واضحة.
+
+### 6.2 Prefix لكل خدمة (Path Prefixes)
+
+يجب أن تلتزم جميع المسارات (paths) بالـ prefixes التالية:
+
+- DSH → `/api/dls/*`
+- KNZ → `/api/knz/*`
+- AMN → `/api/amn/*`
+- KWD → `/api/kawader/*`
+- SND → `/api/snd/*`
+- MRF → `/api/mrf/*`
+- ESF → `/esf/*`
+- ARB → `/api/arb/*`
+- WLT → `/api/wlt/*`
+
+### 6.3 شكل الأخطاء (Error Shape)
+
+شكل موحّد لكل الخدمات:
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "traceId": "string (optional)"
+}
+```
+
+HTTP Status المسموح استخدامها:
+
+- 200, 201, 202, 204
+- 400, 401, 403, 404, 409, 410, 415, 422, 429
+- 5xx (500/502/503/504 حسب الحاجة)
+
+أي حالة جديدة يجب أن تلتزم بهذه القائمة أو تُضاف بقرار SSoT.
+
+---
+
+## 7) طريقة العمل مع Cursor (Pro+) — TASK Protocol
+
+### 7.1 شكل الأوامر داخل Cursor
+
+داخل أي Chat في Cursor، يُستخدم نمط ثابت للمهام:
+
+```text
+TASK "SERVICES-SEED/DSH: add orders listing endpoints v2.2"
+
+CONTEXT:
+- files: [
+  "oas/services/dsh/openapi.yaml",
+  "docs/SERVICES_OVERVIEW.md",
+  "registry/SSOT_INDEX.json"
+]
+- constraints: DIFF-ONLY, no secrets, SSoT invariants ON
+
+OUTPUT:
+- PLAN (3-7 bullets)
+- DIFF (unified for the listed files only)
+- GUARDS notes (contracts, security, perf, privacy, SSoT alignment)
+```
+
+### 7.2 المطلوب من الـ AI داخل Cursor
+
+عند استلام TASK:
+
+1. **PLAN**
+   - 3–7 نقاط قصيرة توضّح ما سيتم فعله (بدون كود).
+
+2. **DIFF**
+   - تغييرات بصيغة unified diff فقط للملفات المذكورة في `files`.
+
+3. **GUARDS**
+   - ملاحظات سريعة حول:
+     - التزام المسارات بالـ Prefix الصحيح.
+     - الالتزام بـ Error Shape.
+     - أي احتمال لكسر سياسة مالية أو خصوصية.
+     - أي تغيير يتطلب تحديثًا في `SSOT_INDEX.json` أو ملفات SSoT الأخرى.
+
+### 7.3 حدود كل مهمة
+
+- مهمة واحدة = خدمة واحدة أو ملفين فقط.
+- لا يُطلب من Cursor تعديل “كل المشروع” في مهمة واحدة.
+- بعد كل مهمة:
+  1. مراجعة الـ DIFF يدويًا.
+  2. ضبط الفرع (commit/push).
+  3. فتح PR.
+  4. انتظار نتائج الحُرّاس (GitHub Actions).
+  5. في الأمور الحساسة (DSH, WLT, ARB, ESF, MRF, لوحات Finance/SSOT/…) تُراجع النتائج مقابل SSoT قبل اعتبارها LOCKED.
+
+### 7.4 ممنوع على AI داخل Cursor
+
+- لمس ملفات خارج قائمة `files` في الـ TASK.
+- تعديل `oas/master/Master_OpenAPI.yaml` بدون مهام من نوع `MASTER-OAS-*`.
+- إضافة خدمات أو Dashboards جديدة غير موجودة في SSoT.
+- تغيير invariants المالية أو الأمنية بدون توجيه صريح من SSoT.
+
+---
+
+## 8) توزيع الأدوار — External SSoT × Repo (Cursor) × Owner
+
+### 8.1 External SSoT / Governance Workspace
+
+- تصميم Waves التنفيذ.
+- إنشاء/تحديث SSoT، القرارات، السياسات، VAR_* placeholders.
+- مراجعة واعتماد:
+  - OpenAPI per-service.
+  - SCREENS_CATALOG.
+  - RUNTIME_VARS_CATALOG.
+  - Guards و GitHub workflows.
+- حماية المنطق المالي/الأمني:
+  - رفض أو تعديل أي اقتراح يكسر invariants أو الـ SSoT.
+
+### 8.2 Repo + Cursor Pro
+
+- تنفيذ الكود الفعلي:
+  - NestJS / Nx / Next.js / React Native / إلخ.
+  - OpenAPI per-service.
+  - هياكل التطبيقات واللوحات (apps/dashboards).
+- تشغيل الأدوات:
+  - Tests, linting, spectral, semgrep, gitleaks, LHCI, Pa11y…  
+- الالتزام بهذا الدليل وملفات SSoT في `registry/` و `docs/`.
+
+### 8.3 أنت (Owner / PM)
+
+- تحديد الأولويات:
+  - أي خدمة أو لوحة أو تطبيق يبدأ أولًا.
+- تشغيل GitHub + Cursor:
+  - فتح الفروع.
+  - كتابة TASK.
+  - مراجعة الـ PRs.
+- ربط الدوائر:
+  - بعد كل موجة أو ملف مهم:
+    - مراجعة النتائج مقابل هذا الدليل والـ SSoT.
+    - اعتمادها أو طلب تعديلات.
+    - اعتبار الجزء LOCKED بعد الموافقة.
+
+---
+
+## 9) خطة تنفيذ من الصفر (Waves)
+
+خطة عالية المستوى تُنفّذ على مراحل، كل مرحلة عبر فروع + PRs صغيرة ومتتابعة.
+
+### Wave 0 — Bootstrap & Guides
+
+في الريبو (عبر Cursor):
+
+1. إنشاء الملفات الأساسية:
+   - `docs/AI_GUIDE.md` (هذا الملف).
+   - `docs/GOVERNANCE.md` (تفاصيل Git/PR/Rulesets).
+   - `docs/SERVICES_OVERVIEW.md`.
+   - `docs/DASHBOARDS_OVERVIEW.md`.
+   - `registry/SSOT_INDEX.json` (نسخة أولية صحيحة).
+
+2. إعداد:
+   - `.github/workflows/gates.yml` (النسخة المبدئية أعلاه).
+
+3. فرع:
+   - `feat/bootstrap-guides`
+   - ثم PR → مراجعة → دمج إلى `main`.
+
+### Wave 1 — عقود الخدمات (Services Contracts)
+
+لكل خدمة على حدة (ترتيب مقترح: DSH, WLT, ESF, MRF, KNZ, ARB, AMN, SND, KWD):
+
+1. فرع:
+   - `feat/srv-dsh-openapi-v2-2` (مثلًا).
+2. TASK:
+   - كما في المثال في القسم 7.
+3. مراجعة PLAN و DIFF و GUARDS.
+4. تحديث `SSOT_INDEX.json` لحالة الخدمة (LOCKED / DRAFT).
+5. PR → مراجعة → دمج.
+
+### Wave 2 — التطبيقات (Apps)
+
+لكل تطبيق:
+
+1. فرع:
+   - `feat/app-user-screens`
+   - `feat/app-partner-screens`
+2. إنشاء:
+   - `apps/<app>/`.
+   - `apps/<app>/SCREENS_CATALOG.csv` يضم:
+     - `screen_id`
+     - `screen_title`
+     - `related_service` (DSH/WLT/…)
+     - `main_endpoint` (مسار من OpenAPI)
+     - `role` (user/partner/captain/field…)
+3. بناء Skeleton UI لكل شاشة رئيسية.
+4. PR → مراجعة → دمج.
+
+### Wave 3 — لوحات التحكم (Dashboards)
+
+بنفس الفكرة؛ لوحة واحدة في كل موجة:
+
+1. فروع:
+   - `feat/dash-admin-screens`
+   - `feat/dash-ops-screens`
+   - `feat/dash-finance-screens`
+2. ملفات:
+   - `dashboards/<name>/SCREENS_CATALOG.csv`
+   - اختياريًا: `docs/DASHBOARD_SPECS/<name>.md`
+3. Skeleton UI:
+   - Bars / Tabs (مثلاً في Finance: Ledger, Settlements, COD, Payouts).
+   - جداول رئيسية + فلاتر + Actions أساسية.
+4. PR → مراجعة → دمج.
+
+### Wave 4 — RUNTIME VAR_* + Guards
+
+1. إنشاء:
+   - `runtime/RUNTIME_VARS_CATALOG.csv` يحتوي:
+     - `var_key`
+     - `scope` (Global / Region / City / Service / Category / Subcategory…)
+     - `default_value` (قد تكون `PLACEHOLDER` إلى أن تُحدد)
+     - `description`
+     - `service_ref`
+2. إعداد سكربتات الحُرّاس، مثل:
+   - `scripts/guard_openapi.mjs`
+   - `scripts/guard_secrets.mjs`
+   - `scripts/guard_routes_parity.mjs`
+3. ربط هذه السكربتات في `.github/workflows/gates.yml`.
+
+### Wave 5 — Master OpenAPI + Source Kit
+
+1. مهام من نوع `MASTER-OAS-BUILD` لبناء:
+   - `oas/master/Master_OpenAPI.yaml` من ملفات الخدمات.
+2. إعداد:
+   - `dist/KIT.zip` يحتوي على:
+     - `oas/master/*`
+     - `oas/services/*`
+     - `runtime/RUNTIME_VARS_CATALOG.csv`
+     - `registry/SSOT_INDEX.json`
+     - أهم الملفات في `docs/*`
+     - تقارير الحُرّاس (اختياريًا).
+3. PR → مراجعة → دمج.
+
+---
+
+## 10) التعامل مع النقص الحالي والحقول غير المكتملة
+
+- عند غياب معلومة أو وجود شك:
+  - لا تُخترَع قيمة أو منطق جديد.
+  - توضع علامة `[TBD]` مع وصف واضح لما ينقص.
+- الأسئلة تُوثَّق في:
+  - `docs/QUESTIONS_TBD.md` أو في وصف الـ PR.
+- لا يُعتبر أي جزء LOCKED إلا بعد:
+  - تحديث الـ SSoT الخارجي.
+  - تحديث الملفات داخل الريبو بما يتفق معه.
+
+---
+
+## 11) خلاصة تذكيرية
+
+- **Cursor / الريبو:**
+  - يعمل وفق هذا الدليل وملفات SSoT داخل المشروع.
+  - لا يلمس `main` ولا `Master_OpenAPI` إلا عبر فروع + PR + حُرّاس.
+- **SSoT الخارجي / الحوكمة:**
+  - يحدد القرارات والسياسات والـ Waves.
+  - يراجع ما هو حساس أو عالمي قبل اعتباره نهائيًا.
+- **المالك / PM:**
+  - يحدد الأولويات.
+  - يكتب المهام (TASK).
+  - يراجع الـ PRs ويغلق الـ Waves.
+
+بهذا الدليل تصبح بيئة Cursor نظيفة (لا ذكر فيها لأسماء أدوات خارجية)، وتبقى الحوكمة والـ SSoT خارج الريبو هي المصدر الأعلى، مع ربط منظم وواضح بين الاثنين.
