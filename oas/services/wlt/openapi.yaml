@@ -13,7 +13,318 @@ servers:
     description: Stage
   - url: https://api.bthwani.com
     description: Prod
-paths: {}
+tags:
+  - name: PaymentIntents
+    description: إدارة عمليات إنشاء واستعلام نوايا الدفع.
+  - name: PaymentConfirmations
+    description: تأكيد عمليات الدفع بعد موفري PSP.
+  - name: Settlements
+    description: تسويات وضبط مبالغ الالتقاط (capture) بعد التعديلات.
+  - name: WalletWebhooks
+    description: Webhooks صادرة من WLT إلى الخدمات الأخرى (مثل DSH) حول الاستردادات.
+security:
+  - bearerAuth: []
+paths:
+  /api/wlt/intents:
+    post:
+      tags: [PaymentIntents]
+      operationId: wlt_intents_create
+      summary: إنشاء نية دفع جديدة لطلب تابع لخدمة DSH أو خدمة أخرى.
+      x-surface: APP-USER
+      x-screen: app_user.checkout.payment
+      x-action: create_payment_intent
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentIntentCreateRequest'
+      responses:
+        '201':
+          description: تم إنشاء نية الدفع.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        default:
+          $ref: '#/components/responses/StandardError'
+  /api/wlt/intents/{intent_id}:
+    get:
+      tags: [PaymentIntents]
+      operationId: wlt_intents_get
+      summary: استعلام حالة نية الدفع الحالية.
+      x-surface: APP-USER
+      x-screen: app_user.checkout.payment
+      x-action: poll_payment_intent
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IntentId'
+      responses:
+        '200':
+          description: بيانات نية الدفع الحالية.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        default:
+          $ref: '#/components/responses/StandardError'
+  /api/wlt/intents/{intent_id}/confirm:
+    post:
+      tags: [PaymentConfirmations]
+      operationId: wlt_intents_confirm
+      summary: تأكيد نية الدفع بعد رد مزود الدفع.
+      x-surface: APP-USER
+      x-screen: app_user.checkout.payment
+      x-action: confirm_payment
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/IntentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentConfirmationRequest'
+      responses:
+        '200':
+          description: تم تأكيد نية الدفع.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        default:
+          $ref: '#/components/responses/StandardError'
+  /api/wlt/intents/{intent_id}/capture-adjust:
+    post:
+      tags: [Settlements]
+      operationId: wlt_capture_adjust
+      summary: تعديل قيمة الالتقاط بعد تغييرات في الطلب (مثل الاستبدال أو الإرجاع).
+      x-surface: SYSTEM
+      x-screen: system.settlements.capture
+      x-action: dsh_capture_adjust
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/IntentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CaptureAdjustRequest'
+      responses:
+        '200':
+          description: تم تعديل قيمة الالتقاط.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentIntent'
+        default:
+          $ref: '#/components/responses/StandardError'
+  /api/wlt/inbound/refunds:
+    post:
+      tags: [WalletWebhooks]
+      operationId: wlt_refunds_inbound
+      summary: Webhook لاستلام أحداث الاسترداد أو الـ chargeback من مزود الدفع.
+      x-surface: SYSTEM
+      x-screen: system.webhooks.refunds
+      x-action: wlt_refund_webhook
+      security:
+        - webhookHmac: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WltRefundWebhook'
+      responses:
+        '204':
+          description: تم قبول الحدث.
+        default:
+          $ref: '#/components/responses/StandardError'
 components:
-  schemas: {}
-  securitySchemes: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    webhookHmac:
+      type: apiKey
+      in: header
+      name: X-Signature
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+      description: مفتاح يساعد على ضمان عدم تكرار عمليات الكتابة.
+    IntentId:
+      name: intent_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: معرّف نية الدفع داخل WLT.
+  responses:
+    StandardError:
+      description: RFC7807 error payload.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  schemas:
+    Problem:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+      required: [title, status]
+    PaymentIntentCreateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - amount
+        - currency
+        - order_reference
+      properties:
+        amount:
+          type: integer
+          minimum: 1
+          description: قيمة الطلب بالعملة الأساسية (YER افتراضيًا).
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          description: رمز العملة على ISO-4217 (YER افتراضيًا).
+        order_reference:
+          type: string
+          maxLength: 64
+          description: معرّف الطلب في الخدمة المستهلكة (مثل DSH).
+        customer_id:
+          type: string
+          maxLength: 64
+          description: معرّف المستخدم داخل النظام.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: حقول إضافية للتكامل (بريد، قناة، سياق).
+    PaymentIntent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - amount
+        - currency
+        - order_reference
+        - created_at
+      properties:
+        id:
+          type: string
+          maxLength: 64
+        status:
+          type: string
+          enum:
+            - requires_payment_method
+            - requires_action
+            - processing
+            - succeeded
+            - failed
+            - canceled
+        amount:
+          type: integer
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+        order_reference:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+    PaymentConfirmationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - provider_payload
+      properties:
+        provider_payload:
+          type: object
+          additionalProperties: true
+          description: الرد الأصلي من مزود PSP بعد تنفيذ الدفع.
+        reconciliation_reference:
+          type: string
+          description: رقم المرجع للمصالحة المالية إذا توفر.
+    CaptureAdjustRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - delta_amount
+        - reason_code
+      properties:
+        delta_amount:
+          type: integer
+          description: الفرق الذي سيتم تطبيقه على الالتقاط (يمكن أن يكون سالبًا).
+        reason_code:
+          type: string
+          enum:
+            - substitution
+            - partial_out_of_stock
+            - customer_return
+            - manual_adjustment
+        notes:
+          type: string
+          maxLength: 256
+          description: تعليق اختياري من النظام المستهلك (مثل DSH).
+    WltRefundWebhook:
+      type: object
+      additionalProperties: false
+      required:
+        - event
+        - signature
+        - issued_at
+        - data
+      properties:
+        event:
+          type: string
+          enum:
+            - refund.succeeded
+            - refund.failed
+            - chargeback.opened
+            - chargeback.closed
+        signature:
+          type: string
+          description: التوقيع الرقمي المولّد عبر المفتاح السري المشترك.
+        issued_at:
+          type: string
+          format: date-time
+        data:
+          type: object
+          additionalProperties: true
+          description: الحمولة التفصيلية للحدث (مبلغ، intent_id، تفاصيل PSP).

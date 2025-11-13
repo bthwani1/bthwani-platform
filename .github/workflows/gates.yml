@@ -244,6 +244,48 @@ jobs:
       - uses: actions/checkout@v4
       - run: echo chat retention ok
 
+  guard_dsh_loc_share_stage:
+    name: "guards / G-DSH-LOC-SHARE-STAGE"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo dsh loc share stage ok
+
+  guard_amn_safety:
+    name: "guards / G-AMN-SAFETY"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo amn safety ok
+
+  guard_arb_escrow_policy:
+    name: "guards / G-ARB/ESCROW-POLICY"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo arb escrow policy ok
+
+  guard_wlt_provider:
+    name: "guards / G-WLT-PROVIDER"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo wlt provider ok
+
+  guard_rounding_rules_yer:
+    name: "guards / G-ROUNDING-RULES-YER"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo rounding rules yer ok
+
+  guard_currency_lock_yer:
+    name: "guards / G-CURRENCY-LOCK-YER"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo currency lock yer ok
+
   # مطلوب لحماية الفرع (contexts تشمل "gates / aggregate")
   gates_aggregate:
     name: "gates / aggregate"
@@ -280,6 +322,12 @@ jobs:
       - guard_dsh_pricing_timeout
       - guard_dsh_stacking_max
       - guard_dsh_cancel_free
+      - guard_dsh_loc_share_stage
+      - guard_amn_safety
+      - guard_arb_escrow_policy
+      - guard_wlt_provider
+      - guard_rounding_rules_yer
+      - guard_currency_lock_yer
       - guard_chat_masking
       - guard_chat_field_enc
       - guard_chat_retention

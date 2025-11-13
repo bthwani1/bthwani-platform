@@ -8,7 +8,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "contracts": "spectral lint oas/**/*.yaml"
+    "build:openapi": "node scripts/build-master-openapi.js",
+    "check:openapi": "node scripts/build-master-openapi.js --check",
+    "contracts": "npm run build:openapi && spectral lint oas/**/*.yaml"
   },
   "repository": {
     "type": "git",
@@ -23,6 +25,7 @@
   },
   "homepage": "https://github.com/bthwani1/bthwani-platform#readme",
   "devDependencies": {
-    "@stoplight/spectral-cli": "^6.15.0"
+    "@stoplight/spectral-cli": "^6.15.0",
+    "yaml": "^2.8.1"
   }
 }

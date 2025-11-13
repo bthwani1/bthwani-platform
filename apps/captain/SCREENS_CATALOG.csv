@@ -1,6 +1,11 @@
 screen_id,screen_title,related_service,main_endpoint,role,status,notes
-APP_CAPTAIN_HOME,الرئيسية,GLOBAL,[TBD],captain,DRAFT,"ملخص الرحلات والحالة"
-APP_CAPTAIN_DSH_TASKS,مهام التوصيل,DSH,/api/dls/captain/assignments,captain,DRAFT,"استلام الطلبات وتحديثها"
-APP_CAPTAIN_AMN_RIDES,رحلات AMN,AMN,/api/amn/captain/rides,captain,DRAFT,"بدء وإنهاء الرحلة"
-APP_CAPTAIN_WLT_BALANCE,الرصيد,WLT,/api/wlt/captain/balance,captain,DRAFT,"متابعة المستحقات"
+CAPTAIN_ORDERS_LIST,الطلبات المتاحة/المسندة,DSH,"/api/dls/captain/orders",captain,DRAFT,"قائمة الطلبات مع دعم cursor/limit"
+CAPTAIN_ORDER_DETAILS,تفاصيل الطلب,DSH,"/api/dls/captain/orders/{order_id}",captain,DRAFT,"عرض تفاصيل الطلب الحالية"
+CAPTAIN_ORDER_FLOW,تقدّم تنفيذ الطلب,DSH,"/api/dls/captain/orders/{order_id}/accept",captain,DRAFT,"قبول/رفض/إشعارات الوصول والتسليم"
+CAPTAIN_CHAT,الدردشة,DSH,"/api/dls/captain/orders/{order_id}/chat/messages",captain,DRAFT,"سجل الدردشة مع إرسال الرسائل"
+CAPTAIN_CHAT_READ_ACK,تأكيد قراءة الدردشة,DSH,"/api/dls/captain/orders/{order_id}/chat/read-ack",captain,DRAFT,"تأشير الرسائل كمقروءة"
+CAPTAIN_TIMELINE,الخط الزمني,DSH,"/api/dls/captain/orders/{order_id}/timeline",captain,DRAFT,"عرض الأحداث بالتسلسل"
+CAPTAIN_AVAILABILITY,التوفر,DSH,"/api/dls/captain/availability",captain,DRAFT,"تفعيل/تعطيل الدوام وتحديد المناطق"
+CAPTAIN_EARNINGS,الأرباح,DSH,"/api/dls/captain/earnings",captain,DRAFT,"عرض أرباح الكابتن"
+CAPTAIN_LOCATION_UPDATE,تحديث الموقع,DSH,"/api/dls/captain/location",captain,DRAFT,"نبضات الموقع الدورية"
 

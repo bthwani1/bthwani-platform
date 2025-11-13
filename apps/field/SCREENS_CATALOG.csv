@@ -1,5 +1,18 @@
-screen_id,screen_title,related_service,main_endpoint,role,status,notes
-APP_FIELD_HOME,لوحة الميدان,GLOBAL,[TBD],field,DRAFT,"ملخص نشاط الفريق"
-APP_FIELD_DSH_ONBOARDING,تسجيل متاجر DSH,DSH,/api/dls/field/onboarding,field,DRAFT,"جمع بيانات المتاجر"
-APP_FIELD_ARB_PARTNERS,تفعيل شركاء ARB,ARB,/api/arb/field/providers,field,DRAFT,"تهيئة قدرات الحجز"
+surface_id,screen_id,screen_title_ar,route_key,action_id,operation_id,primary_action,states,evidence_ref
+APP-FIELD,field.partner.intake,بدء إدخال شريك,field.partner.intake,start_intake,dls_partner_intake_start,primary,empty|loading|ready|error,TRACE:APP-FIELD:intake
+APP-FIELD,field.partner.identity,هوية الشريك,field.partner.identity,submit_identity,dls_partner_identity_submit,primary,loading|editing|saved|error,TRACE:APP-FIELD:identity
+APP-FIELD,field.partner.documents,مستندات الشريك,field.partner.documents,upload_doc,dls_partner_doc_upload,primary,uploading|queued|scanning|approved|rejected,TRACE:APP-FIELD:documents
+APP-FIELD,field.partner.store,إعداد المتجر,field.partner.store,create_store,dls_store_create,primary,loading|editing|saved|error,TRACE:APP-FIELD:store1
+APP-FIELD,field.partner.store,تحديث المتجر,field.partner.store,update_store,dls_store_update,secondary,loading|editing|saved|error,TRACE:APP-FIELD:store2
+APP-FIELD,field.partner.zones,نطاقات التغطية,field.partner.zones,set_zones,dls_store_zones_set,primary,draw|save|error,TRACE:APP-FIELD:zones
+APP-FIELD,field.partner.delivery_modes,أوضاع التوصيل,field.partner.delivery_modes,set_modes,dls_store_modes_set,primary,choose|save|error,TRACE:APP-FIELD:modes
+APP-FIELD,field.partner.pricing,سياسة العمولة,field.partner.pricing,set_commission,dls_store_commission_set,primary,editing|saved|error,TRACE:APP-FIELD:commission
+APP-FIELD,field.partner.bank,بيانات البنك,field.partner.bank,set_bank,dls_partner_bank_set,primary,stepup_required|editing|saved|error,TRACE:APP-FIELD:bank
+APP-FIELD,field.partner.users,دعوة مدير,field.partner.users,invite_manager,dls_partner_manager_invite,primary,sending|sent|error,TRACE:APP-FIELD:invite
+APP-FIELD,field.partner.review,تسليم للمراجعة,field.partner.review,submit_for_review,dls_partner_submit_review,primary,validating|submitted|error,TRACE:APP-FIELD:submit
+APP-FIELD,field.partner.queue,قائمة قيد المراجعة,field.partner.queue,list_pending,dls_partner_pending_list,primary,loading|paged|error,TRACE:APP-FIELD:queue
+APP-FIELD,field.partner.details,تفاصيل الشريك,field.partner.details,get_partner,dls_partner_get,secondary,loading|ready|error,TRACE:APP-FIELD:details
+APP-FIELD,field.partner.store.details,تفاصيل المتجر,field.partner.store.details,get_store,dls_store_get,secondary,loading|ready|error,TRACE:APP-FIELD:store_details
+APP-FIELD,field.partner.decision,اعتماد الشريك,field.partner.decision,approve,dls_partner_approve,primary,stepup_required|approved|error,TRACE:APP-FIELD:approve
+APP-FIELD,field.partner.decision,رفض الشريك,field.partner.decision,reject,dls_partner_reject,secondary,rejecting|rejected|error,TRACE:APP-FIELD:reject
 

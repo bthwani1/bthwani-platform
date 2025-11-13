@@ -21,7 +21,10 @@ APP_USER_DSH_SLOTS,فترات Dark-Store,DSH,"/api/dls/slots",user,DRAFT,"قائ
 APP_USER_DSH_PARTNER_POLICIES,سياسات المتجر,DSH,"/api/dls/partners/{partner_id}/policies",user,DRAFT,"قنوات التفعيل المتاحة"
 APP_USER_DSH_PARTNER_ZONES,مناطق تغطية المتجر,DSH,"/api/dls/partners/{partner_id}/zones",user,DRAFT,"تغطية المتجر"
 APP_USER_DSH_ORDER_NOTES,ملاحظات الطلب,DSH,"/api/dls/orders/{order_id}/notes",user,DRAFT,"إنشاء واستعراض الملاحظات"
+APP_USER_WLT_PAYMENT_INTENT,بدء الدفع عبر المحفظة,WLT,"/api/wlt/intents",user,DRAFT,"إنشاء PaymentIntent مرتبطة بطلب DSH"
+APP_USER_WLT_PAYMENT_STATUS,متابعة حالة الدفع,WLT,"/api/wlt/intents/{intent_id}",user,DRAFT,"poll للحالة مع التعامل مع requires_action"
+APP_USER_WLT_PAYMENT_CONFIRM,تأكيد الدفع,WLT,"/api/wlt/intents/{intent_id}/confirm",user,DRAFT,"إرسال رد PSP لتأكيد الدفع"
 APP_USER_AMN_RIDES,رحلات النقل الآمن,AMN,"/api/amn/rides",user,DRAFT,"تفاصيل الرحلات والتقييم"
 APP_USER_ARB_BOOKINGS,حجوزات العربون,ARB,"/api/arb/bookings",user,DRAFT,"يرتبط بمسارات Escrow"
-APP_USER_WLT_WALLET,المحفظة والمدفوعات,WLT,"/api/wlt/ledger",user,DRAFT,"عرض الرصيد والحركات"
+APP_USER_WLT_WALLET,المحفظة والمدفوعات,WLT,"[TBD]",user,DRAFT,"عرض الرصيد والحركات (مسارات وواجهات لاحقة)"
 

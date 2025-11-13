@@ -13,10 +13,6 @@ servers:
     description: Stage
   - url: https://api.bthwani.com
     description: Prod
-paths: {}
-components:
-  schemas: {}
-  securitySchemes: {}
 x-built-from:
   - ../services/dsh/openapi.yaml
   - ../services/wlt/openapi.yaml
@@ -27,3 +23,3209 @@ x-built-from:
   - ../services/amn/openapi.yaml
   - ../services/snd/openapi.yaml
   - ../services/kwd/openapi.yaml
+tags:
+  - name: Checkout
+    description: عمليات إنشاء وتأكيد الطلبات وفترات الـ Dark-Store.
+  - name: Orders
+    description: إدارة الطلبات، تفاصيلها، وإلغائها.
+  - name: Tracking
+    description: تتبع الطلب، الخط الزمني، وإثبات التسليم.
+  - name: Chat
+    description: محادثات الطلب وإشعارات القراءة.
+  - name: Notes
+    description: ملاحظات الطلب المشفرة والمقنّعة.
+  - name: PartnerInfo
+    description: سياسات ومناطق تغطية المتاجر الشريكة.
+  - name: PartnerOrders
+    description: عمليات إدارة الطلبات عبر تطبيق الشريك.
+  - name: PartnerChat
+    description: دردشة الشريك ومؤشرات القراءة.
+  - name: PartnerNotes
+    description: ملاحظات الطلب من منظور الشريك.
+  - name: PartnerConfig
+    description: إعدادات الشريك (سياسات، مناطق، فترات، مخزون، إيصالات).
+  - name: PartnerSystem
+    description: تكاملات النظام المرتبطة بتطبيق الشريك.
+  - name: CaptainOrders
+    description: إدارة الطلبات وتقدمها من منظور الكابتن.
+  - name: CaptainChat
+    description: دردشة الكابتن ومؤشرات القراءة.
+  - name: CaptainProfile
+    description: توافر الكابتن، الإحداثيات، وسجلات الأرباح.
+  - name: CaptainSystem
+    description: Webhooks وتكاملات مرتبطة بتطبيق الكابتن.
+  - name: FieldIntake
+    description: إدخال بيانات الشريك والمستندات عبر التطبيق الميداني.
+  - name: FieldStores
+    description: إنشاء وتحديث المتاجر وإعداد مناطقها عبر التطبيق الميداني.
+  - name: FieldConfig
+    description: ضبط سياسات العمولة والبنوك ودعوات المستخدمين من التطبيق الميداني.
+  - name: FieldReview
+    description: إدارة قائمة الانتظار واعتماد/رفض الشركاء.
+  - name: System
+    description: تكاملات النظام (إشعارات، Webhooks).
+  - name: PaymentIntents
+    description: إدارة عمليات إنشاء واستعلام نوايا الدفع.
+  - name: PaymentConfirmations
+    description: تأكيد عمليات الدفع بعد موفري PSP.
+  - name: Settlements
+    description: تسويات وضبط مبالغ الالتقاط (capture) بعد التعديلات.
+  - name: WalletWebhooks
+    description: Webhooks صادرة من WLT إلى الخدمات الأخرى (مثل DSH) حول الاستردادات.
+paths:
+  /api/dls/quotes:
+    post:
+      tags:
+        - Checkout
+      operationId: dls_quotes_create
+      summary: احتساب تكلفة أولية أو حجز slot للـ Dark-Store.
+      description: |
+        يحسب التكلفة التقديرية للطلب أو يحجز slot مبدئي (Dark-Store). يتطلب إرسال قيمة `Idempotency-Key` لتفادي الإنشاء المكرر.
+      x-surface: APP-USER
+      x-screen: app_user.checkout
+      x-action: request_quote
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/QuoteRequest"
+      responses:
+        "201":
+          description: Quote created or slot reserved.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/QuoteResponse"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders:
+    post:
+      tags:
+        - Checkout
+      operationId: dls_orders_create
+      summary: إنشاء الطلب وفق القناة والدفع.
+      description: |
+        ينشئ طلب تسوق وتوصيل جديد، مع الالتزام بسياسات الدفع عبر WLT وقيم Idempotency-Key.
+      x-surface: APP-USER
+      x-screen: app_user.checkout
+      x-action: place_order
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCreateRequest"
+      responses:
+        "201":
+          description: Order created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+    get:
+      tags:
+        - Orders
+      operationId: dls_orders_list
+      summary: قائمة الطلبات مع دعم cursor/limit.
+      description: يعرض قائمة طلبات المستخدم مع ترقيم صفحات cursor-based.
+      x-surface: APP-USER
+      x-screen: app_user.orders.list
+      x-action: list_orders
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Orders list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderList"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+    patch:
+      tags:
+        - Checkout
+      operationId: dls_orders_update
+      summary: تثبيت slot أو تعديل الطلب بعد الإنشاء.
+      description: يسمح بتثبيت فترات Dark-Store أو تحديثات بسيطة للطلب.
+      x-surface: APP-USER
+      x-screen: app_user.checkout.dark_store
+      x-action: confirm_slot
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderUpdateRequest"
+      responses:
+        "200":
+          description: Order updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+    get:
+      tags:
+        - Orders
+      operationId: dls_orders_get
+      summary: تفاصيل الطلب وتتبع الحالة.
+      description: يعرض تفاصيل الطلب الحالية مع الحالة والقناة المختارة.
+      x-surface: APP-USER
+      x-screen: app_user.order.details
+      x-action: load_order
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Order details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/cancel:
+    post:
+      tags:
+        - Orders
+      operationId: dls_orders_cancel
+      summary: إلغاء الطلب ضمن نافذة الإلغاء.
+      description: يلغي الطلب إذا كانت نافذة الإلغاء ما تزال مفتوحة.
+      x-surface: APP-USER
+      x-screen: app_user.order.cancel
+      x-action: cancel_order
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderCancelRequest"
+      responses:
+        "200":
+          description: Order cancelled.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/tracking:
+    get:
+      tags:
+        - Tracking
+      operationId: dls_tracking_get
+      summary: تتبع حالة وموقع الطلب.
+      description: يعرض الحالة الحالية ومعلومات التتبع.
+      x-surface: APP-USER
+      x-screen: app_user.order.tracking
+      x-action: open_tracking
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Tracking info.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TrackingInfo"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/receipt:
+    get:
+      tags:
+        - Orders
+      operationId: dls_receipt_get
+      summary: عرض الفاتورة النهائية.
+      x-surface: APP-USER
+      x-screen: app_user.order.receipt
+      x-action: view_receipt
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Order receipt.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Receipt"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/feedback:
+    post:
+      tags:
+        - Orders
+      operationId: dls_feedback_create
+      summary: إرسال تقييم للطلب أو المتجر.
+      x-surface: APP-USER
+      x-screen: app_user.order.feedback
+      x-action: submit_feedback
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackRequest"
+      responses:
+        "201":
+          description: Feedback stored.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/chat/messages:
+    post:
+      tags:
+        - Chat
+      operationId: dls_chat_send
+      summary: إرسال رسالة دردشة مشفرة.
+      x-surface: APP-USER
+      x-screen: app_user.order.chat
+      x-action: send_message
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatSendRequest"
+      responses:
+        "201":
+          description: Message sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessage"
+        default:
+          $ref: "#/components/responses/StandardError"
+    get:
+      tags:
+        - Chat
+      operationId: dls_chat_list
+      summary: استعراض سجل محادثة الطلب.
+      x-surface: APP-USER
+      x-screen: app_user.order.chat
+      x-action: list_messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Chat transcript.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatList"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/chat/read-ack:
+    post:
+      tags:
+        - Chat
+      operationId: dls_chat_read_ack
+      summary: تأشير الرسائل كمقروءة.
+      x-surface: APP-USER
+      x-screen: app_user.order.chat
+      x-action: ack_read
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatReadAckRequest"
+      responses:
+        "200":
+          description: Read acknowledged.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/pod/verify:
+    post:
+      tags:
+        - Tracking
+      operationId: dls_pod_verify
+      summary: التحقق من إثبات التسليم (PoD).
+      x-surface: APP-USER
+      x-screen: app_user.order.pod_submit
+      x-action: verify_pod
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PodVerifyRequest"
+      responses:
+        "200":
+          description: Proof of delivery verified.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/pickup/close:
+    post:
+      tags:
+        - Orders
+      operationId: dls_pickup_close
+      summary: إقفال الاستلام الذاتي برمز 6 أرقام.
+      x-surface: APP-USER
+      x-screen: app_user.order.pickup_close
+      x-action: submit_pickup_code
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PickupCloseRequest"
+      responses:
+        "200":
+          description: Pickup closed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/timeline:
+    get:
+      tags:
+        - Tracking
+      operationId: dls_orders_timeline_get
+      summary: عرض الخط الزمني للطلب.
+      x-surface: APP-USER
+      x-screen: app_user.order.timeline
+      x-action: view_timeline
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Timeline returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderTimeline"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/eta:
+    get:
+      tags:
+        - Tracking
+      operationId: dls_orders_eta_get
+      summary: عرض الوقت المتوقع للوصول (ETA).
+      x-surface: APP-USER
+      x-screen: app_user.order.eta
+      x-action: view_eta
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: ETA fetched.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Eta"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/cancel-reasons:
+    get:
+      tags:
+        - Orders
+      operationId: dls_cancel_reasons_list
+      summary: قائمة أسباب الإلغاء المدعومة.
+      x-surface: APP-USER
+      x-screen: app_user.order.cancel
+      x-action: load_cancel_reasons
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Cancel reasons.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CancelReasonList"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/reorder:
+    post:
+      tags:
+        - Orders
+      operationId: dls_orders_reorder
+      summary: إنشاء طلب جديد اعتمادًا على طلب سابق.
+      x-surface: APP-USER
+      x-screen: app_user.orders
+      x-action: reorder
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReorderRequest"
+      responses:
+        "201":
+          description: Reorder created.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/slots:
+    get:
+      tags:
+        - Checkout
+      operationId: dls_slots_list
+      summary: فترات الـ Dark-Store المتاحة.
+      x-surface: APP-USER
+      x-screen: app_user.checkout.dark_store
+      x-action: list_slots
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Slots returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlotList"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/policies:
+    get:
+      tags:
+        - PartnerInfo
+      operationId: dls_partner_policies_get
+      summary: استرجاع سياسات التفعيل للقنوات المختلفة.
+      x-surface: APP-USER
+      x-screen: app_user.delivery_modes
+      x-action: load_partner_policies
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PartnerId"
+      responses:
+        "200":
+          description: Partner policies returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerPolicies"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/zones:
+    get:
+      tags:
+        - PartnerInfo
+      operationId: dls_partner_zones_get
+      summary: استرجاع مناطق تغطية المتجر.
+      x-surface: APP-USER
+      x-screen: app_user.store.coverage
+      x-action: load_partner_zones
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PartnerId"
+      responses:
+        "200":
+          description: Partner zones returned.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerZones"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/orders/{order_id}/notes:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+    post:
+      tags:
+        - Notes
+      operationId: dls_order_notes_create
+      summary: إضافة ملاحظة مشفرة إلى الطلب.
+      x-surface: APP-USER
+      x-screen: app_user.order.notes
+      x-action: create_note
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteCreateRequest"
+      responses:
+        "201":
+          description: Note stored.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+        default:
+          $ref: "#/components/responses/StandardError"
+    get:
+      tags:
+        - Notes
+      operationId: dls_order_notes_list
+      summary: استعراض ملاحظات الطلب المشفرة.
+      x-surface: APP-USER
+      x-screen: app_user.order.notes
+      x-action: list_notes
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Notes list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NoteList"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/notifications:
+    post:
+      tags:
+        - System
+      operationId: dls_partner_notifications_dispatch
+      summary: إرسال إشعار إلى شريك (Sms/WhatsApp).
+      x-surface: SYSTEM
+      x-screen: system.integrations.notify
+      x-action: dispatch_partner_notify
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PartnerId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartnerNotifyRequest"
+      responses:
+        "200":
+          description: Notification dispatched.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/inbound/messages:
+    post:
+      tags:
+        - System
+        - CaptainSystem
+      operationId: dls_inbound_messages_webhook
+      x-operation-aliases:
+        - dls_cap_inbound_messages_webhook
+      summary: Webhook لرسائل المزودين الخارجيين.
+      description: "يستقبل رسائل المزود (مثال: واتساب) أو الكابتن مع توقيع HMAC وزمن إعادة محدود."
+      x-surface: SYSTEM
+      x-screen: system.webhooks.inbound_msg
+      x-action: inbound_msg_webhook
+      security:
+        - webhookHmac: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: "#/components/schemas/InboundMessageWebhook"
+                - $ref: "#/components/schemas/CaptainInboundMessageWebhook"
+      responses:
+        "202":
+          description: Webhook accepted for processing.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders:
+    get:
+      tags:
+        - PartnerOrders
+      operationId: dls_partner_orders_list
+      summary: قائمة طلبات الشريك مع دعم cursor/limit.
+      x-surface: APP-PARTNER
+      x-screen: partner.orders.list
+      x-action: list_orders
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Partner orders list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderList"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}:
+    parameters:
+      - $ref: "#/components/parameters/OrderId"
+    get:
+      tags:
+        - PartnerOrders
+      operationId: dls_partner_orders_get
+      summary: تفاصيل الطلب كما تظهر للشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.orders.details
+      x-action: load_order
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Partner order details.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/accept:
+    post:
+      tags:
+        - PartnerOrders
+      operationId: dls_partner_orders_accept
+      summary: قبول الطلب لمعالجته بواسطة الشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.orders.actions
+      x-action: accept_order
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptOrderRequest"
+      responses:
+        "200":
+          description: Order accepted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/reject:
+    post:
+      tags:
+        - PartnerOrders
+      operationId: dls_partner_orders_reject
+      summary: رفض الطلب مع سبب قياسي.
+      x-surface: APP-PARTNER
+      x-screen: partner.orders.actions
+      x-action: reject_order
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectOrderRequest"
+      responses:
+        "200":
+          description: Order rejected.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/ready:
+    post:
+      tags:
+        - PartnerOrders
+      operationId: dls_partner_orders_ready
+      summary: تعليم الطلب كمستعد للاستلام أو التسليم.
+      x-surface: APP-PARTNER
+      x-screen: partner.orders.actions
+      x-action: mark_ready
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkReadyRequest"
+      responses:
+        "200":
+          description: Order marked ready.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/handoff:
+    post:
+      tags:
+        - PartnerOrders
+      operationId: dls_partner_orders_handoff
+      summary: تأكيد تسليم الطلب إلى كابتن المنصة.
+      x-surface: APP-PARTNER
+      x-screen: partner.orders.actions
+      x-action: handoff_to_captain
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HandoffRequest"
+      responses:
+        "200":
+          description: Order handoff confirmed.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/timeline:
+    get:
+      tags:
+        - PartnerOrders
+      operationId: dls_partner_orders_timeline_get
+      summary: عرض الخط الزمني للطلب من منظور الشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.orders.list
+      x-action: view_timeline
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Order timeline for partner.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderTimeline"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/chat/messages:
+    get:
+      tags:
+        - PartnerChat
+      operationId: dls_partner_chat_list
+      summary: استعراض دردشة الطلب للشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.chat
+      x-action: list_messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Partner chat transcript.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatList"
+        default:
+          $ref: "#/components/responses/StandardError"
+    post:
+      tags:
+        - PartnerChat
+      operationId: dls_partner_chat_send
+      summary: إرسال رسالة دردشة من الشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.chat
+      x-action: send_message
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatSendRequest"
+      responses:
+        "200":
+          description: Partner chat message sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessage"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/chat/read-ack:
+    post:
+      tags:
+        - PartnerChat
+      operationId: dls_partner_chat_read_ack
+      summary: تأشير رسائل الدردشة كمقروءة بواسطة الشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.chat
+      x-action: ack_read
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatReadAckRequest"
+      responses:
+        "204":
+          description: No content.
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/notes:
+    get:
+      tags:
+        - PartnerNotes
+      operationId: dls_partner_order_notes_list
+      summary: استعراض ملاحظات الطلب من واجهة الشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.notes
+      x-action: list_notes
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Partner note list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NoteList"
+        default:
+          $ref: "#/components/responses/StandardError"
+    post:
+      tags:
+        - PartnerNotes
+      operationId: dls_partner_order_notes_create
+      summary: إنشاء ملاحظة مشفرة من طرف الشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.notes
+      x-action: create_note
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NoteCreateRequest"
+      responses:
+        "201":
+          description: Partner note stored.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/pickup/close:
+    post:
+      tags:
+        - PartnerOrders
+      operationId: dls_partner_pickup_close
+      summary: إقفال الاستلام الذاتي بواسطة الشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.orders.actions
+      x-action: submit_pickup_code
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PickupCloseRequest"
+      responses:
+        "200":
+          description: Pickup closed by partner.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/me/policies:
+    get:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_policies_get
+      summary: استرجاع سياسات أوضاع التوصيل للشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.modes
+      x-action: load_partner_policies
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Partner policies payload.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerPolicies"
+        default:
+          $ref: "#/components/responses/StandardError"
+    patch:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_policies_update
+      summary: تحديث سياسات التوصيل للشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.modes
+      x-action: update_partner_policies
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartnerPoliciesUpdate"
+      responses:
+        "200":
+          description: Partner policies updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerPolicies"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/me/zones:
+    get:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_zones_get
+      summary: استرجاع مناطق التغطية للشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.zones
+      x-action: load_partner_zones
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Partner zones payload.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerZones"
+        default:
+          $ref: "#/components/responses/StandardError"
+    patch:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_zones_update
+      summary: تحديث مناطق التغطية للشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.zones
+      x-action: update_partner_zones
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartnerZonesUpdate"
+      responses:
+        "200":
+          description: Partner zones updated.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerZones"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/me/slots:
+    get:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_slots_list
+      summary: قائمة الفترات المعرفة بواسطة الشريك.
+      x-surface: APP-PARTNER
+      x-screen: partner.slots
+      x-action: list_slots
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Partner slots list.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SlotList"
+        default:
+          $ref: "#/components/responses/StandardError"
+    post:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_slots_upsert
+      summary: إنشاء أو تحديث فترة استلام/توصيل.
+      x-surface: APP-PARTNER
+      x-screen: partner.slots
+      x-action: upsert_slot
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SlotUpsertRequest"
+      responses:
+        "201":
+          description: Slot upserted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Slot"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/me/slots/{slot_id}:
+    delete:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_slots_delete
+      summary: حذف فترة استلام/توصيل.
+      x-surface: APP-PARTNER
+      x-screen: partner.slots
+      x-action: delete_slot
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/SlotId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      responses:
+        "204":
+          description: Slot deleted.
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/me/inventory/adjust:
+    post:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_inventory_adjust
+      summary: تعديل المخزون لعناصر محددة.
+      x-surface: APP-PARTNER
+      x-screen: partner.slots
+      x-action: adjust_inventory
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/InventoryAdjustRequest"
+      responses:
+        "200":
+          description: Inventory adjusted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InventoryAdjustResponse"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/orders/{order_id}/receipt/issue:
+    post:
+      tags:
+        - PartnerConfig
+      operationId: dls_partner_receipt_issue
+      summary: إصدار فاتورة نهائية بعد استيفاء الطلب.
+      x-surface: APP-PARTNER
+      x-screen: partner.receipt
+      x-action: issue_receipt
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReceiptIssueRequest"
+      responses:
+        "200":
+          description: Receipt issued.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Receipt"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partner/inbound/status:
+    post:
+      tags:
+        - CaptainSystem
+      operationId: dls_partner_inbound_status_webhook
+      summary: Webhook لحالة الشريك من مزود خارجي.
+      x-surface: SYSTEM
+      x-screen: system.webhooks.partner_status
+      x-action: inbound_status_webhook
+      security:
+        - webhookHmac: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartnerStatusWebhook"
+      responses:
+        "202":
+          description: Partner status accepted.
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders:
+    get:
+      tags:
+        - CaptainOrders
+      operationId: dls_cap_orders_list
+      summary: List captain orders
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: OK
+  /api/dls/captain/orders/{order_id}/accept:
+    post:
+      tags:
+        - CaptainOrders
+      operationId: dls_cap_orders_accept
+      summary: Accept captain order
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AcceptOrderRequest"
+      responses:
+        "200":
+          description: Order accepted.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders/{order_id}/reject:
+    post:
+      tags:
+        - CaptainOrders
+      operationId: dls_cap_orders_reject
+      summary: Reject captain order
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectOrderRequest"
+      responses:
+        "200":
+          description: Order rejected.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders/{order_id}/arrived-store:
+    post:
+      tags:
+        - CaptainOrders
+      operationId: dls_cap_orders_arrived_store
+      summary: Mark captain order as arrived at store
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkReadyRequest"
+      responses:
+        "200":
+          description: Order marked as arrived at store.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders/{order_id}/picked-up:
+    post:
+      tags:
+        - CaptainOrders
+      operationId: dls_cap_orders_picked_up
+      summary: Mark captain order as picked up
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkReadyRequest"
+      responses:
+        "200":
+          description: Order marked as picked up.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders/{order_id}/arrived-customer:
+    post:
+      tags:
+        - CaptainOrders
+      operationId: dls_cap_orders_arrived_customer
+      summary: Mark captain order as arrived at customer
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkReadyRequest"
+      responses:
+        "200":
+          description: Order marked as arrived at customer.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders/{order_id}/delivered:
+    post:
+      tags:
+        - CaptainOrders
+      operationId: dls_cap_orders_delivered
+      summary: Mark captain order as delivered
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MarkReadyRequest"
+      responses:
+        "200":
+          description: Order marked as delivered.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders/{order_id}/chat/messages:
+    get:
+      tags:
+        - CaptainChat
+      operationId: dls_cap_chat_list
+      summary: List captain chat messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: Partner chat transcript.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatList"
+        default:
+          $ref: "#/components/responses/StandardError"
+    post:
+      tags:
+        - CaptainChat
+      operationId: dls_cap_chat_send
+      summary: Send captain chat message
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatSendRequest"
+      responses:
+        "200":
+          description: Partner chat message sent.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessage"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders/{order_id}/chat/read-ack:
+    post:
+      tags:
+        - CaptainChat
+      operationId: dls_cap_chat_read_ack
+      summary: Acknowledge captain chat messages
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChatReadAckRequest"
+      responses:
+        "204":
+          description: No content.
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/orders/{order_id}/timeline:
+    get:
+      tags:
+        - CaptainOrders
+      operationId: dls_cap_orders_timeline_get
+      summary: Get captain order timeline
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/OrderId"
+      responses:
+        "200":
+          description: Order timeline for partner.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderTimeline"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/availability:
+    post:
+      tags:
+        - CaptainProfile
+      operationId: dls_cap_availability_set
+      summary: تحديث حالة توفر الكابتن.
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CaptainAvailability"
+      responses:
+        "200":
+          description: تم تحديث توفر الكابتن.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaptainAvailability"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/captain/earnings:
+    get:
+      tags:
+        - CaptainProfile
+      operationId: dls_cap_earnings_get
+      summary: استرجاع أرباح الكابتن.
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: بيانات أرباح الكابتن.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CaptainEarnings"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/intake:
+    post:
+      tags:
+        - FieldIntake
+      operationId: dls_partner_intake_start
+      summary: بدء إدخال شريك جديد عبر التطبيق الميداني.
+      x-surface: APP-FIELD
+      x-screen: field.partner.intake
+      x-action: start_intake
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartnerIntakeStart"
+      responses:
+        "201":
+          description: تم إنشاء سجل إدخال الشريك.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerIntake"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/identity:
+    post:
+      tags:
+        - FieldIntake
+      operationId: dls_partner_identity_submit
+      summary: إرسال بيانات الهوية الأساسية للشريك.
+      x-surface: APP-FIELD
+      x-screen: field.partner.identity
+      x-action: submit_identity
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PartnerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PartnerIdentity"
+      responses:
+        "200":
+          description: تم حفظ هوية الشريك.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Partner"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/documents:
+    post:
+      tags:
+        - FieldIntake
+      operationId: dls_partner_doc_upload
+      summary: رفع مستندات الشريك مع فحص أمني.
+      x-surface: APP-FIELD
+      x-screen: field.partner.documents
+      x-action: upload_doc
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PartnerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DocumentUpload"
+      responses:
+        "201":
+          description: تم حفظ المستند.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Document"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/stores:
+    post:
+      tags:
+        - FieldStores
+      operationId: dls_store_create
+      summary: إنشاء متجر جديد للشريك.
+      x-surface: APP-FIELD
+      x-screen: field.partner.store
+      x-action: create_store
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PartnerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreCreate"
+      responses:
+        "201":
+          description: تم إنشاء المتجر.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Store"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/stores/{store_id}:
+    get:
+      tags:
+        - FieldStores
+      operationId: dls_store_get
+      summary: استرجاع تفاصيل المتجر.
+      x-surface: APP-FIELD
+      x-screen: field.partner.store.details
+      x-action: get_store
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/StoreId"
+      responses:
+        "200":
+          description: بيانات المتجر.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Store"
+        default:
+          $ref: "#/components/responses/StandardError"
+    patch:
+      tags:
+        - FieldStores
+      operationId: dls_store_update
+      summary: تحديث بيانات المتجر.
+      x-surface: APP-FIELD
+      x-screen: field.partner.store
+      x-action: update_store
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/StoreId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreUpdate"
+      responses:
+        "200":
+          description: تم تحديث المتجر.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Store"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/stores/{store_id}/zones:
+    put:
+      tags:
+        - FieldStores
+      operationId: dls_store_zones_set
+      summary: تحديد نطاقات التغطية للمتجر.
+      x-surface: APP-FIELD
+      x-screen: field.partner.zones
+      x-action: set_zones
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/StoreId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/StoreZonesSet"
+      responses:
+        "200":
+          description: تم تحديث النطاقات.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StoreZones"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/stores/{store_id}/delivery-modes:
+    put:
+      tags:
+        - FieldStores
+      operationId: dls_store_modes_set
+      summary: ضبط أوضاع التوصيل المعتمدة.
+      x-surface: APP-FIELD
+      x-screen: field.partner.delivery_modes
+      x-action: set_modes
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/StoreId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/DeliveryModesSet"
+      responses:
+        "200":
+          description: تم تحديث أوضاع التوصيل.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryModes"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/stores/{store_id}/commission:
+    put:
+      tags:
+        - FieldConfig
+      operationId: dls_store_commission_set
+      summary: تعيين سياسة العمولة للمتجر.
+      x-surface: APP-FIELD
+      x-screen: field.partner.pricing
+      x-action: set_commission
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/StoreId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CommissionPolicy"
+      responses:
+        "200":
+          description: تم ضبط سياسة العمولة.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommissionPolicy"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/bank:
+    put:
+      tags:
+        - FieldConfig
+      operationId: dls_partner_bank_set
+      summary: تحديث بيانات البنك الخاص بالشريك.
+      x-surface: APP-FIELD
+      x-screen: field.partner.bank
+      x-action: set_bank
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PartnerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BankInfo"
+      responses:
+        "200":
+          description: تم حفظ بيانات البنك.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BankInfo"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/users/invite:
+    post:
+      tags:
+        - FieldConfig
+      operationId: dls_partner_manager_invite
+      summary: دعوة مدير الشريك إلى التطبيق.
+      x-surface: APP-FIELD
+      x-screen: field.partner.users
+      x-action: invite_manager
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PartnerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserInvite"
+      responses:
+        "201":
+          description: تم إرسال الدعوة.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInviteResult"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/submit-review:
+    post:
+      tags:
+        - FieldReview
+      operationId: dls_partner_submit_review
+      summary: تسليم ملف الشريك للمراجعة التشغيلية.
+      x-surface: APP-FIELD
+      x-screen: field.partner.review
+      x-action: submit_for_review
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PartnerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SubmitReview"
+      responses:
+        "201":
+          description: تم إنشاء تذكرة المراجعة.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewTicket"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/approve:
+    post:
+      tags:
+        - FieldReview
+      operationId: dls_partner_approve
+      summary: اعتماد الشريك بعد التحقق.
+      x-surface: APP-FIELD
+      x-screen: field.partner.decision
+      x-action: approve
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PartnerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ApproveRequest"
+      responses:
+        "200":
+          description: تمت الموافقة على الشريك.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Partner"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}/reject:
+    post:
+      tags:
+        - FieldReview
+      operationId: dls_partner_reject
+      summary: رفض ملف الشريك مع توثيق السبب.
+      x-surface: APP-FIELD
+      x-screen: field.partner.decision
+      x-action: reject
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/PartnerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RejectRequest"
+      responses:
+        "200":
+          description: تم رفض الشريك وتسجيل التذكرة.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReviewTicket"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/{partner_id}:
+    get:
+      tags:
+        - FieldReview
+      operationId: dls_partner_get
+      summary: استرجاع بيانات الشريك الحالية.
+      x-surface: APP-FIELD
+      x-screen: field.partner.details
+      x-action: get_partner
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/PartnerId"
+      responses:
+        "200":
+          description: بيانات الشريك.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Partner"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/dls/partners/pending:
+    get:
+      tags:
+        - FieldReview
+      operationId: dls_partner_pending_list
+      summary: قائمة الشركاء قيد المراجعة.
+      x-surface: APP-FIELD
+      x-screen: field.partner.queue
+      x-action: list_pending
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/Cursor"
+        - $ref: "#/components/parameters/Limit"
+      responses:
+        "200":
+          description: قائمة الشركاء المعلقين.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PartnerPendingList"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/wlt/intents:
+    post:
+      tags:
+        - PaymentIntents
+      operationId: wlt_intents_create
+      summary: إنشاء نية دفع جديدة لطلب تابع لخدمة DSH أو خدمة أخرى.
+      x-surface: APP-USER
+      x-screen: app_user.checkout.payment
+      x-action: create_payment_intent
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentIntentCreateRequest"
+      responses:
+        "201":
+          description: تم إنشاء نية الدفع.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/wlt/intents/{intent_id}:
+    get:
+      tags:
+        - PaymentIntents
+      operationId: wlt_intents_get
+      summary: استعلام حالة نية الدفع الحالية.
+      x-surface: APP-USER
+      x-screen: app_user.checkout.payment
+      x-action: poll_payment_intent
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IntentId"
+      responses:
+        "200":
+          description: بيانات نية الدفع الحالية.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/wlt/intents/{intent_id}/confirm:
+    post:
+      tags:
+        - PaymentConfirmations
+      operationId: wlt_intents_confirm
+      summary: تأكيد نية الدفع بعد رد مزود الدفع.
+      x-surface: APP-USER
+      x-screen: app_user.checkout.payment
+      x-action: confirm_payment
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IntentId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentConfirmationRequest"
+      responses:
+        "200":
+          description: تم تأكيد نية الدفع.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/wlt/intents/{intent_id}/capture-adjust:
+    post:
+      tags:
+        - Settlements
+      operationId: wlt_capture_adjust
+      summary: تعديل قيمة الالتقاط بعد تغييرات في الطلب (مثل الاستبدال أو الإرجاع).
+      x-surface: SYSTEM
+      x-screen: system.settlements.capture
+      x-action: dsh_capture_adjust
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: "#/components/parameters/IdempotencyKey"
+        - $ref: "#/components/parameters/IntentId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CaptureAdjustRequest"
+      responses:
+        "200":
+          description: تم تعديل قيمة الالتقاط.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentIntent"
+        default:
+          $ref: "#/components/responses/StandardError"
+  /api/wlt/inbound/refunds:
+    post:
+      tags:
+        - WalletWebhooks
+      operationId: wlt_refunds_inbound
+      summary: Webhook لاستلام أحداث الاسترداد أو الـ chargeback من مزود الدفع.
+      x-surface: SYSTEM
+      x-screen: system.webhooks.refunds
+      x-action: wlt_refund_webhook
+      security:
+        - webhookHmac: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WltRefundWebhook"
+      responses:
+        "204":
+          description: تم قبول الحدث.
+        default:
+          $ref: "#/components/responses/StandardError"
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    webhookHmac:
+      type: apiKey
+      in: header
+      name: X-Signature
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+      description: مفتاح يساعد على ضمان عدم تكرار عمليات الكتابة.
+    OrderId:
+      name: order_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: معرّف الطلب.
+    PartnerId:
+      name: partner_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: معرّف المتجر الشريك.
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Cursor token for pagination.
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+      description: Maximum number of items to return.
+    SlotId:
+      name: slot_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: معرّف الفترة التي يعرّفها الشريك.
+    StoreId:
+      name: store_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: معرّف المتجر الجاري تعديله أو استرجاعه.
+    IntentId:
+      name: intent_id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: معرّف نية الدفع داخل WLT.
+  responses:
+    StandardError:
+      description: RFC7807 error payload.
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Problem"
+  schemas:
+    Problem:
+      type: object
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri
+      required:
+        - title
+        - status
+    Empty:
+      type: object
+      additionalProperties: false
+    QuoteRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Payload used to estimate cost or reserve slot."
+    QuoteResponse:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Quote result containing totals/slot information."
+    OrderCreateRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Data needed to create an order (cart, address, payment reference)."
+    OrderUpdateRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Fields for confirming slot or updating order details."
+    OrderCancelRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Cancellation payload (reason, metadata)."
+    Order:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Order resource representation."
+    OrderList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Order"
+        next_cursor:
+          type: string
+          nullable: true
+      additionalProperties: false
+      description: "[TBD] Paginated list of orders."
+    TrackingInfo:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Tracking data for the order (status, position)."
+    Receipt:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Final receipt with line items and totals."
+    FeedbackRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Feedback payload (rating, comment, target)."
+    ChatSendRequest:
+      type: object
+      additionalProperties: false
+      description: Chat message payload encrypted with AES-GCM and pre-masked content.
+      required:
+        - ciphertext
+        - nonce
+        - masked_preview
+        - ttl_seconds
+      properties:
+        ciphertext:
+          type: string
+          minLength: 16
+          maxLength: 4096
+          description: Base64-encoded ciphertext of the chat body after masking sensitive tokens.
+        nonce:
+          type: string
+          pattern: ^[A-Za-z0-9+/=]{22,24}$
+          description: Base64-encoded 96-bit nonce used for AES-GCM.
+        masked_preview:
+          type: string
+          maxLength: 280
+          description: Masked preview shown in notifications (MSISDN/PII already redacted).
+        attachments:
+          type: array
+          maxItems: 5
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - type
+              - url
+              - masked_metadata
+            properties:
+              type:
+                type: string
+                enum:
+                  - IMAGE
+                  - DOCUMENT
+                  - AUDIO
+              url:
+                type: string
+                format: uri
+              masked_metadata:
+                type: object
+                additionalProperties: false
+                properties:
+                  filename:
+                    type: string
+                    maxLength: 128
+                  content_type:
+                    type: string
+                    maxLength: 64
+                  size_bytes:
+                    type: integer
+                    minimum: 1
+                    maximum: 5242880
+                required:
+                  - content_type
+                  - size_bytes
+        ttl_seconds:
+          type: integer
+          minimum: 60
+          maximum: 15552000
+          description: Retention window in seconds (maximum 180 days) enforced by G-CHAT-RETENTION.
+        redaction_policy:
+          type: string
+          enum:
+            - MASK_MSISDN
+            - MASK_EMAIL
+            - MASK_LOCATION
+          default: MASK_MSISDN
+        metadata:
+          type: object
+          additionalProperties: false
+          properties:
+            locale:
+              type: string
+              pattern: ^[a-z]{2,3}(-[A-Z]{2})?$
+            reply_to_message_id:
+              type: string
+              format: uuid
+            client_message_id:
+              type: string
+              maxLength: 64
+    ChatMessage:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Chat message resource."
+    ChatList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/ChatMessage"
+        next_cursor:
+          type: string
+          nullable: true
+      additionalProperties: false
+      description: "[TBD] Paginated chat transcript."
+    ChatReadAckRequest:
+      type: object
+      additionalProperties: false
+      description: Read acknowledgement payload carrying the last seen message id.
+      required:
+        - last_message_id
+        - acknowledged_at
+      properties:
+        last_message_id:
+          type: string
+          format: uuid
+        acknowledged_at:
+          type: string
+          format: date-time
+    PodVerifyRequest:
+      type: object
+      additionalProperties: false
+      description: Proof of delivery submission with mandatory masking confirmations.
+      required:
+        - code
+        - proof_media
+        - masking_applied
+        - verified_by
+        - verified_at
+      properties:
+        code:
+          type: string
+          pattern: ^\d{6}$
+          description: Six-digit PoD verification code shared with the recipient.
+        proof_media:
+          type: array
+          minItems: 1
+          maxItems: 5
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - url
+              - masking_applied
+            properties:
+              url:
+                type: string
+                format: uri
+              masking_applied:
+                type: boolean
+                enum:
+                  - true
+              dominant_subject:
+                type: string
+                enum:
+                  - RECIPIENT
+                  - PARCEL
+                  - LOCATION
+        masking_applied:
+          type: boolean
+          enum:
+            - true
+          description: Must be true to satisfy G-DSH-MASK-FACES/NUMBERS.
+        redacted_msisdn:
+          type: string
+          pattern: ^\+\d{2,3}\*{4}\d{2}$
+          description: Masked MSISDN associated with the PoD recipient.
+        verified_by:
+          type: string
+          format: uuid
+        verified_at:
+          type: string
+          format: date-time
+    PickupCloseRequest:
+      type: object
+      additionalProperties: false
+      description: Self-pickup closure payload enforcing a six-digit verification code.
+      required:
+        - code
+        - closed_by
+        - closed_at
+      properties:
+        code:
+          type: string
+          pattern: ^\d{6}$
+          description: Six-digit pickup confirmation code (G-DSH-POD-CODE=6).
+        closed_by:
+          type: string
+          format: uuid
+        closed_at:
+          type: string
+          format: date-time
+        channel:
+          type: string
+          enum:
+            - APP_USER
+            - APP_PARTNER
+            - SUPPORT
+    OrderTimeline:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Chronological events for the order."
+    Eta:
+      type: object
+      additionalProperties: true
+      description: "[TBD] ETA data points."
+    CancelReasonList:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Available cancel reasons."
+    ReorderRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Reorder payload referencing previous order items."
+    AcceptOrderRequest:
+      type: object
+      additionalProperties: false
+      description: Payload for partner to accept an order with SLA guarantees.
+      required:
+        - accepted_by
+        - acceptance_channel
+        - ready_eta_minutes
+      properties:
+        accepted_by:
+          type: string
+          format: uuid
+        acceptance_channel:
+          type: string
+          enum:
+            - APP
+            - CALL_CENTER
+            - INTEGRATION
+        ready_eta_minutes:
+          type: integer
+          minimum: 1
+          maximum: 60
+        stacking_count:
+          type: integer
+          minimum: 0
+          maximum: 2
+          description: Current concurrent order count; must respect G-DSH-STACKING-MAX=2.
+        notes:
+          type: string
+          maxLength: 2000
+          nullable: true
+    RejectOrderRequest:
+      type: object
+      additionalProperties: false
+      description: Payload for rejecting an order using standardised reason codes.
+      required:
+        - rejected_by
+        - reason_code
+      properties:
+        rejected_by:
+          type: string
+          format: uuid
+        reason_code:
+          type: string
+          pattern: ^[A-Z0-9_]{3,32}$
+        notes:
+          type: string
+          maxLength: 2000
+          nullable: true
+    MarkReadyRequest:
+      type: object
+      additionalProperties: false
+      description: Payload for marking an order ready for pickup or delivery.
+      required:
+        - ready_by
+        - ready_at
+        - fulfillment_mode
+      properties:
+        ready_by:
+          type: string
+          format: uuid
+        ready_at:
+          type: string
+          format: date-time
+        fulfillment_mode:
+          type: string
+          enum:
+            - PICKUP
+            - DELIVERY
+            - HANDOFF
+        temperature_zone:
+          type: string
+          enum:
+            - AMBIENT
+            - CHILLED
+            - FROZEN
+          nullable: true
+    HandoffRequest:
+      type: object
+      additionalProperties: false
+      description: Payload confirming handoff to captain including PoD token.
+      required:
+        - handoff_by
+        - captain_id
+        - handoff_at
+        - pod_token
+      properties:
+        handoff_by:
+          type: string
+          format: uuid
+        captain_id:
+          type: string
+          format: uuid
+        handoff_at:
+          type: string
+          format: date-time
+        pod_token:
+          type: string
+          pattern: ^[A-Z0-9]{8}$
+        notes:
+          type: string
+          maxLength: 2000
+          nullable: true
+    SlotList:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Dark-Store slot catalogue."
+    SlotUpsertRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Payload for creating/updating a partner-defined slot."
+    Slot:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Slot resource returned after upsert operations."
+    PartnerPolicies:
+      type: object
+      additionalProperties: false
+      description: Partner activation policies enforced for delivery readiness.
+      required:
+        - hold_on_dispute
+        - pricing_timeout_ms
+        - stacking_max
+        - cancel_free_minutes
+      properties:
+        hold_on_dispute:
+          type: boolean
+          enum:
+            - true
+          description: Must remain true to satisfy G-DSH-HOLD_ON_DISPUTE.
+        pricing_timeout_ms:
+          type: integer
+          minimum: 1000
+          maximum: 120000
+          description: SLA for pricing calculations (G-DSH-PRICING-TIMEOUT-MS).
+        stacking_max:
+          type: integer
+          minimum: 0
+          maximum: 2
+        cancel_free_minutes:
+          type: integer
+          minimum: 3
+          maximum: 3
+          description: Free cancellation window fixed at 3 minutes (G-DSH-CANCEL-FREE=3m).
+        sensitive_mode_enabled:
+          type: boolean
+          default: false
+        default_timezone:
+          type: string
+          enum:
+            - Asia/Aden
+    PartnerPoliciesUpdate:
+      type: object
+      additionalProperties: false
+      description: Partial update payload for partner activation policies.
+      properties:
+        hold_on_dispute:
+          type: boolean
+          enum:
+            - true
+        pricing_timeout_ms:
+          type: integer
+          minimum: 1000
+          maximum: 120000
+        stacking_max:
+          type: integer
+          minimum: 0
+          maximum: 2
+        cancel_free_minutes:
+          type: integer
+          minimum: 3
+          maximum: 3
+        sensitive_mode_enabled:
+          type: boolean
+        default_timezone:
+          type: string
+          enum:
+            - Asia/Aden
+    PartnerZones:
+      type: object
+      additionalProperties: false
+      description: Partner coverage zones definition.
+      required:
+        - zones
+      properties:
+        zones:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - zone_id
+              - name
+              - coverage_type
+            properties:
+              zone_id:
+                type: string
+                pattern: ^[A-Z0-9_]{3,32}$
+              name:
+                type: string
+                maxLength: 128
+              coverage_type:
+                type: string
+                enum:
+                  - CITY
+                  - DISTRICT
+                  - CUSTOM_POLYGON
+              polygon:
+                type: array
+                nullable: true
+                items:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  items:
+                    type: number
+                  description: "[longitude, latitude]"
+              active:
+                type: boolean
+                default: true
+    PartnerZonesUpdate:
+      type: object
+      additionalProperties: false
+      description: Payload to update coverage zones (geo polygons/regions).
+      properties:
+        zones:
+          type: array
+          minItems: 1
+          maxItems: 50
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - zone_id
+            properties:
+              zone_id:
+                type: string
+                pattern: ^[A-Z0-9_]{3,32}$
+              name:
+                type: string
+                maxLength: 128
+              coverage_type:
+                type: string
+                enum:
+                  - CITY
+                  - DISTRICT
+                  - CUSTOM_POLYGON
+              polygon:
+                type: array
+                nullable: true
+                items:
+                  type: array
+                  minItems: 2
+                  maxItems: 2
+                  items:
+                    type: number
+              active:
+                type: boolean
+    NoteCreateRequest:
+      type: object
+      additionalProperties: false
+      description: Encrypted note payload with enforced retention.
+      required:
+        - ciphertext
+        - nonce
+        - ttl_days
+      properties:
+        ciphertext:
+          type: string
+          minLength: 16
+          maxLength: 4096
+        nonce:
+          type: string
+          pattern: ^[A-Za-z0-9+/=]{22,24}$
+        ttl_days:
+          type: integer
+          minimum: 1
+          maximum: 180
+        masked_preview:
+          type: string
+          maxLength: 200
+          nullable: true
+    Note:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Encrypted note resource."
+    NoteList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Note"
+        next_cursor:
+          type: string
+          nullable: true
+      additionalProperties: false
+      description: Paginated list of encrypted notes.
+    PartnerNotifyRequest:
+      type: object
+      additionalProperties: false
+      description: Notification payload to partner channels.
+      required:
+        - channel
+        - payload
+      properties:
+        channel:
+          type: string
+          enum:
+            - WHATSAPP
+            - SMS
+            - EMAIL
+        payload:
+          type: object
+          additionalProperties: false
+          properties:
+            template_id:
+              type: string
+              maxLength: 64
+            variables:
+              type: object
+              additionalProperties:
+                type: string
+          required:
+            - template_id
+    InventoryAdjustRequest:
+      type: object
+      additionalProperties: false
+      description: Inventory adjustment payload for partner SKUs.
+      required:
+        - adjustments
+        - adjusted_by
+      properties:
+        adjustments:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - sku
+              - delta
+            properties:
+              sku:
+                type: string
+                maxLength: 64
+              delta:
+                type: integer
+                minimum: -10000
+                maximum: 10000
+              reason_code:
+                type: string
+                pattern: ^[A-Z0-9_]{3,32}$
+        adjusted_by:
+          type: string
+          format: uuid
+        idempotency_key:
+          type: string
+          maxLength: 64
+    InventoryAdjustResponse:
+      type: object
+      additionalProperties: false
+      description: Result of inventory adjustment (delta, status).
+      required:
+        - adjustments
+        - processed_at
+      properties:
+        adjustments:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - sku
+              - delta_applied
+            properties:
+              sku:
+                type: string
+              delta_applied:
+                type: integer
+              status:
+                type: string
+                enum:
+                  - APPLIED
+                  - REJECTED
+              message:
+                type: string
+                nullable: true
+        processed_at:
+          type: string
+          format: date-time
+    ReceiptIssueRequest:
+      type: object
+      additionalProperties: false
+      description: Payload for issuing final receipt to customer.
+      required:
+        - issued_by
+        - issued_at
+        - order_total
+        - line_items
+      properties:
+        issued_by:
+          type: string
+          format: uuid
+        issued_at:
+          type: string
+          format: date-time
+        order_total:
+          type: object
+          additionalProperties: false
+          required:
+            - amount
+            - currency
+          properties:
+            amount:
+              type: integer
+              minimum: 0
+            currency:
+              type: string
+              enum:
+                - YER
+        line_items:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            additionalProperties: false
+            required:
+              - sku
+              - name
+              - quantity
+              - unit_price
+            properties:
+              sku:
+                type: string
+                maxLength: 64
+              name:
+                type: string
+                maxLength: 256
+              quantity:
+                type: integer
+                minimum: 1
+                maximum: 100
+              unit_price:
+                type: integer
+                minimum: 0
+              notes:
+                type: string
+                maxLength: 2000
+                nullable: true
+    InboundMessageWebhook:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Inbound provider message payload signed with HMAC."
+    PartnerStatusWebhook:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Status webhook payload coming from partner middleware."
+    CaptainEarnings:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Earnings data for the captain."
+    CaptainInboundMessageWebhook:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Inbound message payload for the captain."
+    PartnerIntakeStart:
+      type: object
+      additionalProperties: true
+      description: "[TBD] البيانات الأولية لبدء إدخال الشريك (القناة، الملاحظات)."
+    PartnerIntake:
+      type: object
+      additionalProperties: true
+      description: "[TBD] سجل إدخال الشريك بما في ذلك معرف الحالة."
+    PartnerIdentity:
+      type: object
+      additionalProperties: true
+      description: "[TBD] بيانات الهوية (اسم قانوني، CRN، ضريبة، مالك)."
+    Partner:
+      type: object
+      additionalProperties: true
+      description: "[TBD] تمثيل الشريك بعد الإدخال (الحالة، المتاجر المرتبطة)."
+    DocumentUpload:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Payload لرفع مستند KYC مع بيانات التعريف."
+    Document:
+      type: object
+      additionalProperties: true
+      description: "[TBD] نتيجة رفع المستند (حالة المسح، الموقع)."
+    StoreCreate:
+      type: object
+      additionalProperties: true
+      description: "[TBD] بيانات إنشاء متجر (الاسم، الفئة، الموقع)."
+    StoreUpdate:
+      type: object
+      additionalProperties: true
+      description: "[TBD] حقول تحديث المتجر (ساعات العمل، التواصل)."
+    Store:
+      type: object
+      additionalProperties: true
+      description: "[TBD] تمثيل المتجر الحالي مع حالة الموافقة."
+    StoreZonesSet:
+      type: object
+      additionalProperties: true
+      description: "[TBD] إعداد مناطق التغطية (GeoJSON أو قوائم أحياء)."
+    StoreZones:
+      type: object
+      additionalProperties: true
+      description: "[TBD] المناطق الحالية المعتمدة للتسليم."
+    DeliveryModesSet:
+      type: object
+      additionalProperties: true
+      description: "[TBD] اختيار أوضاع التوصيل (منصة، شريك، استلام ذاتي)."
+    DeliveryModes:
+      type: object
+      additionalProperties: true
+      description: "[TBD] أوضاع التوصيل النشطة وحالة كل منها."
+    CommissionPolicy:
+      type: object
+      additionalProperties: true
+      description: "[TBD] سياسة العمولة (نسبة، ثابت، حدود)."
+    BankInfo:
+      type: object
+      additionalProperties: true
+      description: "[TBD] بيانات البنك للشريك مع معلومات الخطوة الإضافية."
+    UserInvite:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Payload لدعوة مدير الشريك (الاسم، البريد/الهاتف)."
+    UserInviteResult:
+      type: object
+      additionalProperties: true
+      description: "[TBD] نتيجة الدعوة (link، expiry، الحالة)."
+    SubmitReview:
+      type: object
+      additionalProperties: true
+      description: "[TBD] ملخص ما يتم تسليمه للمراجعة التشغيلية."
+    ReviewTicket:
+      type: object
+      additionalProperties: true
+      description: "[TBD] تذكرة المراجعة بين Field وOps (معرّف، الحالة)."
+    PartnerPendingList:
+      type: object
+      additionalProperties: true
+      description: "[TBD] قائمة الشركاء قيد المراجعة مع عناصر pagination."
+    ApproveRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] بيانات الموافقة (ملاحظات، التحقق المزدوج)."
+    RejectRequest:
+      type: object
+      additionalProperties: true
+      description: "[TBD] سبب رفض الشريك وخيارات المتابعة."
+    CaptainAvailability:
+      type: object
+      additionalProperties: true
+      description: "[TBD] Captain availability status."
+    PaymentIntentCreateRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - amount
+        - currency
+        - order_reference
+      properties:
+        amount:
+          type: integer
+          minimum: 1
+          description: قيمة الطلب بالعملة الأساسية (YER افتراضيًا).
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          description: رمز العملة على ISO-4217 (YER افتراضيًا).
+        order_reference:
+          type: string
+          maxLength: 64
+          description: معرّف الطلب في الخدمة المستهلكة (مثل DSH).
+        customer_id:
+          type: string
+          maxLength: 64
+          description: معرّف المستخدم داخل النظام.
+        metadata:
+          type: object
+          additionalProperties: true
+          description: حقول إضافية للتكامل (بريد، قناة، سياق).
+    PaymentIntent:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - status
+        - amount
+        - currency
+        - order_reference
+        - created_at
+      properties:
+        id:
+          type: string
+          maxLength: 64
+        status:
+          type: string
+          enum:
+            - requires_payment_method
+            - requires_action
+            - processing
+            - succeeded
+            - failed
+            - canceled
+        amount:
+          type: integer
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+        order_reference:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties: true
+    PaymentConfirmationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - provider_payload
+      properties:
+        provider_payload:
+          type: object
+          additionalProperties: true
+          description: الرد الأصلي من مزود PSP بعد تنفيذ الدفع.
+        reconciliation_reference:
+          type: string
+          description: رقم المرجع للمصالحة المالية إذا توفر.
+    CaptureAdjustRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - delta_amount
+        - reason_code
+      properties:
+        delta_amount:
+          type: integer
+          description: الفرق الذي سيتم تطبيقه على الالتقاط (يمكن أن يكون سالبًا).
+        reason_code:
+          type: string
+          enum:
+            - substitution
+            - partial_out_of_stock
+            - customer_return
+            - manual_adjustment
+        notes:
+          type: string
+          maxLength: 256
+          description: تعليق اختياري من النظام المستهلك (مثل DSH).
+    WltRefundWebhook:
+      type: object
+      additionalProperties: false
+      required:
+        - event
+        - signature
+        - issued_at
+        - data
+      properties:
+        event:
+          type: string
+          enum:
+            - refund.succeeded
+            - refund.failed
+            - chargeback.opened
+            - chargeback.closed
+        signature:
+          type: string
+          description: التوقيع الرقمي المولّد عبر المفتاح السري المشترك.
+        issued_at:
+          type: string
+          format: date-time
+        data:
+          type: object
+          additionalProperties: true
+          description: الحمولة التفصيلية للحدث (مبلغ، intent_id، تفاصيل PSP).
+x-generated-at: 2025-11-13T18:03:15.876Z
