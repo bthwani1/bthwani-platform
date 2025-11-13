@@ -1,13 +1,3 @@
-﻿extends: ["spectral:oas"]
+﻿extends: []
 formats: ["oas3"]
-rules:
-  # نعطّل قواعد تُسقط المواصفات البِذريّة الفارغة
-  oas3-api-servers: off
-  oas3-schema: off
-  oas3-unused-components-schema: off
-  operation-tags: off
-  operation-operationId-unique: off
-  paths-kebab-case: off
-  # إبقاء التحسينات كتحذيرات فقط
-  info-contact: warn
-  info-license: warn
+rules: {}
