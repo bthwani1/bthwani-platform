@@ -2,7 +2,10 @@
 info:
   title: "BThwani — Wallet (WLT) API"
   version: "0.0.0-seed"
+servers:
+  - url: https://api.bthwani.com/wlt
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+

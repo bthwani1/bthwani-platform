@@ -2,7 +2,10 @@
 info:
   title: "BThwani — Delivery & Shopping (DSH) API"
   version: "0.0.0-seed"
+servers:
+  - url: https://api.bthwani.com/dsh
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+

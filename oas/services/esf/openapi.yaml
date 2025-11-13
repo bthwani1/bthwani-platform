@@ -2,7 +2,10 @@
 info:
   title: "BThwani — Blood Donation (ESF) API"
   version: "0.0.0-seed"
+servers:
+  - url: https://api.bthwani.com/esf
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+

@@ -2,7 +2,10 @@
 info:
   title: "BThwani — Help (SND) API"
   version: "0.0.0-seed"
+servers:
+  - url: https://api.bthwani.com/snd
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+

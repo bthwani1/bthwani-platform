@@ -2,7 +2,10 @@
 info:
   title: "BThwani — Marketplace (KNZ) API"
   version: "0.0.0-seed"
+servers:
+  - url: https://api.bthwani.com/knz
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+

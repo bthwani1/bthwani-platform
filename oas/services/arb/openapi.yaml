@@ -2,7 +2,10 @@
 info:
   title: "BThwani — Escrow/Booking (ARB) API"
   version: "0.0.0-seed"
+servers:
+  - url: https://api.bthwani.com/arb
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+

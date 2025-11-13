@@ -2,7 +2,10 @@
 info:
   title: "BThwani — Lost & Found (MRF) API"
   version: "0.0.0-seed"
+servers:
+  - url: https://api.bthwani.com/mrf
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+

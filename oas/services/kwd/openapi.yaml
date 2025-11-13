@@ -2,7 +2,10 @@
 info:
   title: "BThwani — Jobs (KWD) API"
   version: "0.0.0-seed"
+servers:
+  - url: https://api.bthwani.com/kwd
 paths: {}
 components:
   schemas: {}
   securitySchemes: {}
+
