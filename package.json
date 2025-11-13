@@ -1,0 +1,28 @@
+{
+  "name": "bthwani-platform",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "contracts": "spectral lint oas/**/*.yaml"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bthwani1/bthwani-platform.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/bthwani1/bthwani-platform/issues"
+  },
+  "homepage": "https://github.com/bthwani1/bthwani-platform#readme",
+  "devDependencies": {
+    "@stoplight/spectral-cli": "^6.15.0"
+  }
+}
