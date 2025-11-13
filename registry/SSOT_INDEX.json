@@ -1,21 +1,70 @@
 ﻿{
+  "version": "0.0.1-seed",
+  "updated_at": "[TBD]",
   "services": [
-    {"code":"DSH","version":"2.2","state":"DRAFT"},
-    {"code":"KNZ","version":"1.1","state":"DRAFT"},
-    {"code":"AMN","version":"1.0","state":"DRAFT"},
-    {"code":"KWD","version":"1.0","state":"DRAFT"},
-    {"code":"SND","version":"1.0","state":"DRAFT"},
-    {"code":"MRF","version":"2.0","state":"DRAFT"},
-    {"code":"ESF","version":"1.2","state":"DRAFT"},
-    {"code":"ARB","version":"2.0","state":"DRAFT"},
-    {"code":"WLT","version":"1.0","state":"DRAFT"}
+    { "code": "DSH", "name": "Delivery & Shopping", "status": "DRAFT", "owner": "[TBD]" },
+    { "code": "WLT", "name": "Wallet / Ledger", "status": "DRAFT", "owner": "[TBD]" },
+    { "code": "ARB", "name": "Escrow & Bookings", "status": "DRAFT", "owner": "[TBD]" },
+    { "code": "ESF", "name": "Blood Donation", "status": "DRAFT", "owner": "[TBD]" },
+    { "code": "MRF", "name": "Lost & Found", "status": "DRAFT", "owner": "[TBD]" },
+    { "code": "KNZ", "name": "Marketplace", "status": "DRAFT", "owner": "[TBD]" },
+    { "code": "AMN", "name": "Safe Taxi", "status": "DRAFT", "owner": "[TBD]" },
+    { "code": "SND", "name": "On-demand Services", "status": "DRAFT", "owner": "[TBD]" },
+    { "code": "KWD", "name": "Jobs Platform", "status": "DRAFT", "owner": "[TBD]" }
   ],
-  "apps": [
-    {"code":"APP-USER","version":"2.0.0","state":"DRAFT"},
-    {"code":"APP-PARTNER","version":"2.0.0","state":"DRAFT"},
-    {"code":"APP-CAPTAIN","version":"2.0.0","state":"DRAFT"},
-    {"code":"APP-FIELD","version":"2.0.0","state":"DRAFT"}
+  "applications": [
+    { "code": "APP-USER", "status": "DRAFT", "primary_services": ["DSH", "KNZ", "AMN", "KWD", "SND", "MRF", "ESF", "ARB", "WLT"] },
+    { "code": "APP-PARTNER", "status": "DRAFT", "primary_services": ["DSH", "ARB", "WLT"] },
+    { "code": "APP-CAPTAIN", "status": "DRAFT", "primary_services": ["DSH", "AMN", "WLT"] },
+    { "code": "APP-FIELD", "status": "DRAFT", "primary_services": ["DSH", "ARB"] }
   ],
-  "dashboards": ["Admin","Ops","Finance","Support","Marketing","Fleet","Partner","BI","SSOT","Security"],
-  "notes":"Initial seed — Wave 0"
+  "dashboards": [
+    { "code": "admin", "status": "DRAFT", "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"] },
+    { "code": "ops", "status": "DRAFT", "services": ["DSH", "AMN", "SND"] },
+    { "code": "finance", "status": "DRAFT", "services": ["WLT", "DSH", "ARB"] },
+    { "code": "support", "status": "DRAFT", "services": ["DSH", "AMN", "ARB", "ESF", "MRF"] },
+    { "code": "marketing", "status": "DRAFT", "services": ["KNZ", "DSH"] },
+    { "code": "fleet", "status": "DRAFT", "services": ["AMN", "DSH"] },
+    { "code": "partner", "status": "DRAFT", "services": ["DSH", "ARB"] },
+    { "code": "bi", "status": "DRAFT", "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"] },
+    { "code": "ssot", "status": "DRAFT", "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"] },
+    { "code": "security", "status": "DRAFT", "services": ["WLT", "ESF", "MRF", "ARB"] }
+  ],
+  "version_matrix": {
+    "services": [
+      { "code": "DSH", "version": "2.2", "state": "DRAFT" },
+      { "code": "KNZ", "version": "1.1", "state": "DRAFT" },
+      { "code": "AMN", "version": "1.0", "state": "DRAFT" },
+      { "code": "KWD", "version": "1.0", "state": "DRAFT" },
+      { "code": "SND", "version": "1.0", "state": "DRAFT" },
+      { "code": "MRF", "version": "2.0", "state": "DRAFT" },
+      { "code": "ESF", "version": "1.2", "state": "DRAFT" },
+      { "code": "ARB", "version": "2.0", "state": "DRAFT" },
+      { "code": "WLT", "version": "1.0", "state": "DRAFT" }
+    ],
+    "applications": [
+      { "code": "APP-USER", "version": "2.0.0", "state": "DRAFT" },
+      { "code": "APP-PARTNER", "version": "2.0.0", "state": "DRAFT" },
+      { "code": "APP-CAPTAIN", "version": "2.0.0", "state": "DRAFT" },
+      { "code": "APP-FIELD", "version": "2.0.0", "state": "DRAFT" }
+    ],
+    "dashboards": [
+      { "code": "admin", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "ops", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "finance", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "support", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "marketing", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "fleet", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "partner", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "bi", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "ssot", "version": "0.1.0", "state": "DRAFT" },
+      { "code": "security", "version": "0.1.0", "state": "DRAFT" }
+    ],
+    "notes": "Initial seed — Wave 0"
+  },
+  "notes": [
+    "يتم تحديث هذا الملف مع كل Wave جديدة.",
+    "تُستبدل قيم `[TBD]` فور اعتماد المالك أو SSoT الخارجي.",
+    "يتم استخدام هذا الملف كمصدر رئيسي للحالة داخل أدوات الحُرّاس."
+  ]
 }

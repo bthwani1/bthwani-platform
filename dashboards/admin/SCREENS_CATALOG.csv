@@ -1,0 +1,5 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+DASH_ADMIN_OVERVIEW,نظرة عامة,GLOBAL,[TBD],admin,DRAFT,"لوحة المؤشرات العامة"
+DASH_ADMIN_DECISIONS,إدارة القرارات,GLOBAL,[TBD],admin,DRAFT,"ربط SSoT والقرارات"
+DASH_ADMIN_SERVICES,مصفوفة الخدمات,GLOBAL,[TBD],admin,DRAFT,"عرض حالات الخدمات حسب SSOT_INDEX"
+

@@ -1,0 +1,15 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+PARTNER_ORDERS_LIST,قائمة الطلبات,DSH,"/api/dls/partner/orders",partner,DRAFT,"قائمة بالطلبات مع cursor/limit"
+PARTNER_ORDER_DETAILS,تفاصيل الطلب,DSH,"/api/dls/partner/orders/{order_id}",partner,DRAFT,"عرض تفاصيل الطلب"
+PARTNER_ORDER_ACTIONS,إجراءات الطلب,DSH,"/api/dls/partner/orders/{order_id}/accept",partner,DRAFT,"قبول/رفض/جاهزية/تسليم الطلب"
+PARTNER_CHAT,دردشة الطلب,DSH,"/api/dls/partner/orders/{order_id}/chat/messages",partner,DRAFT,"إرسال واستعراض الرسائل"
+PARTNER_CHAT_READ_ACK,تأكيد قراءة الدردشة,DSH,"/api/dls/partner/orders/{order_id}/chat/read-ack",partner,DRAFT,"تأشير الرسائل كمقروءة"
+PARTNER_ORDER_NOTES,ملاحظات الطلب,DSH,"/api/dls/partner/orders/{order_id}/notes",partner,DRAFT,"إنشاء واستعراض الملاحظات"
+PARTNER_ORDER_TIMELINE,الخط الزمني للطلب,DSH,"/api/dls/partner/orders/{order_id}/timeline",partner,DRAFT,"عرض الأحداث للتدقيق"
+PARTNER_PICKUP_CLOSE,إقفال الاستلام الذاتي,DSH,"/api/dls/partner/orders/{order_id}/pickup/close",partner,DRAFT,"إقفال الطلب باستخدام رمز"
+PARTNER_POLICIES,أوضاع التوصيل,DSH,"/api/dls/partners/me/policies",partner,DRAFT,"عرض/تحديث سياسات التوصيل"
+PARTNER_ZONES,نطاقات التغطية,DSH,"/api/dls/partners/me/zones",partner,DRAFT,"عرض/تحديث مناطق التغطية"
+PARTNER_SLOTS,فترات الاستلام/التوصيل,DSH,"/api/dls/partners/me/slots",partner,DRAFT,"إدارة الفترات"
+PARTNER_INVENTORY_ADJUST,تعديل المخزون,DSH,"/api/dls/partners/me/inventory/adjust",partner,DRAFT,"ضبط المخزون لعناصر محددة"
+PARTNER_RECEIPT_ISSUE,إصدار الفاتورة النهائية,DSH,"/api/dls/partner/orders/{order_id}/receipt/issue",partner,DRAFT,"إصدار إيصال نهائي"
+

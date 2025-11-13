@@ -1,58 +1,9 @@
-
-# BThwani — AI Development Guide (v1.1)
-
-> هذا الدليل يحدد طريقة تطوير منصة بثواني داخل الريبو (وخاصة عبر Cursor Pro) بشكل منظم، دقيق، وآمن، مع احترام الـ SSoT والحُرّاس.  
-> الـ SSoT الخارجي (وثائق الحوكمة والقرارات الرسمية) هو المصدر الأعلى، وهذا الدليل + ملفات SSoT في الريبو هما نسخة ملفّية منه.  
-> أي AI أو أداة تطوير تعتبر مساعدًا؛ وليست مصدر الحقيقة الوحيد.
-
 ---
+alwaysApply: false
+---
+## 1) الهدف والنطاق
 
-## 1) الهوية والنطاق
-
-### 1.1 ما هي بثواني؟
-
-منصة خدمات متعدّدة (Multi-Service Platform) موجهة للسوق اليمني، تشمل:
-
-#### أ) الخدمات (Services) — Service Codes
-
-> يجب استخدام المسميات والـ Codes التالية كما هي:
-
-- **DSH** — Delivery & Shopping (التسوّق والتوصيل)
-- **KNZ** — Marketplace (كنز / سوق المنتجات)
-- **AMN** — Safe Taxi (أمَنّي للنقل الآمن)
-- **KWD** — Jobs (كوادر — منصة وظائف وفرص عمل)
-- **SND** — سند (مساعدة فورية وخدمات متخصصة)
-- **MRF** — معروف (Lost & Found / مفقودات)
-- **ESF** — اسعِفني (Blood Donation P2P)
-- **ARB** — عربون (Escrow / Booking للعروض والحجوزات)
-- **WLT** — Wallet (محفظة / دفتر ذمم داخلي)
-
-#### ب) التطبيقات (Apps)
-
-- **APP-USER** — تطبيق المستخدم النهائي.
-- **APP-PARTNER** — تطبيق الشريك (المتجر / مزود الخدمة).
-- **APP-CAPTAIN** — تطبيق الكابتن / السائق.
-- **APP-FIELD** — Field App (التطبيق الميداني للفريق/المسوقين).
-
-#### ج) لوحات التحكم (Dashboards)
-
-اللوحات الأساسية المعتمدة:
-
-- Admin, Ops, Finance, Support, Marketing, Fleet, Partner, BI, SSOT, Security
-
-أي لوحة جديدة أو تقسيم جديد يجب أن يُسجَّل أولًا في SSoT قبل التنفيذ.
-
-#### د) واجهات الويب (Web Surfaces)
-
-- `bthwani.com`  
-  - موقع تعريفي / Landing / Info.
-- `app.bthwani.com`  
-  - Web-App للمستخدم (مكافئ APP-USER، بدون فهرسة SEO).
-- `admin.bthwani.com`, `ops.bthwani.com`, `fin.bthwani.com`, `crm.bthwani.com` …  
-  - لوحات داخلية بحسب الدور (Admin/Ops/Finance/Support/…).
-- `partner.bthwani.com`  
-  - **Partner Web Portal** للشريك، تعكس قدرات APP-PARTNER (إدارة الطلبات، الكatalog، الأسعار، التقارير…).  
-  - يمكن إطلاقها على مراحل، لكنها سطح رسمي ضمن المنصة.
+يحدّد هذا المستند قواعد استخدام Vue داخل بثواني، ويربط القرارات التنفيذية بمصادر الحقيقة المعتمدة. يجب الرجوع إليه قبل إنشاء أو تعديل أي مكوّنات Vue لضمان الالتزام بالحوكمة والـ SSoT.
 
 ---
 
@@ -66,8 +17,8 @@
 
 2. **ملفات الـ SSoT داخل الريبو**  
    - `registry/SSOT_INDEX.json`
-   - `docs/SERVICES_OVERVIEW.md`
-   - `docs/DASHBOARDS_OVERVIEW.md`
+   - `docs/SERVICES_OVERVIEW.mdc`
+   - `docs/DASHBOARDS_OVERVIEW.mdc`
    - أي ملفات قرارات/`DECISIONS` خاصة بالخدمات أو اللوحات.
 
 3. **OpenAPI لكل خدمة (Per-service OAS)**  

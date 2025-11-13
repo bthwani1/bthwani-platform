@@ -1,0 +1,5 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+DASH_MARKETING_CAMPAIGNS,الحملات,KNZ,/api/knz/campaigns,marketing,DRAFT,"إدارة العروض الترويجية"
+DASH_MARKETING_DSHPARTNERS,شركاء DSH,DSH,/api/dls/partners,marketing,DRAFT,"مراقبة أداء المتاجر"
+DASH_MARKETING_ANALYTICS,مؤشرات التسويق,GLOBAL,[TBD],marketing,DRAFT,"يرتبط بـ BI"
+

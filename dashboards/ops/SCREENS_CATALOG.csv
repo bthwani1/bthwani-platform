@@ -1,0 +1,5 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+DASH_OPS_DSH_LIVE_ORDERS,طلبات DSH المباشرة,DSH,/api/dls/orders,ops,DRAFT,"مراقبة الطلبات النشطة"
+DASH_OPS_AMN_RIDES,رحلات AMN,AMN,/api/amn/rides,ops,DRAFT,"حالة الرحلات والتسعير"
+DASH_OPS_SND_REQUESTS,طلبات سند,SND,/api/snd/requests,ops,DRAFT,"متابعة الطلبات المتخصصة"
+

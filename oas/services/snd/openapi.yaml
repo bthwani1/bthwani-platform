@@ -1,15 +1,11 @@
 openapi: 3.0.3
 info:
-  description: PLACEHOLDER_SERVICE_DESCRIPTION
+  title: "BThwani — Help (SND) API"
+  description: Core endpoints for the on-demand help service (SND).
   contact:
     name: BThwani Support
-    email: PLACEHOLDER_CONTACT_EMAIL  title: "BThwani — Help (SND) API"
+    email: support@bthwani.com
   version: "0.0.0-seed"
-paths: {}
-components:
-  schemas: {}
-  securitySchemes: {}
-
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev
@@ -17,3 +13,7 @@ servers:
     description: Stage
   - url: https://api.bthwani.com
     description: Prod
+paths: {}
+components:
+  schemas: {}
+  securitySchemes: {}

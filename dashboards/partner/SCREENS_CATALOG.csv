@@ -1,0 +1,5 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+DASH_PARTNER_OVERVIEW,نظرة الشريك,GLOBAL,[TBD],partner,DRAFT,"مؤشرات الطلبات والإيرادات"
+DASH_PARTNER_DSH_ORDERS,طلبات DSH,DSH,/api/dls/partner/orders,partner,DRAFT,"محاذاة مع تطبيق الشريك"
+DASH_PARTNER_ARB_BOOKINGS,حجوزات ARB,ARB,/api/arb/partner/bookings,partner,DRAFT,"إدارة الموافقات والتعديلات"
+

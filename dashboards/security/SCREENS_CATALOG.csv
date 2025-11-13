@@ -1,0 +1,5 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+DASH_SECURITY_INCIDENTS,حوادث أمنية,GLOBAL,[TBD],security,DRAFT,"توثيق و تتبع الأحداث"
+DASH_SECURITY_WLT_CONTROLS,ضوابط WLT,WLT,/api/wlt/security,security,DRAFT,"يراقب G-LEDGER-INVARIANTS"
+DASH_SECURITY_PRIVACY_EXPORTS,تتبع الصادرات,GLOBAL,[TBD],security,DRAFT,"يرتبط بـ G-PRIVACY-EXPORT"
+

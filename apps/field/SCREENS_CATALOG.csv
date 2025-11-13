@@ -1,0 +1,5 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+APP_FIELD_HOME,لوحة الميدان,GLOBAL,[TBD],field,DRAFT,"ملخص نشاط الفريق"
+APP_FIELD_DSH_ONBOARDING,تسجيل متاجر DSH,DSH,/api/dls/field/onboarding,field,DRAFT,"جمع بيانات المتاجر"
+APP_FIELD_ARB_PARTNERS,تفعيل شركاء ARB,ARB,/api/arb/field/providers,field,DRAFT,"تهيئة قدرات الحجز"
+

@@ -1,3 +1,8 @@
-﻿var_key,scope,default_value,description,service_ref
-VAR_WLT_PROVIDER_PRIMARY,Global,PLACEHOLDER,Primary wallet provider,WLT
-VAR_CHAT_RETENTION_DAYS,Global,30,Chat retention days,GLOBAL
+﻿var_key,scope,default_value,service_ref,description,status,notes
+VAR_RUNTIME_TIMEZONE,GLOBAL,Asia/Aden,GLOBAL,"المنطقة الزمنية الافتراضية لجميع الخدمات",LOCKED,"مذكور في AI GUIDE"
+VAR_LEDGER_STEPUP_REQUIRED,GLOBAL,ENABLED,WLT,"تفعيل خطوة التحقق الإضافية للعمليات المالية الحساسة",DRAFT,"[TBD] confirmation from finance"
+VAR_DSH_DEFAULT_DELIVERY_MODE,DSH,platform_fleet,DSH,"الوضع الافتراضي للتوصيل عند عدم تحديد الشريك",DRAFT,"[TBD] regional overrides"
+VAR_AMN_ALLOWED_REGIONS,AMN,"[TBD]",AMN,"قائمة المناطق المفعلة لخدمة النقل الآمن",DRAFT,"يتم ضبطها حسب Wave AMN"
+VAR_ARB_ESCROW_TIMEOUT_MINUTES,ARB,1440,ARB,"مدة صلاحية العربون قبل الإلغاء التلقائي (بالدقائق)",DRAFT,"يتطلب تأكيد من الحوكمة"
+VAR_ESF_NOTIFICATION_WINDOW,ESF,08:00-22:00,ESF,"نطاق إرسال التنبيهات لخدمة اسعِفني",DRAFT,"خصوصية عالية"
+VAR_CHAT_RETENTION_DAYS,GLOBAL,30,GLOBAL,"عدد أيام الاحتفاظ بسجلات الدردشة",DRAFT,"Requires privacy approval"

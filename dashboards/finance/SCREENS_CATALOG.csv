@@ -1,0 +1,5 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+DASH_FINANCE_LEDGER_OVERVIEW,WLT Ledger,WLT,/api/wlt/ledger,finance,DRAFT,"مؤشرات Ledger الأساسية"
+DASH_FINANCE_SETTLEMENTS,تسويات الشركاء,WLT,/api/wlt/settlements,finance,DRAFT,"يخضع لخطوة Step-Up"
+DASH_FINANCE_PAYOUTS,صرفيات بنكية,WLT,/api/wlt/payouts,finance,DRAFT,"Dual-Sign إلزامي"
+

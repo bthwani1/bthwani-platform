@@ -1,15 +1,11 @@
 openapi: 3.0.3
 info:
-  description: PLACEHOLDER_SERVICE_DESCRIPTION
+  title: BThwani — Master API
+  description: Aggregated OpenAPI skeleton built from per-service specifications.
   contact:
     name: BThwani Support
-    email: PLACEHOLDER_CONTACT_EMAIL  title: BThwani — Master API
+    email: support@bthwani.com
   version: 0.0.0-seed
-paths: {}
-components:
-  schemas: {}
-  securitySchemes: {}
-
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev
@@ -17,3 +13,17 @@ servers:
     description: Stage
   - url: https://api.bthwani.com
     description: Prod
+paths: {}
+components:
+  schemas: {}
+  securitySchemes: {}
+x-built-from:
+  - ../services/dsh/openapi.yaml
+  - ../services/wlt/openapi.yaml
+  - ../services/arb/openapi.yaml
+  - ../services/esf/openapi.yaml
+  - ../services/mrf/openapi.yaml
+  - ../services/knz/openapi.yaml
+  - ../services/amn/openapi.yaml
+  - ../services/snd/openapi.yaml
+  - ../services/kwd/openapi.yaml

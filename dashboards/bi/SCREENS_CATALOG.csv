@@ -1,0 +1,5 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+DASH_BI_EXEC_SUMMARY,BI Executive Summary,GLOBAL,[TBD],bi,DRAFT,"لوحة مؤشرات عليا"
+DASH_BI_SERVICE_METRICS,مؤشرات الخدمات,GLOBAL,[TBD],bi,DRAFT,"عرض KPIs لكل خدمة"
+DASH_BI_FINANCIAL_OVERVIEW,مؤشرات مالية,WLT,/api/wlt/analytics,bi,DRAFT,"يرتبط بـ Finance"
+

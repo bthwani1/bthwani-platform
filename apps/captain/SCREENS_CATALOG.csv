@@ -1,0 +1,6 @@
+screen_id,screen_title,related_service,main_endpoint,role,status,notes
+APP_CAPTAIN_HOME,الرئيسية,GLOBAL,[TBD],captain,DRAFT,"ملخص الرحلات والحالة"
+APP_CAPTAIN_DSH_TASKS,مهام التوصيل,DSH,/api/dls/captain/assignments,captain,DRAFT,"استلام الطلبات وتحديثها"
+APP_CAPTAIN_AMN_RIDES,رحلات AMN,AMN,/api/amn/captain/rides,captain,DRAFT,"بدء وإنهاء الرحلة"
+APP_CAPTAIN_WLT_BALANCE,الرصيد,WLT,/api/wlt/captain/balance,captain,DRAFT,"متابعة المستحقات"
+
