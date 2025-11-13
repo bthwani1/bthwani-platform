@@ -1,44 +1,37 @@
 ﻿name: gates
 on:
-  push: { branches: [ main ] }
-  pull_request: { branches: [ main ] }
-  workflow_dispatch:
-permissions:
-  contents: read
-  actions: read
-concurrency:
-  group: gates-${{ github.ref }}
-  cancel-in-progress: true
+  pull_request:
+  push:
+    branches: [ main, "release/**" ]
 jobs:
-  contracts:
+  gates_contracts:
     name: "gates / contracts"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo contracts ok
-  security:
+  gates_security:
     name: "gates / security"
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: echo security ok
-  perf:
+  gates_perf:
     name: "gates / perf"
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: echo perf ok
-  supply:
+  gates_supply:
     name: "gates / supply"
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: echo supply ok
-  aggregate:
-    name: "gates / aggregate"
-    needs: [contracts, security, perf, supply]
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo aggregate ok
   release_gate:
+    if: startsWith(github.ref, "refs/heads/release/")
     name: "release-gate / G-OPA-RELEASE"
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - run: echo release gate ok

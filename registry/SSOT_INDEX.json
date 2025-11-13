@@ -1,0 +1,21 @@
+﻿{
+  "services": [
+    {"code":"DSH","version":"2.2","state":"DRAFT"},
+    {"code":"KNZ","version":"1.1","state":"DRAFT"},
+    {"code":"AMN","version":"1.0","state":"DRAFT"},
+    {"code":"KWD","version":"1.0","state":"DRAFT"},
+    {"code":"SND","version":"1.0","state":"DRAFT"},
+    {"code":"MRF","version":"2.0","state":"DRAFT"},
+    {"code":"ESF","version":"1.2","state":"DRAFT"},
+    {"code":"ARB","version":"2.0","state":"DRAFT"},
+    {"code":"WLT","version":"1.0","state":"DRAFT"}
+  ],
+  "apps": [
+    {"code":"APP-USER","version":"2.0.0","state":"DRAFT"},
+    {"code":"APP-PARTNER","version":"2.0.0","state":"DRAFT"},
+    {"code":"APP-CAPTAIN","version":"2.0.0","state":"DRAFT"},
+    {"code":"APP-FIELD","version":"2.0.0","state":"DRAFT"}
+  ],
+  "dashboards": ["Admin","Ops","Finance","Support","Marketing","Fleet","Partner","BI","SSOT","Security"],
+  "notes":"Initial seed — Wave 0"
+}

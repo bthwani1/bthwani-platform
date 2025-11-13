@@ -1,0 +1,8 @@
+﻿openapi: 3.0.3
+info:
+  title: "BThwani — Delivery & Shopping (DSH) API"
+  version: "0.0.0-seed"
+paths: {}
+components:
+  schemas: {}
+  securitySchemes: {}

@@ -1,0 +1,3 @@
+﻿var_key,scope,default_value,description,service_ref
+VAR_WLT_PROVIDER_PRIMARY,Global,PLACEHOLDER,Primary wallet provider,WLT
+VAR_CHAT_RETENTION_DAYS,Global,30,Chat retention days,GLOBAL
