@@ -1,0 +1,16 @@
+﻿name: contracts
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ feat/bootstrap-guides, feat/oas-servers-contact ]
+jobs:
+  spectral:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+      - run: npm ci || npm i
+      - run: npx -y @stoplight/spectral-cli lint "oas/**/*.yaml"
