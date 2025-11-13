@@ -1,3 +1,10 @@
-﻿extends: []
+﻿extends: ["spectral:oas"]
 formats: ["oas3"]
-rules: {}
+rules:
+  # قواعد يجب أن تمرّ قبل التشديد النهائي
+  oas3-api-servers: warn
+  oas3-schema: warn
+  oas3-unused-components-schema: warn
+  operation-operationId-unique: warn
+  info-contact: warn
+  info-license: warn
