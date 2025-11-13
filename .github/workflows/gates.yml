@@ -13,6 +13,8 @@ jobs:
       - uses: stoplightio/spectral-action@v0
         with:
           file_glob: "oas/**/*.yaml"
+          spectral_ruleset: ".spectral.yaml"
+          fail_severity: "error"
 
   gates_security:
     name: "gates / security"

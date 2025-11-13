@@ -1,12 +1,13 @@
 ﻿extends: ["spectral:oas"]
+formats: ["oas3"]
 rules:
-  # أوقف/خفّف قواعد قد تفشل مع مواصفات بذرة فارغة
-  openapi-tags: off
+  # نعطّل قواعد تُسقط المواصفات البِذريّة الفارغة
+  oas3-api-servers: off
+  oas3-schema: off
+  oas3-unused-components-schema: off
   operation-tags: off
   operation-operationId-unique: off
-  oas3-api-servers: off
-  oas3-unused-components-schema: off
-  no-server-example.com: off
+  paths-kebab-case: off
+  # إبقاء التحسينات كتحذيرات فقط
   info-contact: warn
-  oas3-schema: warn
-  oas3-valid-schema-example: warn
+  info-license: warn
