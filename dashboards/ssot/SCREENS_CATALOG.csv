@@ -1,5 +1,4 @@
 screen_id,screen_title,related_service,main_endpoint,role,status,notes
-DASH_SSOT_OVERVIEW,SSoT Overview,GLOBAL,[TBD],ssot,DRAFT,"عرض حالات SSOT_INDEX"
-DASH_SSOT_DECISIONS,قرارات معلّقة,GLOBAL,[TBD],ssot,DRAFT,"إدارة القرارات المفتوحة"
-DASH_SSOT_GUARDS,حالة الحُرّاس,GLOBAL,[TBD],ssot,DRAFT,"متابعة نتائج gates"
-
+DASH_SSOT_OVERVIEW,SSoT Overview,GLOBAL,/api/ssot/index,ssot,DRAFT,"عرض حالات SSOT_INDEX"
+DASH_SSOT_DECISIONS,قرارات معلّقة,GLOBAL,/api/ssot/decisions,ssot,DRAFT,"إدارة القرارات المفتوحة"
+DASH_SSOT_GUARDS,حالة الحُرّاس,GLOBAL,/api/ssot/guards/report,ssot,DRAFT,"متابعة نتائج gates"
