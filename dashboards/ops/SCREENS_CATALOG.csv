@@ -1,5 +1,17 @@
 screen_id,screen_title,related_service,main_endpoint,role,status,notes
 DASH_OPS_DSH_LIVE_ORDERS,طلبات DSH المباشرة,DSH,/api/dls/orders,ops,DRAFT,"مراقبة الطلبات النشطة"
+DASH_OPS_DSH_WEBHOOK_INBOUND,مراقبة رسائل الموردين,DSH,/api/dls/inbound/messages,ops,DRAFT,"تحقق من صحة التوقيع والحد الزمني ≤300ث"
+DASH_OPS_DSH_WEBHOOK_STATUS,مراقبة حالة الشركاء,DSH,/api/dls/partner/inbound/status,ops,DRAFT,"مراجعة تحديثات الحالة الواردة بموجب HMAC"
+DASH_OPS_DSH_PARTNER_NOTIF,تشغيل تنبيهات الشريك,DSH,"/api/dls/partners/{partner_id}/notifications",ops,DRAFT,"إدارة مهام التذكير والتصعيد"
+DASH_OPS_DSH_AUDIT_LOGS,سجل عمليات DSH,DSH,/api/ops/dls/audit/logs,ops,DRAFT,"تحليل السجل مع البحث والفلترة"
+DASH_OPS_DSH_DISPUTES,قائمة النزاعات,DSH,/api/ops/dls/disputes,ops,DRAFT,"متابعة النزاعات المفتوحة وإسنادها"
+DASH_OPS_DSH_INBOUND_PIPELINE,وارد القنوات التشغيلية,DSH,/api/ops/dls/inbound/messages,ops,DRAFT,"تسوية الرسائل من القنوات التشغيلية"
+DASH_OPS_DSH_ORDER_DETAILS,تفاصيل طلب التشغيل,DSH,"/api/ops/dls/orders/{order_id}",ops,DRAFT,"استعراض حالة الطلب وتاريخ التعيين"
+DASH_OPS_DSH_DISPATCH_ASSIGN,إعادة تعيين الطلب,DSH,"/api/ops/dls/orders/{order_id}/dispatch/assign",ops,DRAFT,"تعيين الكابتن أو الفريق المناسب"
+DASH_OPS_DSH_ONBOARDING_QUEUE,طابور تفعيل الشركاء,DSH,/api/ops/dls/partners/onboarding,ops,DRAFT,"متابعة حالات التفعيل والتنبيهات"
+DASH_OPS_DSH_PARTNER_NOTIF_OPS,إرسال تنبيه تشغيلي,DSH,"/api/ops/dls/partners/{partner_id}/notifications",ops,DRAFT,"إرسال رسائل تشغيلية فورية"
+DASH_OPS_DSH_SLA_BREACHES,مخالفات SLA,DSH,/api/ops/dls/sla/breaches,ops,DRAFT,"رصد حالات تجاوز زمن الخدمة"
+DASH_OPS_DSH_SLOT_OVERRIDE,تعديل فترات المخزون,DSH,"/api/ops/dls/slots/{slot_id}",ops,DRAFT,"تصحيح الفترات أو إيقافها مؤقتًا"
 DASH_OPS_AMN_RIDES,رحلات AMN,AMN,/api/amn/rides,ops,DRAFT,"حالة الرحلات والتسعير"
 DASH_OPS_SND_REQUESTS,طلبات سند,SND,/api/snd/requests,ops,DRAFT,"متابعة الطلبات المتخصصة"
 

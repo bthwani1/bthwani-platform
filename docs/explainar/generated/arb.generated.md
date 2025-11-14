@@ -1,0 +1,3 @@
+# ARB - بيانات مولدة
+
+_source_sha256: 013f4a4e5aa81544aceb34bb7e2fed85b1d3e00bec7a3b2881b4fa6a01031be8_

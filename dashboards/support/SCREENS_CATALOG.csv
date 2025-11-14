@@ -1,5 +1,5 @@
 screen_id,screen_title,related_service,main_endpoint,role,status,notes
 DASH_SUPPORT_TICKETS,تذاكر الدعم,GLOBAL,/api/support/tickets,support,DRAFT,"يجب تطبيق Privacy Masking"
-DASH_SUPPORT_DSH_INCIDENTS,بلاغات DSH,DSH,/api/dls/incidents,support,DRAFT,"عرض مقنع للـ PII"
+DASH_SUPPORT_DSH_INCIDENTS,بلاغات الأسطول,FLEET,/api/fleet/incidents,support,DRAFT,"عرض مقنع للـ PII مع وصول مقيد"
 DASH_SUPPORT_ARB_ESCALATIONS,تصعيدات ARB,ARB,/api/arb/escalations,support,DRAFT,"تحكم بالوصول RBAC"
 

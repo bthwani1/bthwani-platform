@@ -1,0 +1,26 @@
+service: SRV-DSH
+wave: WAVE-DSH/00
+updated_at: 2025-11-14T01:25:00+03:00
+thresholds:
+  parity:
+    target: 1.0
+    artifact: dist/dsh/PARITY.csv
+    description: All DSH backend operations must have mapped FE screens.
+  trace:
+    target: 1.0
+    artifact: traces/TRACE_TABLE.csv
+    description: TRACE table must be 1:1 with no missing links.
+  orphan_be:
+    allowed: 0
+    artifact: dist/dsh/PARITY.csv
+    description: No backend-only endpoints under /api/dls/*.
+  orphan_fe:
+    allowed: 0
+    artifact: dist/dsh/PARITY.csv
+    description: No front-end screens without matching operations.
+  guards:
+    required_status: pass
+    artifact: dist/dsh/DSH_GUARDS_REPORT.md
+    description: All guard status entries must be PASS/✅.
+notes:
+  - Enforced by scripts/enforce_dsh_hard_gates.py.

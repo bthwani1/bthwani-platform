@@ -1,0 +1,95 @@
+surface_id,screen_id,action_id,operation_id,method,path,rbac_role,trace_link_ok,notes
+APP-CAPTAIN,CAPTAIN_AVAILABILITY,set_availability,dls_cap_availability_set,POST,/api/dls/captain/availability,captain,TRUE,تفعيل/تعطيل الدوام وتحديد المناطق
+APP-CAPTAIN,CAPTAIN_CHAT,send_message,dls_cap_chat_send,POST,/api/dls/captain/orders/{order_id}/chat/messages,captain,TRUE,سجل الدردشة مع إرسال الرسائل
+APP-CAPTAIN,CAPTAIN_CHAT_HISTORY,list_messages,dls_cap_chat_list,GET,/api/dls/captain/orders/{order_id}/chat/messages,captain,TRUE,استعراض سجل الدردشة مع دعم pagination
+APP-CAPTAIN,CAPTAIN_CHAT_READ_ACK,ack_read,dls_cap_chat_read_ack,POST,/api/dls/captain/orders/{order_id}/chat/read-ack,captain,TRUE,تأشير الرسائل كمقروءة
+APP-CAPTAIN,CAPTAIN_EARNINGS,load_earnings,dls_cap_earnings_get,GET,/api/dls/captain/earnings,captain,TRUE,عرض أرباح الكابتن
+APP-CAPTAIN,CAPTAIN_FLOW_ARRIVED_CUSTOMER,arrived_customer,dls_cap_orders_arrived_customer,POST,/api/dls/captain/orders/{order_id}/arrived-customer,captain,TRUE,تأكيد الوصول إلى العميل
+APP-CAPTAIN,CAPTAIN_FLOW_ARRIVED_STORE,arrived_store,dls_cap_orders_arrived_store,POST,/api/dls/captain/orders/{order_id}/arrived-store,captain,TRUE,تأكيد الوصول إلى المتجر
+APP-CAPTAIN,CAPTAIN_FLOW_DELIVERED,delivered_pod,dls_cap_orders_delivered,POST,/api/dls/captain/orders/{order_id}/delivered,captain,TRUE,إقرار إتمام التسليم النهائي
+APP-CAPTAIN,CAPTAIN_FLOW_PICKED_UP,picked_up,dls_cap_orders_picked_up,POST,/api/dls/captain/orders/{order_id}/picked-up,captain,TRUE,إقرار استلام الطلب من المتجر
+APP-CAPTAIN,CAPTAIN_FLOW_REJECT,reject_order,dls_cap_orders_reject,POST,/api/dls/captain/orders/{order_id}/reject,captain,TRUE,رفض الطلب مع سبب متوافق
+APP-CAPTAIN,CAPTAIN_LOCATION_UPDATE,update_location,dls_cap_location_update,POST,/api/dls/captain/location,captain,TRUE,نبضات الموقع الدورية
+APP-CAPTAIN,CAPTAIN_ORDERS_LIST,list_orders,dls_cap_orders_list,GET,/api/dls/captain/orders,captain,TRUE,قائمة الطلبات مع دعم cursor/limit
+APP-CAPTAIN,CAPTAIN_ORDER_DETAILS,load_order,dls_cap_orders_get,GET,/api/dls/captain/orders/{order_id},captain,TRUE,عرض تفاصيل الطلب الحالية
+APP-CAPTAIN,CAPTAIN_ORDER_FLOW,accept_order,dls_cap_orders_accept,POST,/api/dls/captain/orders/{order_id}/accept,captain,TRUE,قبول/رفض/إشعارات الوصول والتسليم
+APP-CAPTAIN,CAPTAIN_TIMELINE,view_timeline,dls_cap_orders_timeline_get,GET,/api/dls/captain/orders/{order_id}/timeline,captain,TRUE,عرض الأحداث بالتسلسل
+APP-FIELD,field.partner.bank,set_bank,dls_partner_bank_set,PUT,/api/dls/partners/{partner_id}/bank,field_agent,TRUE,
+APP-FIELD,field.partner.decision,approve,dls_partner_approve,POST,/api/dls/partners/{partner_id}/approve,field_agent,TRUE,
+APP-FIELD,field.partner.decision,reject,dls_partner_reject,POST,/api/dls/partners/{partner_id}/reject,field_agent,TRUE,
+APP-FIELD,field.partner.delivery_modes,set_modes,dls_store_modes_set,PUT,/api/dls/stores/{store_id}/delivery-modes,field_agent,TRUE,
+APP-FIELD,field.partner.details,get_partner,dls_partner_get,GET,/api/dls/partners/{partner_id},field_agent,TRUE,
+APP-FIELD,field.partner.documents,upload_doc,dls_partner_doc_upload,POST,/api/dls/partners/{partner_id}/documents,field_agent,TRUE,
+APP-FIELD,field.partner.identity,submit_identity,dls_partner_identity_submit,POST,/api/dls/partners/{partner_id}/identity,field_agent,TRUE,
+APP-FIELD,field.partner.intake,start_intake,dls_partner_intake_start,POST,/api/dls/partners/intake,field_agent,TRUE,
+APP-FIELD,field.partner.pricing,set_commission,dls_store_commission_set,PUT,/api/dls/stores/{store_id}/commission,field_agent,TRUE,
+APP-FIELD,field.partner.queue,list_pending,dls_partner_pending_list,GET,/api/dls/partners/pending,field_agent,TRUE,
+APP-FIELD,field.partner.review,submit_for_review,dls_partner_submit_review,POST,/api/dls/partners/{partner_id}/submit-review,field_agent,TRUE,
+APP-FIELD,field.partner.store,create_store,dls_store_create,POST,/api/dls/partners/{partner_id}/stores,field_agent,TRUE,
+APP-FIELD,field.partner.store,update_store,dls_store_update,PATCH,/api/dls/stores/{store_id},field_agent,TRUE,
+APP-FIELD,field.partner.store.details,get_store,dls_store_get,GET,/api/dls/stores/{store_id},field_agent,TRUE,
+APP-FIELD,field.partner.users,invite_manager,dls_partner_manager_invite,POST,/api/dls/partners/{partner_id}/users/invite,field_agent,TRUE,
+APP-FIELD,field.partner.zones,set_zones,dls_store_zones_set,PUT,/api/dls/stores/{store_id}/zones,field_agent,TRUE,
+APP-PARTNER,PARTNER_CHAT,send_message,dls_partner_chat_send,POST,/api/dls/partner/orders/{order_id}/chat/messages,partner,TRUE,إرسال واستعراض الرسائل
+APP-PARTNER,PARTNER_CHAT_HISTORY,list_messages,dls_partner_chat_list,GET,/api/dls/partner/orders/{order_id}/chat/messages,partner,TRUE,استعراض رسائل الشريك مع العملاء
+APP-PARTNER,PARTNER_CHAT_READ_ACK,ack_read,dls_partner_chat_read_ack,POST,/api/dls/partner/orders/{order_id}/chat/read-ack,partner,TRUE,تأشير الرسائل كمقروءة
+APP-PARTNER,PARTNER_INVENTORY_ADJUST,adjust_inventory,dls_partner_inventory_adjust,POST,/api/dls/partners/me/inventory/adjust,partner,TRUE,ضبط المخزون لعناصر محددة
+APP-PARTNER,PARTNER_NOTIFICATIONS_DISPATCH,dispatch_partner_notify,dls_partner_notifications_dispatch,POST,/api/dls/partners/{partner_id}/notifications,system,TRUE,إرسال تذكيرات أو تنبيهات للشريك
+APP-PARTNER,PARTNER_ORDERS_LIST,list_orders,dls_partner_orders_list,GET,/api/dls/partner/orders,partner,TRUE,قائمة بالطلبات مع cursor/limit
+APP-PARTNER,PARTNER_ORDER_ACTIONS,accept_order,dls_partner_orders_accept,POST,/api/dls/partner/orders/{order_id}/accept,partner,TRUE,قبول/رفض/جاهزية/تسليم الطلب
+APP-PARTNER,PARTNER_ORDER_DETAILS,load_order,dls_partner_orders_get,GET,/api/dls/partner/orders/{order_id},partner,TRUE,عرض تفاصيل الطلب
+APP-PARTNER,PARTNER_ORDER_HANDOFF,handoff_to_captain,dls_partner_orders_handoff,POST,/api/dls/partner/orders/{order_id}/handoff,partner,TRUE,تسليم الطلب لكابتن المنصة
+APP-PARTNER,PARTNER_ORDER_NOTES,list_notes,dls_partner_order_notes_list,GET,/api/dls/partner/orders/{order_id}/notes,partner,TRUE,إنشاء واستعراض الملاحظات
+APP-PARTNER,PARTNER_ORDER_NOTES_CREATE,create_note,dls_partner_order_notes_create,POST,/api/dls/partner/orders/{order_id}/notes,partner,TRUE,إضافة ملاحظة داخل سجل الطلب
+APP-PARTNER,PARTNER_ORDER_READY,mark_ready,dls_partner_orders_ready,POST,/api/dls/partner/orders/{order_id}/ready,partner,TRUE,إقرار تجهيز الطلب للتسليم
+APP-PARTNER,PARTNER_ORDER_REJECT,reject_order,dls_partner_orders_reject,POST,/api/dls/partner/orders/{order_id}/reject,partner,TRUE,رفض الطلب مع توثيق السبب
+APP-PARTNER,PARTNER_ORDER_TIMELINE,view_timeline,dls_partner_orders_timeline_get,GET,/api/dls/partner/orders/{order_id}/timeline,partner,TRUE,عرض الأحداث للتدقيق
+APP-PARTNER,PARTNER_PICKUP_CLOSE,submit_pickup_code,dls_partner_pickup_close,POST,/api/dls/partner/orders/{order_id}/pickup/close,partner,TRUE,إقفال الطلب باستخدام رمز
+APP-PARTNER,PARTNER_POLICIES,load_partner_policies,dls_partner_policies_me_get,GET,/api/dls/partners/me/policies,partner,TRUE,عرض/تحديث سياسات التوصيل
+APP-PARTNER,PARTNER_POLICIES_UPDATE,update_partner_policies,dls_partner_policies_update,PATCH,/api/dls/partners/me/policies,partner,TRUE,تحديث خيارات التوصيل والقنوات
+APP-PARTNER,PARTNER_RECEIPT_ISSUE,issue_receipt,dls_partner_receipt_issue,POST,/api/dls/partner/orders/{order_id}/receipt/issue,partner,TRUE,إصدار إيصال نهائي
+APP-PARTNER,PARTNER_SLOTS,list_slots,dls_partner_slots_list,GET,/api/dls/partners/me/slots,partner,TRUE,إدارة الفترات
+APP-PARTNER,PARTNER_SLOTS_DELETE,delete_slot,dls_partner_slots_delete,DELETE,/api/dls/partners/me/slots/{slot_id},partner,TRUE,إزالة فترة غير مرغوبة
+APP-PARTNER,PARTNER_SLOTS_UPSERT,upsert_slot,dls_partner_slots_upsert,POST,/api/dls/partners/me/slots,partner,TRUE,إضافة أو تعديل فترة متاحة
+APP-PARTNER,PARTNER_ZONES,load_partner_zones,dls_partner_zones_me_get,GET,/api/dls/partners/me/zones,partner,TRUE,عرض/تحديث مناطق التغطية
+APP-PARTNER,PARTNER_ZONES_UPDATE,update_partner_zones,dls_partner_zones_update,PATCH,/api/dls/partners/me/zones,partner,TRUE,تعديل الحدود الجغرافية للتغطية
+APP-USER,APP_USER_DSH_CANCEL_REASONS,dls_cancel_reasons_list,dls_cancel_reasons_list,GET,/api/dls/cancel-reasons,user,TRUE,قائمة الأسباب المدعومة
+APP-USER,APP_USER_DSH_CHAT_READ_ACK,dls_chat_read_ack,dls_chat_read_ack,POST,/api/dls/orders/{order_id}/chat/read-ack,user,TRUE,تأشير الرسائل كمقروءة
+APP-USER,APP_USER_DSH_CHECKOUT,dls_orders_create,dls_orders_create,POST,/api/dls/orders,user,TRUE,يتطلب توافق مع flow الدفع عبر WLT
+APP-USER,APP_USER_DSH_CHECKOUT_SLOT,dls_orders_get,dls_orders_get,GET,/api/dls/orders/{order_id},user,TRUE,تثبيت slot بعد الإنشاء
+APP-USER,APP_USER_DSH_ORDERS,dls_orders_list,dls_orders_list,GET,/api/dls/orders,user,TRUE,عرض الطلبات مع pagination
+APP-USER,APP_USER_DSH_ORDER_CANCEL,dls_orders_cancel,dls_orders_cancel,POST,/api/dls/orders/{order_id}/cancel,user,TRUE,ضمن نافذة الإلغاء
+APP-USER,APP_USER_DSH_ORDER_CHAT,dls_chat_list,dls_chat_list,GET,/api/dls/orders/{order_id}/chat/messages,user,TRUE,دردشة مشفّرة مع أخفاء أرقام
+APP-USER,APP_USER_DSH_ORDER_CHAT_SEND,dls_chat_send,dls_chat_send,POST,/api/dls/orders/{order_id}/chat/messages,user,TRUE,إرسال رسالة جديدة للطرف الآخر
+APP-USER,APP_USER_DSH_ORDER_DETAILS,dls_orders_get,dls_orders_get,GET,/api/dls/orders/{order_id},user,TRUE,عرض بيانات الطلب والتتبع
+APP-USER,APP_USER_DSH_ORDER_ETA,dls_orders_eta_get,dls_orders_eta_get,GET,/api/dls/orders/{order_id}/eta,user,TRUE,قيمة ETA
+APP-USER,APP_USER_DSH_ORDER_FEEDBACK,dls_feedback_create,dls_feedback_create,POST,/api/dls/orders/{order_id}/feedback,user,TRUE,تقييم المتجر/الكابتن
+APP-USER,APP_USER_DSH_ORDER_NOTES,dls_order_notes_list,dls_order_notes_list,GET,/api/dls/orders/{order_id}/notes,user,TRUE,إنشاء واستعراض الملاحظات
+APP-USER,APP_USER_DSH_ORDER_NOTES_CREATE,dls_order_notes_create,dls_order_notes_create,POST,/api/dls/orders/{order_id}/notes,user,TRUE,إضافة ملاحظة جديدة داخل السجل
+APP-USER,APP_USER_DSH_ORDER_POD,dls_pod_verify,dls_pod_verify,POST,/api/dls/orders/{order_id}/pod/verify,user,TRUE,PoD لقناة المنصة
+APP-USER,APP_USER_DSH_ORDER_RECEIPT,dls_receipt_get,dls_receipt_get,GET,/api/dls/orders/{order_id}/receipt,user,TRUE,عرض الفاتورة النهائية
+APP-USER,APP_USER_DSH_ORDER_TIMELINE,dls_orders_timeline_get,dls_orders_timeline_get,GET,/api/dls/orders/{order_id}/timeline,user,TRUE,عرض الأحداث بالترتيب الزمني
+APP-USER,APP_USER_DSH_ORDER_TRACKING,dls_tracking_get,dls_tracking_get,GET,/api/dls/orders/{order_id}/tracking,user,TRUE,تتبع الحالة والموقع
+APP-USER,APP_USER_DSH_ORDER_UPDATE,dls_orders_update,dls_orders_update,PATCH,/api/dls/orders/{order_id},user,TRUE,تعديل الطلب ضمن نافذة التعديل
+APP-USER,APP_USER_DSH_PARTNER_POLICIES,dls_partner_policies_get,dls_partner_policies_get,GET,/api/dls/partners/{partner_id}/policies,user,TRUE,قنوات التفعيل المتاحة
+APP-USER,APP_USER_DSH_PARTNER_ZONES,dls_partner_zones_get,dls_partner_zones_get,GET,/api/dls/partners/{partner_id}/zones,user,TRUE,تغطية المتجر
+APP-USER,APP_USER_DSH_PICKUP_CLOSE,dls_pickup_close,dls_pickup_close,POST,/api/dls/orders/{order_id}/pickup/close,user,TRUE,رمز 6 أرقام
+APP-USER,APP_USER_DSH_QUOTES,dls_quotes_create,dls_quotes_create,POST,/api/dls/quotes,user,TRUE,احتساب التكلفة الأولية
+APP-USER,APP_USER_DSH_REORDER,dls_orders_reorder,dls_orders_reorder,POST,/api/dls/orders/{order_id}/reorder,user,TRUE,إنشاء طلب جديد من سابق
+APP-USER,APP_USER_DSH_SLOTS,dls_slots_list,dls_slots_list,GET,/api/dls/slots,user,TRUE,قائمة الفترات المتاحة
+DASH-FLEET,DASH_FLEET_DSH_DELIVERIES,list_live_orders,ops_dls_orders_list,GET,/api/ops/dls/orders,ops_dispatch,TRUE,يعتمد على قراءة قائمة الطلبات للمتابعة اللحظية
+DASH-OPS,DASH_OPS_DSH_AUDIT_LOGS,list_audit_logs,ops_dls_audit_logs_list,GET,/api/ops/dls/audit/logs,ops_audit,TRUE,تحليل السجل مع البحث والفلترة
+DASH-OPS,DASH_OPS_DSH_DISPATCH_ASSIGN,assign_captain,ops_dls_dispatch_assign,POST,/api/ops/dls/orders/{order_id}/dispatch/assign,ops_dispatch,TRUE,تعيين الكابتن أو الفريق المناسب
+DASH-OPS,DASH_OPS_DSH_DISPUTES,list_disputes,ops_dls_disputes_list,GET,/api/ops/dls/disputes,ops_support,TRUE,متابعة النزاعات المفتوحة وإسنادها
+DASH-OPS,DASH_OPS_DSH_INBOUND_PIPELINE,ingest_inbound,ops_dls_inbound_messages_webhook,POST,/api/ops/dls/inbound/messages,system,TRUE,تسوية الرسائل من القنوات التشغيلية
+DASH-OPS,DASH_OPS_DSH_LIVE_ORDERS,dls_orders_list,dls_orders_list,GET,/api/dls/orders,user,TRUE,مراقبة الطلبات النشطة
+DASH-OPS,DASH_OPS_DSH_ONBOARDING_QUEUE,list_partner_onboarding,ops_dls_partners_onboarding_list,GET,/api/ops/dls/partners/onboarding,ops_partner_ops,TRUE,متابعة حالات التفعيل والتنبيهات
+DASH-OPS,DASH_OPS_DSH_ORDER_DETAILS,load_order,ops_dls_orders_get,GET,/api/ops/dls/orders/{order_id},ops_dispatch,TRUE,استعراض حالة الطلب وتاريخ التعيين
+DASH-OPS,DASH_OPS_DSH_PARTNER_NOTIF,dispatch_partner_notify,dls_partner_notifications_dispatch,POST,/api/dls/partners/{partner_id}/notifications,system,TRUE,إدارة مهام التذكير والتصعيد
+DASH-OPS,DASH_OPS_DSH_PARTNER_NOTIF_OPS,dispatch_partner_notify,ops_dls_partner_notifications_dispatch,POST,/api/ops/dls/partners/{partner_id}/notifications,ops_partner_ops,TRUE,إرسال رسائل تشغيلية فورية
+DASH-OPS,DASH_OPS_DSH_SLA_BREACHES,list_sla_breaches,ops_dls_sla_breaches_list,GET,/api/ops/dls/sla/breaches,ops_dispatch,TRUE,رصد حالات تجاوز زمن الخدمة
+DASH-OPS,DASH_OPS_DSH_SLOT_OVERRIDE,update_slot,ops_dls_slots_update,PATCH,/api/ops/dls/slots/{slot_id},ops_darkstore,TRUE,تصحيح الفترات أو إيقافها مؤقتًا
+DASH-OPS,DASH_OPS_DSH_WEBHOOK_INBOUND,inbound_msg_webhook,dls_inbound_messages_webhook,POST,/api/dls/inbound/messages,system,TRUE,تحقق من صحة التوقيع والحد الزمني ≤300ث
+DASH-OPS,DASH_OPS_DSH_WEBHOOK_STATUS,inbound_status_webhook,dls_partner_inbound_status_webhook,POST,/api/dls/partner/inbound/status,system,TRUE,مراجعة تحديثات الحالة الواردة بموجب HMAC
+DASH-PARTNER,DASH_PARTNER_DSH_ORDERS,list_orders,dls_partner_orders_list,GET,/api/dls/partner/orders,partner,TRUE,محاذاة مع تطبيق الشريك
+marketing,DASH_MARKETING_DSHPARTNERS,list_pending,dls_partner_pending_list,GET,/api/dls/partners/pending,field_agent,TRUE,مراقبة أداء المتاجر النشطة والمنتظرة

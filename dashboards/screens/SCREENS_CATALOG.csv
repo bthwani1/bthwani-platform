@@ -1,0 +1,95 @@
+surface_id,screen_id,screen_title,related_service,main_endpoint,role,status,notes,source_file
+APP-CAPTAIN,CAPTAIN_AVAILABILITY,التوفر,DSH,/api/dls/captain/availability,captain,DRAFT,تفعيل/تعطيل الدوام وتحديد المناطق,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_CHAT,الدردشة,DSH,/api/dls/captain/orders/{order_id}/chat/messages,captain,DRAFT,سجل الدردشة مع إرسال الرسائل,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_CHAT_HISTORY,سجل الدردشة,DSH,/api/dls/captain/orders/{order_id}/chat/messages,captain,DRAFT,استعراض سجل الدردشة مع دعم pagination,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_CHAT_READ_ACK,تأكيد قراءة الدردشة,DSH,/api/dls/captain/orders/{order_id}/chat/read-ack,captain,DRAFT,تأشير الرسائل كمقروءة,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_EARNINGS,الأرباح,DSH,/api/dls/captain/earnings,captain,DRAFT,عرض أرباح الكابتن,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_FLOW_ARRIVED_CUSTOMER,تسجيل الوصول للعميل,DSH,/api/dls/captain/orders/{order_id}/arrived-customer,captain,DRAFT,تأكيد الوصول إلى العميل,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_FLOW_ARRIVED_STORE,تسجيل الوصول إلى المتجر,DSH,/api/dls/captain/orders/{order_id}/arrived-store,captain,DRAFT,تأكيد الوصول إلى المتجر,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_FLOW_DELIVERED,تأكيد التسليم,DSH,/api/dls/captain/orders/{order_id}/delivered,captain,DRAFT,إقرار إتمام التسليم النهائي,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_FLOW_PICKED_UP,تأكيد استلام الطلب,DSH,/api/dls/captain/orders/{order_id}/picked-up,captain,DRAFT,إقرار استلام الطلب من المتجر,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_FLOW_REJECT,رفض الطلب,DSH,/api/dls/captain/orders/{order_id}/reject,captain,DRAFT,رفض الطلب مع سبب متوافق,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_LOCATION_UPDATE,تحديث الموقع,DSH,/api/dls/captain/location,captain,DRAFT,نبضات الموقع الدورية,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_ORDERS_LIST,الطلبات المتاحة/المسندة,DSH,/api/dls/captain/orders,captain,DRAFT,قائمة الطلبات مع دعم cursor/limit,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_ORDER_DETAILS,تفاصيل الطلب,DSH,/api/dls/captain/orders/{order_id},captain,DRAFT,عرض تفاصيل الطلب الحالية,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_ORDER_FLOW,تقدّم تنفيذ الطلب,DSH,/api/dls/captain/orders/{order_id}/accept,captain,DRAFT,قبول/رفض/إشعارات الوصول والتسليم,apps/captain/SCREENS_CATALOG.csv
+APP-CAPTAIN,CAPTAIN_TIMELINE,الخط الزمني,DSH,/api/dls/captain/orders/{order_id}/timeline,captain,DRAFT,عرض الأحداث بالتسلسل,apps/captain/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.bank,بيانات البنك,DSH,/api/dls/partners/{partner_id}/bank,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.decision,اعتماد الشريك,DSH,/api/dls/partners/{partner_id}/approve,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.decision,رفض الشريك,DSH,/api/dls/partners/{partner_id}/reject,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.delivery_modes,أوضاع التوصيل,DSH,/api/dls/stores/{store_id}/delivery-modes,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.details,تفاصيل الشريك,DSH,/api/dls/partners/{partner_id},field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.documents,مستندات الشريك,DSH,/api/dls/partners/{partner_id}/documents,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.identity,هوية الشريك,DSH,/api/dls/partners/{partner_id}/identity,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.intake,بدء إدخال شريك,DSH,/api/dls/partners/intake,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.pricing,سياسة العمولة,DSH,/api/dls/stores/{store_id}/commission,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.queue,قائمة قيد المراجعة,DSH,/api/dls/partners/pending,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.review,تسليم للمراجعة,DSH,/api/dls/partners/{partner_id}/submit-review,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.store,إعداد المتجر,DSH,/api/dls/partners/{partner_id}/stores,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.store,تحديث المتجر,DSH,/api/dls/stores/{store_id},field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.store.details,تفاصيل المتجر,DSH,/api/dls/stores/{store_id},field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.users,دعوة مدير,DSH,/api/dls/partners/{partner_id}/users/invite,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-FIELD,field.partner.zones,نطاقات التغطية,DSH,/api/dls/stores/{store_id}/zones,field_agent,DRAFT,,apps/field/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_CHAT,دردشة الطلب,DSH,/api/dls/partner/orders/{order_id}/chat/messages,partner,DRAFT,إرسال واستعراض الرسائل,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_CHAT_HISTORY,سجل الدردشة,DSH,/api/dls/partner/orders/{order_id}/chat/messages,partner,DRAFT,استعراض رسائل الشريك مع العملاء,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_CHAT_READ_ACK,تأكيد قراءة الدردشة,DSH,/api/dls/partner/orders/{order_id}/chat/read-ack,partner,DRAFT,تأشير الرسائل كمقروءة,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_INVENTORY_ADJUST,تعديل المخزون,DSH,/api/dls/partners/me/inventory/adjust,partner,DRAFT,ضبط المخزون لعناصر محددة,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_NOTIFICATIONS_DISPATCH,إرسال تذكير,DSH,/api/dls/partners/{partner_id}/notifications,partner,DRAFT,إرسال تذكيرات أو تنبيهات للشريك,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDERS_LIST,قائمة الطلبات,DSH,/api/dls/partner/orders,partner,DRAFT,قائمة بالطلبات مع cursor/limit,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDER_ACTIONS,إجراءات الطلب,DSH,/api/dls/partner/orders/{order_id}/accept,partner,DRAFT,قبول/رفض/جاهزية/تسليم الطلب,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDER_DETAILS,تفاصيل الطلب,DSH,/api/dls/partner/orders/{order_id},partner,DRAFT,عرض تفاصيل الطلب,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDER_HANDOFF,تسليم للمنصة,DSH,/api/dls/partner/orders/{order_id}/handoff,partner,DRAFT,تسليم الطلب لكابتن المنصة,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDER_NOTES,ملاحظات الطلب,DSH,/api/dls/partner/orders/{order_id}/notes,partner,DRAFT,إنشاء واستعراض الملاحظات,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDER_NOTES_CREATE,إضافة ملاحظة,DSH,/api/dls/partner/orders/{order_id}/notes,partner,DRAFT,إضافة ملاحظة داخل سجل الطلب,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDER_READY,تأكيد جاهزية الطلب,DSH,/api/dls/partner/orders/{order_id}/ready,partner,DRAFT,إقرار تجهيز الطلب للتسليم,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDER_REJECT,رفض الطلب,DSH,/api/dls/partner/orders/{order_id}/reject,partner,DRAFT,رفض الطلب مع توثيق السبب,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ORDER_TIMELINE,الخط الزمني للطلب,DSH,/api/dls/partner/orders/{order_id}/timeline,partner,DRAFT,عرض الأحداث للتدقيق,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_PICKUP_CLOSE,إقفال الاستلام الذاتي,DSH,/api/dls/partner/orders/{order_id}/pickup/close,partner,DRAFT,إقفال الطلب باستخدام رمز,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_POLICIES,أوضاع التوصيل,DSH,/api/dls/partners/me/policies,partner,DRAFT,عرض/تحديث سياسات التوصيل,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_POLICIES_UPDATE,تحديث سياسات التوصيل,DSH,/api/dls/partners/me/policies,partner,DRAFT,تحديث خيارات التوصيل والقنوات,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_RECEIPT_ISSUE,إصدار الفاتورة النهائية,DSH,/api/dls/partner/orders/{order_id}/receipt/issue,partner,DRAFT,إصدار إيصال نهائي,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_SLOTS,فترات الاستلام/التوصيل,DSH,/api/dls/partners/me/slots,partner,DRAFT,إدارة الفترات,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_SLOTS_DELETE,حذف فترة,DSH,/api/dls/partners/me/slots/{slot_id},partner,DRAFT,إزالة فترة غير مرغوبة,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_SLOTS_UPSERT,إضافة/تعديل فترة,DSH,/api/dls/partners/me/slots,partner,DRAFT,إضافة أو تعديل فترة متاحة,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ZONES,نطاقات التغطية,DSH,/api/dls/partners/me/zones,partner,DRAFT,عرض/تحديث مناطق التغطية,apps/partner/SCREENS_CATALOG.csv
+APP-PARTNER,PARTNER_ZONES_UPDATE,تعديل مناطق التغطية,DSH,/api/dls/partners/me/zones,partner,DRAFT,تعديل الحدود الجغرافية للتغطية,apps/partner/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_CANCEL_REASONS,أسباب الإلغاء,DSH,/api/dls/cancel-reasons,user,DRAFT,قائمة الأسباب المدعومة,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_CHAT_READ_ACK,تأكيد قراءة الدردشة,DSH,/api/dls/orders/{order_id}/chat/read-ack,user,DRAFT,تأشير الرسائل كمقروءة,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_CHECKOUT,إتمام الطلب,DSH,/api/dls/orders,user,DRAFT,يتطلب توافق مع flow الدفع عبر WLT,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_CHECKOUT_SLOT,تحديد فترة Dark-Store,DSH,/api/dls/orders/{order_id},user,DRAFT,تثبيت slot بعد الإنشاء,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDERS,طلبات التسوق والتوصيل,DSH,/api/dls/orders,user,DRAFT,عرض الطلبات مع pagination,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_CANCEL,إلغاء الطلب,DSH,/api/dls/orders/{order_id}/cancel,user,DRAFT,ضمن نافذة الإلغاء,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_CHAT,دردشة الطلب,DSH,/api/dls/orders/{order_id}/chat/messages,user,DRAFT,دردشة مشفّرة مع أخفاء أرقام,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_CHAT_SEND,إرسال رسالة بالدردشة,DSH,/api/dls/orders/{order_id}/chat/messages,user,DRAFT,إرسال رسالة جديدة للطرف الآخر,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_DETAILS,تفاصيل الطلب,DSH,/api/dls/orders/{order_id},user,DRAFT,عرض بيانات الطلب والتتبع,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_ETA,الوقت المتوقع للوصول,DSH,/api/dls/orders/{order_id}/eta,user,DRAFT,قيمة ETA,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_FEEDBACK,تقييم الطلب,DSH,/api/dls/orders/{order_id}/feedback,user,DRAFT,تقييم المتجر/الكابتن,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_NOTES,ملاحظات الطلب,DSH,/api/dls/orders/{order_id}/notes,user,DRAFT,إنشاء واستعراض الملاحظات,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_NOTES_CREATE,إضافة ملاحظة,DSH,/api/dls/orders/{order_id}/notes,user,DRAFT,إضافة ملاحظة جديدة داخل السجل,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_POD,إثبات التسليم,DSH,/api/dls/orders/{order_id}/pod/verify,user,DRAFT,PoD لقناة المنصة,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_RECEIPT,فاتورة الطلب,DSH,/api/dls/orders/{order_id}/receipt,user,DRAFT,عرض الفاتورة النهائية,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_TIMELINE,الخط الزمني للطلب,DSH,/api/dls/orders/{order_id}/timeline,user,DRAFT,عرض الأحداث بالترتيب الزمني,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_TRACKING,تتبع الطلب,DSH,/api/dls/orders/{order_id}/tracking,user,DRAFT,تتبع الحالة والموقع,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_ORDER_UPDATE,تحديث الطلب,DSH,/api/dls/orders/{order_id},user,DRAFT,تعديل الطلب ضمن نافذة التعديل,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_PARTNER_POLICIES,سياسات المتجر,DSH,/api/dls/partners/{partner_id}/policies,user,DRAFT,قنوات التفعيل المتاحة,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_PARTNER_ZONES,مناطق تغطية المتجر,DSH,/api/dls/partners/{partner_id}/zones,user,DRAFT,تغطية المتجر,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_PICKUP_CLOSE,إقفال الاستلام الذاتي,DSH,/api/dls/orders/{order_id}/pickup/close,user,DRAFT,رمز 6 أرقام,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_QUOTES,تسعير مبدئي,DSH,/api/dls/quotes,user,DRAFT,احتساب التكلفة الأولية,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_REORDER,إعادة الطلب,DSH,/api/dls/orders/{order_id}/reorder,user,DRAFT,إنشاء طلب جديد من سابق,apps/user/SCREENS_CATALOG.csv
+APP-USER,APP_USER_DSH_SLOTS,فترات Dark-Store,DSH,/api/dls/slots,user,DRAFT,قائمة الفترات المتاحة,apps/user/SCREENS_CATALOG.csv
+DASH-FLEET,DASH_FLEET_DSH_DELIVERIES,تسليمات DSH,DSH,/api/ops/dls/orders,fleet,DRAFT,يعتمد على قراءة قائمة الطلبات للمتابعة اللحظية,dashboards/fleet/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_AUDIT_LOGS,سجل عمليات DSH,DSH,/api/ops/dls/audit/logs,ops,DRAFT,تحليل السجل مع البحث والفلترة,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_DISPATCH_ASSIGN,إعادة تعيين الطلب,DSH,/api/ops/dls/orders/{order_id}/dispatch/assign,ops,DRAFT,تعيين الكابتن أو الفريق المناسب,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_DISPUTES,قائمة النزاعات,DSH,/api/ops/dls/disputes,ops,DRAFT,متابعة النزاعات المفتوحة وإسنادها,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_INBOUND_PIPELINE,وارد القنوات التشغيلية,DSH,/api/ops/dls/inbound/messages,ops,DRAFT,تسوية الرسائل من القنوات التشغيلية,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_LIVE_ORDERS,طلبات DSH المباشرة,DSH,/api/dls/orders,ops,DRAFT,مراقبة الطلبات النشطة,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_ONBOARDING_QUEUE,طابور تفعيل الشركاء,DSH,/api/ops/dls/partners/onboarding,ops,DRAFT,متابعة حالات التفعيل والتنبيهات,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_ORDER_DETAILS,تفاصيل طلب التشغيل,DSH,/api/ops/dls/orders/{order_id},ops,DRAFT,استعراض حالة الطلب وتاريخ التعيين,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_PARTNER_NOTIF,تشغيل تنبيهات الشريك,DSH,/api/dls/partners/{partner_id}/notifications,ops,DRAFT,إدارة مهام التذكير والتصعيد,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_PARTNER_NOTIF_OPS,إرسال تنبيه تشغيلي,DSH,/api/ops/dls/partners/{partner_id}/notifications,ops,DRAFT,إرسال رسائل تشغيلية فورية,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_SLA_BREACHES,مخالفات SLA,DSH,/api/ops/dls/sla/breaches,ops,DRAFT,رصد حالات تجاوز زمن الخدمة,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_SLOT_OVERRIDE,تعديل فترات المخزون,DSH,/api/ops/dls/slots/{slot_id},ops,DRAFT,تصحيح الفترات أو إيقافها مؤقتًا,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_WEBHOOK_INBOUND,مراقبة رسائل الموردين,DSH,/api/dls/inbound/messages,ops,DRAFT,تحقق من صحة التوقيع والحد الزمني ≤300ث,dashboards/ops/SCREENS_CATALOG.csv
+DASH-OPS,DASH_OPS_DSH_WEBHOOK_STATUS,مراقبة حالة الشركاء,DSH,/api/dls/partner/inbound/status,ops,DRAFT,مراجعة تحديثات الحالة الواردة بموجب HMAC,dashboards/ops/SCREENS_CATALOG.csv
+DASH-PARTNER,DASH_PARTNER_DSH_ORDERS,طلبات DSH,DSH,/api/dls/partner/orders,partner,DRAFT,محاذاة مع تطبيق الشريك,dashboards/partner/SCREENS_CATALOG.csv
+marketing,DASH_MARKETING_DSHPARTNERS,شركاء DSH,DSH,/api/dls/partners/pending,marketing,DRAFT,مراقبة أداء المتاجر النشطة والمنتظرة,dashboards/marketing/SCREENS_CATALOG.csv

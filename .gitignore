@@ -1,22 +1,44 @@
-﻿# Windows noise
-AppData/
-NTUSER.DAT
-NTUSER.DAT.LOG*
-Thumbs.db
-Desktop.ini
+﻿# compiled output
+/dist
+/node_modules
 
-# User big dirs
-Downloads/
-OneDrive/
+# Logs
+logs
 *.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
 
-# Tools/cache
-.cache/
-node_modules/
-dist/
-reports/
-evidence/
+# OS
+.DS_Store
 
-# IDE
-.vscode/
-.idea/
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.temp

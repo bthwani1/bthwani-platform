@@ -1,5 +1,5 @@
 screen_id,screen_title,related_service,main_endpoint,role,status,notes
 DASH_FLEET_CAPTAIN_STATUS,حالة الكباتن,AMN,/api/amn/captains,fleet,DRAFT,"حالة الاتصال والتوافر"
-DASH_FLEET_DSH_DELIVERIES,تسليمات DSH,DSH,/api/dls/deliveries,fleet,DRAFT,"يتبع حوكمة PoD"
+DASH_FLEET_DSH_DELIVERIES,تسليمات DSH,DSH,/api/ops/dls/orders,fleet,DRAFT,"يعتمد على قراءة قائمة الطلبات للمتابعة اللحظية"
 DASH_FLEET_ALERTS,تنبيهات الأسطول,GLOBAL,[TBD],fleet,DRAFT,"ربط مع G-ALERT-BIND"
 

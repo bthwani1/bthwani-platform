@@ -1,19 +1,19 @@
 ﻿{
-  "version": "0.0.1-seed",
-  "updated_at": "[TBD]",
+  "version": "0.0.2-local",
+  "updated_at": "2025-11-14T01:15:00+03:00",
   "services": [
-    { "code": "DSH", "name": "Delivery & Shopping", "status": "DRAFT", "owner": "[TBD]" },
-    { "code": "WLT", "name": "Wallet / Ledger", "status": "DRAFT", "owner": "[TBD]" },
-    { "code": "ARB", "name": "Escrow & Bookings", "status": "DRAFT", "owner": "[TBD]" },
-    { "code": "ESF", "name": "Blood Donation", "status": "DRAFT", "owner": "[TBD]" },
-    { "code": "MRF", "name": "Lost & Found", "status": "DRAFT", "owner": "[TBD]" },
-    { "code": "KNZ", "name": "Marketplace", "status": "DRAFT", "owner": "[TBD]" },
-    { "code": "AMN", "name": "Safe Taxi", "status": "DRAFT", "owner": "[TBD]" },
-    { "code": "SND", "name": "On-demand Services", "status": "DRAFT", "owner": "[TBD]" },
-    { "code": "KWD", "name": "Jobs Platform", "status": "DRAFT", "owner": "[TBD]" }
+    { "code": "DSH", "name": "Delivery & Shopping", "status": "READY", "owner": "Platform Guild", "notes": ["Includes MPC + Partner Store Listings modules (catalog v1)."], "artifacts": { "inventory": "dist/dsh/DSH_INVENTORY.md", "parity": "dist/dsh/PARITY.csv", "traceability": "dist/dsh/TRACEABILITY.csv", "param_spec": "dist/dsh/PARAM_SPEC.json", "guards_report": "dist/dsh/DSH_GUARDS_REPORT.md" } },
+    { "code": "WLT", "name": "Wallet / Ledger", "status": "DRAFT", "owner": "Platform Guild" },
+    { "code": "ARB", "name": "Escrow & Bookings", "status": "DRAFT", "owner": "Platform Guild" },
+    { "code": "ESF", "name": "Blood Donation", "status": "DRAFT", "owner": "Platform Guild" },
+    { "code": "MRF", "name": "Lost & Found", "status": "DRAFT", "owner": "Platform Guild" },
+    { "code": "KNZ", "name": "Marketplace", "status": "DRAFT", "owner": "Platform Guild" },
+    { "code": "AMN", "name": "Safe Taxi", "status": "DRAFT", "owner": "Platform Guild" },
+    { "code": "SND", "name": "On-demand Services", "status": "DRAFT", "owner": "Platform Guild" },
+    { "code": "KWD", "name": "Jobs Platform", "status": "DRAFT", "owner": "Platform Guild" }
   ],
   "applications": [
-    { "code": "APP-USER", "status": "DRAFT", "primary_services": ["DSH", "KNZ", "AMN", "KWD", "SND", "MRF", "ESF", "ARB", "WLT"] },
+    { "code": "APP-USER", "status": "READY", "primary_services": ["DSH", "KNZ", "AMN", "KWD", "SND", "MRF", "ESF", "ARB", "WLT"] },
     { "code": "APP-PARTNER", "status": "DRAFT", "primary_services": ["DSH", "ARB", "WLT"] },
     { "code": "APP-CAPTAIN", "status": "DRAFT", "primary_services": ["DSH", "AMN", "WLT"] },
     { "code": "APP-FIELD", "status": "DRAFT", "primary_services": ["DSH", "ARB"] }
@@ -32,7 +32,7 @@
   ],
   "version_matrix": {
     "services": [
-      { "code": "DSH", "version": "2.2", "state": "DRAFT" },
+      { "code": "DSH", "version": "2.2", "state": "READY" },
       { "code": "KNZ", "version": "1.1", "state": "DRAFT" },
       { "code": "AMN", "version": "1.0", "state": "DRAFT" },
       { "code": "KWD", "version": "1.0", "state": "DRAFT" },
@@ -43,7 +43,7 @@
       { "code": "WLT", "version": "1.0", "state": "DRAFT" }
     ],
     "applications": [
-      { "code": "APP-USER", "version": "2.0.0", "state": "DRAFT" },
+      { "code": "APP-USER", "version": "2.0.0", "state": "READY" },
       { "code": "APP-PARTNER", "version": "2.0.0", "state": "DRAFT" },
       { "code": "APP-CAPTAIN", "version": "2.0.0", "state": "DRAFT" },
       { "code": "APP-FIELD", "version": "2.0.0", "state": "DRAFT" }
@@ -60,11 +60,11 @@
       { "code": "ssot", "version": "0.1.0", "state": "DRAFT" },
       { "code": "security", "version": "0.1.0", "state": "DRAFT" }
     ],
-    "notes": "Initial seed — Wave 0"
+    "notes": "Local snapshot derived from repo data (registry, runtime vars, OAS, screens catalogs)"
   },
   "notes": [
-    "يتم تحديث هذا الملف مع كل Wave جديدة.",
-    "تُستبدل قيم `[TBD]` فور اعتماد المالك أو SSoT الخارجي.",
-    "يتم استخدام هذا الملف كمصدر رئيسي للحالة داخل أدوات الحُرّاس."
+    "ÙŠØªÙ… ØªØ­Ø¯ÙŠØ« Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù Ù…Ø¹ ÙƒÙ„ Wave Ø¬Ø¯ÙŠØ¯Ø© Ø¨Ù†Ø§Ø¡Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø¯Ø§Ø®Ù„ Ù‡Ø°Ø§ Ø§Ù„Ù…Ø³ØªÙˆØ¯Ø¹ ÙÙ‚Ø·.",
+    "Ù‚ÙÙŠÙŽÙ… Ø§Ù„Ù…Ø§Ù„Ùƒ ÙŠØªÙ… Ø¶Ø¨Ø·Ù‡Ø§ Ø§ÙØªØ±Ø§Ø¶ÙŠÙ‹Ø§ Ø¹Ù„Ù‰ Platform Guild Ø­ØªÙ‰ ÙŠØªÙ… ØªØ­Ø¯ÙŠØ¯ ÙØ±Ù‚ Ù…ØªØ®ØµØµØ©.",
+    "ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù ÙƒÙ…ØµØ¯Ø± Ø±Ø¦ÙŠØ³ÙŠ Ù„Ù„Ø­Ø§Ù„Ø© Ø¯Ø§Ø®Ù„ Ø£Ø¯ÙˆØ§Øª Ø§Ù„Ø­ÙØ±Ù‘Ø§Ø³ Ø§Ù„Ù…Ø­Ù„ÙŠØ©."
   ]
 }

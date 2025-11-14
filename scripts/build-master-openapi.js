@@ -134,6 +134,83 @@ function deriveParameterKey(entry, context) {
   throw new Error(`Invalid parameter definition in ${context}`);
 }
 
+function isPlainObject(value) {
+  return value !== null && typeof value === 'object' && !Array.isArray(value);
+}
+
+function isPlaceholderSchema(schema) {
+  if (!isPlainObject(schema)) {
+    return false;
+  }
+
+  if (schema.type !== 'object') {
+    return false;
+  }
+
+  const hasStructure =
+    schema.properties ||
+    schema.allOf ||
+    schema.oneOf ||
+    schema.anyOf ||
+    schema.items ||
+    schema.enum;
+
+  if (hasStructure) {
+    return false;
+  }
+
+  const description = typeof schema.description === 'string' ? schema.description.toLowerCase() : '';
+  if (description.includes('placeholder') || description.includes('[tbd]')) {
+    return true;
+  }
+
+  const structuralKeys = Object.keys(schema).filter(
+    (key) =>
+      ![
+        'type',
+        'description',
+        'nullable',
+        'deprecated',
+        'example',
+        'default',
+        'title',
+        'format',
+      ].includes(key),
+  );
+
+  return structuralKeys.length === 0;
+}
+
+function shouldOverrideComponent(section, existing, incoming) {
+  if (section !== 'schemas') {
+    return false;
+  }
+
+  const existingIsPlaceholder = isPlaceholderSchema(existing);
+  const incomingIsPlaceholder = isPlaceholderSchema(incoming);
+
+  if (existingIsPlaceholder && !incomingIsPlaceholder) {
+    return true;
+  }
+
+  if (!existingIsPlaceholder && incomingIsPlaceholder) {
+    return false;
+  }
+
+  const existingIsFiller = isFillerSchema(existing);
+  const incomingIsFiller = isFillerSchema(incoming);
+
+  if (existingIsFiller && !incomingIsFiller) {
+    return true;
+  }
+
+  if (!existingIsFiller && incomingIsFiller) {
+    return false;
+  }
+
+  return false;
+}
+
 function mergeComponents(target, source, context) {
   if (!source) {
     return;
@@ -150,6 +227,10 @@ function mergeComponents(target, source, context) {
     for (const [name, schema] of Object.entries(sectionSource)) {
       if (sectionTarget[name]) {
         if (!isDeepStrictEqual(sectionTarget[name], schema)) {
+          if (shouldOverrideComponent(section, sectionTarget[name], schema)) {
+            sectionTarget[name] = schema;
+            continue;
+          }
           throw new Error(`Component conflict for "${section}.${name}" in ${context}`);
         }
       } else {
@@ -157,6 +238,37 @@ function mergeComponents(target, source, context) {
       }
     }
   }
+}
+
+function isFillerSchema(schema) {
+  if (!isPlainObject(schema)) {
+    return false;
+  }
+
+  if (schema.type !== 'object') {
+    return false;
+  }
+
+  const keys = Object.keys(schema);
+
+  const allowedKeys = new Set(['type', 'description', 'required', 'properties']);
+  if (!keys.every((key) => allowedKeys.has(key))) {
+    return false;
+  }
+
+  if (!Array.isArray(schema.required) || schema.required.length === 0) {
+    return false;
+  }
+
+  if (!isPlainObject(schema.properties) || Object.keys(schema.properties).length === 0) {
+    return false;
+  }
+
+  const propertyHasFormatUri = Object.values(schema.properties).some(
+    (property) => isPlainObject(property) && property.format === 'uri',
+  );
+
+  return propertyHasFormatUri;
 }
 
 function mergePaths(target, source, context) {

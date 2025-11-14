@@ -6,3 +6,21 @@ VAR_AMN_ALLOWED_REGIONS,AMN,"[TBD]",AMN,"قائمة المناطق المفعل�
 VAR_ARB_ESCROW_TIMEOUT_MINUTES,ARB,1440,ARB,"مدة صلاحية العربون قبل الإلغاء التلقائي (بالدقائق)",DRAFT,"يتطلب تأكيد من الحوكمة"
 VAR_ESF_NOTIFICATION_WINDOW,ESF,08:00-22:00,ESF,"نطاق إرسال التنبيهات لخدمة اسعِفني",DRAFT,"خصوصية عالية"
 VAR_CHAT_RETENTION_DAYS,GLOBAL,30,GLOBAL,"عدد أيام الاحتفاظ بسجلات الدردشة",DRAFT,"Requires privacy approval"
+VAR_DLS_PARTNER_ACCEPT_SLA_MIN,DSH,4,DSH,"دقائق الانتظار قبل تذكير الشريك بقبول الطلب",DRAFT,"Used by partner reminder automation"
+VAR_NOTIF_DEDUP_WINDOW_MIN,GLOBAL,10,DSH,"نافذة منع التكرار لتذكير الشركاء (بالدقائق)",DRAFT,"Shared with notifications service"
+VAR_NOTIF_CHANNEL_PRIORITY,GLOBAL,"[""wa"",""sms"",""push""]",DSH,"ترتيب قنوات تذكير الشركاء",DRAFT,"JSON array"
+VAR_NOTIF_WA_TEMPLATE,GLOBAL,partner_accept_reminder_v1,DSH,"اسم قالب واتساب المستخدم لتذكير الشريك",DRAFT,
+VAR_NOTIF_SMS_TEMPLATE,GLOBAL,partner_accept_reminder_v1,DSH,"اسم قالب SMS fallback لتذكير الشريك",DRAFT,
+VAR_NOTIF_PARTNER_RATE_PER_15MIN,GLOBAL,3,DSH,"أقصى عدد تذكيرات للشريك لكل 15 دقيقة",DRAFT,
+VAR_NOTIF_ESCALATE_MIN,GLOBAL,6,DSH,"دقائق بعد التذكير قبل تصعيد الطلب للعمليات",DRAFT,
+VAR_LINK_PARTNER_ORDER_BASE,GLOBAL,https://app.bthwani.com/partner/orders/,DSH,"رابط الويب الأساسي لطلبات الشريك",DRAFT,
+VAR_DEEPLINK_PARTNER_ORDER_BASE,GLOBAL,bthwani-partner://orders/,DSH,"رابط deeplink لتوجيه الشريك إلى التطبيق",DRAFT,
+VAR_MPC_PRICE_ROUNDING_MODE,GLOBAL,ROUND_HALF_UP,DSH,"قاعدة تقريب أسعار YER على مستوى المنصة",DRAFT,
+VAR_MPC_DEFAULT_LOCALE,GLOBAL,ar,DSH,"اللغة الافتراضية لعرض بيانات الكتالوج",DRAFT,"يُستخدم للـSEO والبحث"
+VAR_MPC_MEDIA_PROVIDER,GLOBAL,media_provider_a,DSH,"مزوّد تخزين الوسائط لصور الكتالوج",DRAFT,"قابل للتغيير من لوحة التحكم"
+VAR_DSH_CATALOG_IMPORT_MAX_ROWS,GLOBAL,5000,DSH,"الحد الأقصى لصفوف CSV في الاستيراد الواحد",DRAFT,
+VAR_DSH_CATALOG_BULK_RATE_LIMIT,GLOBAL,10,DSH,"عدد استيرادات الكتالوج المسموح بها لكل ساعة",DRAFT,
+VAR_DSH_CATALOG_MODERATION_REQUIRED,GLOBAL,true,DSH,"اشتراط المرور عبر moderation قبل نشر المنتج",DRAFT,
+VAR_DSH_CATALOG_SEARCH_SYNONYMS,GLOBAL,"{""apple"":""تفاح"",""banana"":""موز""}",DSH,"مرادفات البحث الافتراضية (JSON)" ,DRAFT,
+VAR_DSH_CATALOG_SAFETY_STOCK_MIN,GLOBAL,5,DSH,"حد أمان المخزون الافتراضي عند غياب قيمة المتجر",DRAFT,
+VAR_DSH_CATALOG_SENSITIVE_POLICY,GLOBAL,restricted,DSH,"سياسة التعامل مع العناصر الحساسة (RBAC profile)",DRAFT,

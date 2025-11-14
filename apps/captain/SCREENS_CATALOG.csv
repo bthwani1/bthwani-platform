@@ -8,4 +8,10 @@ CAPTAIN_TIMELINE,الخط الزمني,DSH,"/api/dls/captain/orders/{order_id}/t
 CAPTAIN_AVAILABILITY,التوفر,DSH,"/api/dls/captain/availability",captain,DRAFT,"تفعيل/تعطيل الدوام وتحديد المناطق"
 CAPTAIN_EARNINGS,الأرباح,DSH,"/api/dls/captain/earnings",captain,DRAFT,"عرض أرباح الكابتن"
 CAPTAIN_LOCATION_UPDATE,تحديث الموقع,DSH,"/api/dls/captain/location",captain,DRAFT,"نبضات الموقع الدورية"
+CAPTAIN_CHAT_HISTORY,سجل الدردشة,DSH,"/api/dls/captain/orders/{order_id}/chat/messages",captain,DRAFT,"استعراض سجل الدردشة مع دعم pagination"
+CAPTAIN_FLOW_ARRIVED_STORE,تسجيل الوصول إلى المتجر,DSH,"/api/dls/captain/orders/{order_id}/arrived-store",captain,DRAFT,"تأكيد الوصول إلى المتجر"
+CAPTAIN_FLOW_ARRIVED_CUSTOMER,تسجيل الوصول للعميل,DSH,"/api/dls/captain/orders/{order_id}/arrived-customer",captain,DRAFT,"تأكيد الوصول إلى العميل"
+CAPTAIN_FLOW_PICKED_UP,تأكيد استلام الطلب,DSH,"/api/dls/captain/orders/{order_id}/picked-up",captain,DRAFT,"إقرار استلام الطلب من المتجر"
+CAPTAIN_FLOW_DELIVERED,تأكيد التسليم,DSH,"/api/dls/captain/orders/{order_id}/delivered",captain,DRAFT,"إقرار إتمام التسليم النهائي"
+CAPTAIN_FLOW_REJECT,رفض الطلب,DSH,"/api/dls/captain/orders/{order_id}/reject",captain,DRAFT,"رفض الطلب مع سبب متوافق"
 

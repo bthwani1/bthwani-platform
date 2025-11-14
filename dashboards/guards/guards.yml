@@ -1,0 +1,53 @@
+version: 2025-11-14
+service: SRV-DSH
+wave: WAVE-DSH/00
+checks:
+  - id: G-IDEMPOTENCY
+    description: All POST/PATCH/DELETE endpoints must require Idempotency-Key headers.
+    evidence: dist/dsh/PARITY.csv
+    status: pass
+  - id: G-WEBHOOK-HMAC
+    description: Webhooks must enforce HMAC signatures with anti-replay ≤300s.
+    evidence: oas/services/dsh/openapi.yaml#/paths/~1api~1dls~1inbound~1messages/post
+    status: pass
+  - id: G-TRACE
+    description: FE↔BE traceability coverage equals 1.00.
+    evidence: dist/dsh/DSH_INVENTORY.md
+    status: pass
+  - id: G-PARITY
+    description: BE/FE parity ≥0.90 for SRV-DSH surfaces.
+    evidence: dist/dsh/PARITY.csv
+    status: pass
+  - id: G-PRIVACY-EXPORT
+    description: Sensitive payload exports (chat, notifications) assert masking policies.
+    evidence: oas/services/dsh/openapi.yaml#/paths/~1api~1dls~1orders~1{order_id}~1chat~1messages
+    status: pass
+  - id: G-WEB-DOCS
+    description: Web/app documentation remains aligned with SSOT registry.
+    evidence: scripts/guard_web_surfaces.py
+    status: pass
+  - id: G-NO-SECRETS
+    description: Repo scan shows no committed secrets under SRV-DSH scope.
+    evidence: dist/dsh/DSH_GUARDS_REPORT.md
+    status: pass
+    notes: gitleaks v8.18.2 (`tools/gitleaks/gitleaks.exe`) — report `dist/dsh/gitleaks_report.json`.
+  - id: G-OASDIFF
+    description: Backward-compat diff against baseline passes with no errors.
+    evidence: dist/dsh/OASDIFF_BREAKING.txt
+    status: fail
+    notes: Breaking changes detected (schema removals, response contract drifts) — see report.
+  - id: G-STATIC-SEMgrep
+    description: Semgrep security/static analysis must execute cleanly.
+    evidence: dist/dsh/DSH_GUARDS_REPORT.md
+    status: blocked
+    notes: Windows binary unavailable; pip build requires MSVC toolchain.
+  - id: G-OPA
+    description: OPA policy evaluation for SRV-DSH dashboards.
+    evidence: dashboards/guards/guards.yml
+    status: pending
+    notes: OPA runtime not provisioned in current environment.
+  - id: G-PERF-A11Y
+    description: A11y/Perf probes (orders & partner lists) must meet thresholds.
+    evidence: dist/dsh/DSH_GUARDS_REPORT.md
+    status: pending
+    notes: Requires staging telemetry or mock harness.

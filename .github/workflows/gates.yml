@@ -11,7 +11,70 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo contracts ok
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Verify master OpenAPI is up to date
+        run: npm run check:openapi
+
+  gates_build:
+    name: "gates / build"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build application
+        run: npm run build
+      - name: Verify build artifacts
+        run: |
+          if [ ! -f "dist/main.js" ]; then
+            echo "::error::Build failed: dist/main.js not found"
+            exit 1
+          fi
+
+  gates_lint:
+    name: "gates / lint"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run linter
+        run: npm run lint
+
+  gates_test:
+    name: "gates / test"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Run unit tests
+        run: npm test
+      - name: Run E2E tests
+        run: npm run test:e2e
+      - name: Upload coverage
+        if: always()
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage/lcov.info
+          fail_ci_if_error: false
 
   gates_security:
     name: "gates / security"
@@ -25,7 +88,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: echo perf ok
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Build application
+        run: npm run build
+      - name: Run performance tests
+        run: npm test -- test/performance
+        continue-on-error: true
 
   gates_supply:
     name: "gates / supply"
@@ -292,6 +365,9 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - gates_contracts
+      - gates_build
+      - gates_lint
+      - gates_test
       - gates_security
       - gates_perf
       - gates_supply

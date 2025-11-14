@@ -30,6 +30,7 @@ paths:
       tags: [PaymentIntents]
       operationId: wlt_intents_create
       summary: إنشاء نية دفع جديدة لطلب تابع لخدمة DSH أو خدمة أخرى.
+      description: Creates a new wallet payment intent for an upstream order while enforcing idempotency.
       x-surface: APP-USER
       x-screen: app_user.checkout.payment
       x-action: create_payment_intent
@@ -57,6 +58,7 @@ paths:
       tags: [PaymentIntents]
       operationId: wlt_intents_get
       summary: استعلام حالة نية الدفع الحالية.
+      description: Retrieves the latest state of an existing wallet payment intent.
       x-surface: APP-USER
       x-screen: app_user.checkout.payment
       x-action: poll_payment_intent
@@ -78,6 +80,7 @@ paths:
       tags: [PaymentConfirmations]
       operationId: wlt_intents_confirm
       summary: تأكيد نية الدفع بعد رد مزود الدفع.
+      description: Confirms a wallet payment intent using the PSP callback payload.
       x-surface: APP-USER
       x-screen: app_user.checkout.payment
       x-action: confirm_payment
@@ -106,6 +109,7 @@ paths:
       tags: [Settlements]
       operationId: wlt_capture_adjust
       summary: تعديل قيمة الالتقاط بعد تغييرات في الطلب (مثل الاستبدال أو الإرجاع).
+      description: Applies a capture delta to align wallet settlement amounts with downstream order changes.
       x-surface: SYSTEM
       x-screen: system.settlements.capture
       x-action: dsh_capture_adjust
@@ -134,6 +138,7 @@ paths:
       tags: [WalletWebhooks]
       operationId: wlt_refunds_inbound
       summary: Webhook لاستلام أحداث الاسترداد أو الـ chargeback من مزود الدفع.
+      description: Ingests signed refund or chargeback events emitted by the PSP for wallet reconciliation.
       x-surface: SYSTEM
       x-screen: system.webhooks.refunds
       x-action: wlt_refund_webhook
@@ -177,28 +182,86 @@ components:
       description: معرّف نية الدفع داخل WLT.
   responses:
     StandardError:
-      description: RFC7807 error payload.
+      description: RFC7807 problem+json envelope for error responses.
       content:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Problem'
+          examples:
+            canonical:
+              summary: Canonical problem response
+              description: Canonical problem response
+              value:
+                type: https://errors.bthwani.com/common/unexpected_error
+                title: Unexpected error
+                status: 500
+                code: SVR-500-UNEXPECTED
+                detail: An unexpected error occurred. Please retry.
+                traceId: '00000000000000000000000000000000'
+                errors: []
   schemas:
     Problem:
       type: object
+      description: RFC7807-compliant error envelope with service catalog codes.
+      required:
+        - type
+        - title
+        - status
+        - code
+        - traceId
       properties:
         type:
           type: string
           format: uri
+          description: Machine-readable problem type URI.
         title:
           type: string
+          description: Human-readable summary of the error condition.
         status:
           type: integer
+          description: HTTP status code applied to the response.
+        code:
+          type: string
+          description: Service-specific error code following {SERVICE}-{HTTP}-{KEY}.
+          pattern: '^[A-Z]{3}-[0-9]{3}-[A-Z0-9\-]+$'
         detail:
           type: string
+          description: Additional context; must not contain raw PII.
+        traceId:
+          type: string
+          description: Correlation identifier to link logs and traces.
         instance:
           type: string
           format: uri
-      required: [title, status]
+          description: Optional URI reference to a support ticket or incident.
+        errorCatalog:
+          $ref: '#/components/schemas/ErrorCatalog'
+        errors:
+          type: array
+          description: Field-level validation or domain errors.
+          items:
+            $ref: '#/components/schemas/ProblemDetail'
+    ProblemDetail:
+      type: object
+      properties:
+        field:
+          type: string
+          description: Field or entity associated with the error detail.
+        message:
+          type: string
+          description: Localized, sanitized description safe for clients and logs.
+    ErrorCode:
+      type: string
+      description: Application-specific standardized error code.
+      pattern: '^[A-Z]{3}-[0-9]{3}-[A-Z0-9\-]+$'
+      example: SVR-500-UNEXPECTED
+    ErrorCatalog:
+      type: array
+      description: Enumerated catalog of standard error codes relevant to the context.
+      minItems: 1
+      uniqueItems: true
+      items:
+        $ref: '#/components/schemas/ErrorCode'
     PaymentIntentCreateRequest:
       type: object
       additionalProperties: false
@@ -242,6 +305,7 @@ components:
         id:
           type: string
           maxLength: 64
+          description: Identifier of the payment intent within the wallet service.
         status:
           type: string
           enum:
@@ -251,23 +315,32 @@ components:
             - succeeded
             - failed
             - canceled
+          description: Current state of the payment intent.
         amount:
           type: integer
+          minimum: 0
+          description: Amount in the smallest currency unit.
         currency:
           type: string
           minLength: 3
           maxLength: 3
+          description: ISO-4217 currency code.
         order_reference:
           type: string
+          maxLength: 64
+          description: Reference to the source order in the consuming service.
         created_at:
           type: string
           format: date-time
+          description: Creation timestamp (ISO 8601).
         updated_at:
           type: string
           format: date-time
+          description: Last update timestamp (ISO 8601).
         metadata:
           type: object
           additionalProperties: true
+          description: Provider metadata forwarded from the PSP.
     PaymentConfirmationRequest:
       type: object
       additionalProperties: false

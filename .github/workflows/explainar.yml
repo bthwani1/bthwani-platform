@@ -1,0 +1,29 @@
+name: Explainar Sync
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Generate explainar references
+        run: python scripts/generate_explainar.py
+
+      - name: Ensure explainar docs are up to date
+        run: |
+          if [[ -n "$(git status --porcelain docs/explainar/generated)" ]]; then
+            echo "::error::Explainar generated docs are out of date. Run 'python scripts/generate_explainar.py' and commit the changes.";
+            git diff docs/explainar/generated;
+            exit 1;
+          fi
