@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\transport\wsgi.py
+# hypothesis_version: 6.147.0
+
+['Content-Type', 'app', 'application/json', 'application/x-yaml', 'application/xml', 'application/yaml', 'cookies', 'data', 'headers', 'localhost', 'method', 'multipart/form-data', 'multipart/mixed', 'params', 'path', 'query_string', 'text/json', 'text/plain', 'text/vnd.yaml', 'text/x-yaml', 'text/xml', 'text/yaml', 'text/yml', 'werkzeug.Client']

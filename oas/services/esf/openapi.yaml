@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: "BThwani — Blood Donation (ESF) API"
+  title: 'BThwani — Blood Donation (ESF) API'
   description: Core endpoints for the peer-to-peer blood donation service (ESF).
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: "0.0.0-seed"
+  version: '0.0.0-seed'
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev

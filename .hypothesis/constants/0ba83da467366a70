@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\generation\stateful\state_machine.py
+# hypothesis_version: 6.147.0
+
+['.TestCase', '\\W|^(?=\\d)', '_', '__', 'applied_parameters', 'case', 'case_id', 'defines no rules', 'definition', 'error', 'expression', 'history', 'id', 'is_inferred', 'is_required', 'parameter_name', 'parameters', 'parent_id', 'request_body', 'response', 'source', 'target', 'transition', 'value']

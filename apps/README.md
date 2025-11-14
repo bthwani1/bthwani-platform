@@ -21,4 +21,3 @@ Required columns (see headers in each file):
 4. Run `python scripts/generate_explainar.py` so explainar docs stay in sync.
 
 See `docs/ARCHITECTURE.md` for how apps connect to services, dashboards, and traces.
-

@@ -22,4 +22,3 @@ Each subfolder (`admin/`, `bi/`, `finance/`, etc.) contains a `SCREENS_CATALOG.c
 4. Adjust guard files when KPIs or enforcement levels change.
 
 For the global view of how dashboards link to services and guards, see `docs/ARCHITECTURE.md` and `docs/Guidancefiles/DASHBOARDS_OVERVIEW.mdc`.
-

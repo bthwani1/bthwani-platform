@@ -38,4 +38,3 @@ export class Migration20250101000000 extends Migration {
     `);
   }
 }
-

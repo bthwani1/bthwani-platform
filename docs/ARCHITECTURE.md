@@ -4,24 +4,24 @@ This document connects code, contracts, runtime configuration, and experience su
 
 ## 1. Directory Map
 
-| Directory | Purpose | Owner docs |
-| --- | --- | --- |
-| `src/` | NestJS runtime (core + shared modules + per-service modules) | `README.md` inside `src/` |
-| `oas/` | OpenAPI contracts per service + `master` aggregate | `oas/README.md` |
-| `apps/` | Mobile/web application screen catalogs (`SCREENS_CATALOG.csv`) | `apps/README.md` |
-| `dashboards/` | Analytics/ops surface catalogs + guard configs | `dashboards/README.md` |
-| `docs/Guidancefiles/` | Governance + playbooks | `docs/README.md` |
-| `docs/explainar/` | Generated explainers that link OAS ↔ apps/dashboards | `docs/README.md` |
-| `registry/` | SSOT registry + approvals log | `registry/SSOT_INDEX.json` |
-| `runtime/` | Runtime VAR_* catalog and guard parameters | `runtime/RUNTIME_VARS_CATALOG.csv` |
-| `.github/workflows/` | CI gates, guards, explainar sync, contracts | workflow YAML files |
-| `scripts/` | Automation (OAS generation, explainar, guards) | script-level docstrings |
+| Directory             | Purpose                                                        | Owner docs                         |
+| --------------------- | -------------------------------------------------------------- | ---------------------------------- |
+| `src/`                | NestJS runtime (core + shared modules + per-service modules)   | `README.md` inside `src/`          |
+| `oas/`                | OpenAPI contracts per service + `master` aggregate             | `oas/README.md`                    |
+| `apps/`               | Mobile/web application screen catalogs (`SCREENS_CATALOG.csv`) | `apps/README.md`                   |
+| `dashboards/`         | Analytics/ops surface catalogs + guard configs                 | `dashboards/README.md`             |
+| `docs/Guidancefiles/` | Governance + playbooks                                         | `docs/README.md`                   |
+| `docs/explainar/`     | Generated explainers that link OAS ↔ apps/dashboards          | `docs/README.md`                   |
+| `registry/`           | SSOT registry + approvals log                                  | `registry/SSOT_INDEX.json`         |
+| `runtime/`            | Runtime VAR\_\* catalog and guard parameters                   | `runtime/RUNTIME_VARS_CATALOG.csv` |
+| `.github/workflows/`  | CI gates, guards, explainar sync, contracts                    | workflow YAML files                |
+| `scripts/`            | Automation (OAS generation, explainar, guards)                 | script-level docstrings            |
 
 ## 2. Relationship Model
 
 ```
 registry/SSOT_INDEX.json  ---> defines service/app/dashboard lifecycle status
-        | 
+        |
         +--> oas/services/<code>/openapi.yaml   # contract, servers, metadata
         |
         +--> src/modules/<code>/...             # runtime implementation (when READY)
@@ -80,4 +80,3 @@ npm run build:openapi
 ```
 
 Use this document whenever you need to find the right place for a change across services, apps, dashboards, and governance assets. Updates to structure should be reflected here so @docs stays the single source of truth for repository layout.
-

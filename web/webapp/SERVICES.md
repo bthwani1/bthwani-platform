@@ -8,17 +8,17 @@ This document tracks how the browser-based app mirrors the customer mobile app. 
 
 ## Default Service Modes
 
-| Service | Default Mode | Runtime Variable | Notes |
-| --- | --- | --- | --- |
-| DSH v2.2 | full | VAR_WEBAPP_FEATURE_DSH_MODE | Full checkout + tracking flows. Mirrors mobile app behaviour. |
-| KNZ v1.1 | browse_only | VAR_WEBAPP_FEATURE_KNZ_MODE | Catalog browse/details only; sensitive categories are view-only. |
-| AMN v1.0 | info_only | VAR_WEBAPP_FEATURE_AMN_MODE | Shows marketplace info screens; redirects to native app where needed. |
-| KWD v1.0 | search_details_only | VAR_WEBAPP_FEATURE_KWD_MODE | Enables search + detail views, no CRUD actions. |
-| MRF v2.0 | full | VAR_WEBAPP_FEATURE_MRF_MODE | Full incident filing and internal chat. |
-| ESF v1.2 | full | VAR_WEBAPP_FEATURE_ESF_MODE | Full enablement (request + matching). |
-| SND v1.0 | full | VAR_WEBAPP_FEATURE_SND_MODE | Specialist assistance; no internal billing. |
-| ARB v2.0 | full | VAR_WEBAPP_FEATURE_ARB_MODE | Booking + 6-digit lock workflows (step-up enforced). |
-| WLT v1.0 | embedded_only | VAR_WEBAPP_FEATURE_WLT_MODE | Only exposed within DSH checkout flows. |
+| Service  | Default Mode        | Runtime Variable            | Notes                                                                 |
+| -------- | ------------------- | --------------------------- | --------------------------------------------------------------------- |
+| DSH v2.2 | full                | VAR_WEBAPP_FEATURE_DSH_MODE | Full checkout + tracking flows. Mirrors mobile app behaviour.         |
+| KNZ v1.1 | browse_only         | VAR_WEBAPP_FEATURE_KNZ_MODE | Catalog browse/details only; sensitive categories are view-only.      |
+| AMN v1.0 | info_only           | VAR_WEBAPP_FEATURE_AMN_MODE | Shows marketplace info screens; redirects to native app where needed. |
+| KWD v1.0 | search_details_only | VAR_WEBAPP_FEATURE_KWD_MODE | Enables search + detail views, no CRUD actions.                       |
+| MRF v2.0 | full                | VAR_WEBAPP_FEATURE_MRF_MODE | Full incident filing and internal chat.                               |
+| ESF v1.2 | full                | VAR_WEBAPP_FEATURE_ESF_MODE | Full enablement (request + matching).                                 |
+| SND v1.0 | full                | VAR_WEBAPP_FEATURE_SND_MODE | Specialist assistance; no internal billing.                           |
+| ARB v2.0 | full                | VAR_WEBAPP_FEATURE_ARB_MODE | Booking + 6-digit lock workflows (step-up enforced).                  |
+| WLT v1.0 | embedded_only       | VAR_WEBAPP_FEATURE_WLT_MODE | Only exposed within DSH checkout flows.                               |
 
 **Modes:**
 

@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\cli\commands\run\validation.py
+# hypothesis_version: 6.147.0
+
+['\x00', ' and ', ':', 'Header', 'The ', '`--auth`', '`--header`', 'all', 'authorization', 'auto', 'report_formats', 'report_har_path', 'report_vcr_path', 'request_cert']

@@ -4,11 +4,11 @@ This reference consolidates how the DSH service interacts with the public site (
 
 ## 1. Hosts and Scope
 
-| Host | Purpose | DSH interaction | Notes |
-| --- | --- | --- | --- |
-| pi.bthwani.com | Core SRV-DSH v2.2 API | Full read/write surface | Bearer JWT required. Idempotency-Key mandatory on unsafe methods. HMAC webhooks (anti-replay ≤ 300s). |
-| pp.bthwani.com | Customer web application (APP-USER) | Consumes pi.bthwani.com for browse → quote → order → payment → PoD → chat | Guests can browse. Sessions in HttpOnly cookie + CSRF token. Service modes mirror the customer app; defaults tracked in webapp/SERVICES.md. |
-| thwani.com | Marketing/SEO site | Optional cached GET-only reads (coverage, hours, CTA) | No POST/PUT/PATCH/DELETE. Content via CMS/SSG behind edge cache; any DSH data must have explicit TTL. Live CTAs documented in website/SERVICES.md. |
+| Host           | Purpose                             | DSH interaction                                                           | Notes                                                                                                                                              |
+| -------------- | ----------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pi.bthwani.com | Core SRV-DSH v2.2 API               | Full read/write surface                                                   | Bearer JWT required. Idempotency-Key mandatory on unsafe methods. HMAC webhooks (anti-replay ≤ 300s).                                              |
+| pp.bthwani.com | Customer web application (APP-USER) | Consumes pi.bthwani.com for browse → quote → order → payment → PoD → chat | Guests can browse. Sessions in HttpOnly cookie + CSRF token. Service modes mirror the customer app; defaults tracked in webapp/SERVICES.md.        |
+| thwani.com     | Marketing/SEO site                  | Optional cached GET-only reads (coverage, hours, CTA)                     | No POST/PUT/PATCH/DELETE. Content via CMS/SSG behind edge cache; any DSH data must have explicit TTL. Live CTAs documented in website/SERVICES.md. |
 
 ## 2. Key Customer Flows (pp.bthwani.com ⇄ pi.bthwani.com)
 
@@ -44,11 +44,11 @@ This reference consolidates how the DSH service interacts with the public site (
 
 ## 6. Operational Matrix
 
-| Host | DSH operations | Example endpoints | RBAC | Policy highlights |
-| --- | --- | --- | --- | --- |
-| thwani.com | GET (optional, via proxy cache) | /api/dls/partners/{id}/zones (cached) | public | Robots Allow, cache-first, **no auth, no write** |
-| pp.bthwani.com | Full GET/POST/PATCH flows | /api/dls/orders, /wallet/intents | user | JWT HttpOnly, CSRF, idempotency, rate limits |
-| pi.bthwani.com | Service endpoints | All SRV-DSH v2.2 routes | service | HMAC webhooks, Step-Up for financial/approval paths |
+| Host           | DSH operations                  | Example endpoints                     | RBAC    | Policy highlights                                   |
+| -------------- | ------------------------------- | ------------------------------------- | ------- | --------------------------------------------------- |
+| thwani.com     | GET (optional, via proxy cache) | /api/dls/partners/{id}/zones (cached) | public  | Robots Allow, cache-first, **no auth, no write**    |
+| pp.bthwani.com | Full GET/POST/PATCH flows       | /api/dls/orders, /wallet/intents      | user    | JWT HttpOnly, CSRF, idempotency, rate limits        |
+| pi.bthwani.com | Service endpoints               | All SRV-DSH v2.2 routes               | service | HMAC webhooks, Step-Up for financial/approval paths |
 
 ---
 

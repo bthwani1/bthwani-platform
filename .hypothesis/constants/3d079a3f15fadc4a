@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\openapi\stateful\dependencies\models.py
+# hypothesis_version: 6.147.0
+
+[0.6, '/', '0/', 'MANY', 'ONE', 'cardinality', 'fields', 'inputs', 'is_inferred', 'links', 'merge_body', 'method', 'name', 'operationRef', 'operation_ref', 'operations', 'outputs', 'parameter_location', 'parameter_name', 'parameters', 'path', 'pointer', 'requestBody', 'request_body', 'resource', 'resource_field', 'resources', 'source', 'status_code', 'types']

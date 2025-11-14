@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: "BThwani — Lost & Found (MRF) API"
+  title: 'BThwani — Lost & Found (MRF) API'
   description: Core endpoints for the lost and found service (MRF).
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: "0.0.0-seed"
+  version: '0.0.0-seed'
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev

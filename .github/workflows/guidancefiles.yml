@@ -3,7 +3,7 @@ name: Guidancefiles Guard
 on:
   pull_request:
   push:
-    branches: ["main"]
+    branches: ['main']
 
 jobs:
   guard:

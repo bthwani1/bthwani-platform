@@ -19,6 +19,7 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
+    "resolveJsonModule": true,
     "paths": {
       "@core/*": ["src/core/*"],
       "@shared/*": ["src/shared/*"],
@@ -28,4 +29,3 @@
   "include": ["src/**/*", "test/**/*"],
   "exclude": ["node_modules", "dist"]
 }
-

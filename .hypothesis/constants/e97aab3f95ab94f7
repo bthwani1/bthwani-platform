@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\openapi\stateful\inference.py
+# hypothesis_version: 6.147.0
+
+['(.+)', '/', '<\\1>', '[^/]+', '\\{([^}]+)\\}', '_adapter', '_base_path', '_base_url', '_links_keyword', '_operations', 'exact', 'http://', 'https://', 'inexact', 'is_inferred', 'method', 'operationId', 'operationRef', 'parameters', 'path', 'value']

@@ -4,10 +4,10 @@ This folder contains human-readable references that complement runtime code, con
 
 ## Structure
 
-| Subfolder | Purpose |
-| --- | --- |
-| `Guidancefiles/` | Governance, playbooks, and execution guides (AI GUIDE, ReposiGOV, dashboards primer, etc.). |
-| `explainar/` | Auto-generated references that connect OpenAPI specs with app/dashboards screens. Generated via `scripts/generate_explainar.py`. |
+| Subfolder        | Purpose                                                                                                                          |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `Guidancefiles/` | Governance, playbooks, and execution guides (AI GUIDE, ReposiGOV, dashboards primer, etc.).                                      |
+| `explainar/`     | Auto-generated references that connect OpenAPI specs with app/dashboards screens. Generated via `scripts/generate_explainar.py`. |
 
 ## Key References
 
@@ -24,4 +24,3 @@ This folder contains human-readable references that complement runtime code, con
 3. Keep `ARCHITECTURE.md` synced whenever directories or ownership change.
 
 All documentation updates should stay within this folder; do **not** move it elsewhere. Refer contributors here when onboarding or planning structural changes.
-

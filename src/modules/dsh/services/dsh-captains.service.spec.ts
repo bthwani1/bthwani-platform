@@ -70,6 +70,24 @@ describe('DshCaptainsService', () => {
       expect(result.items).toHaveLength(10);
       expect(orderRepository.findByStatus).toHaveBeenCalled();
     });
+
+    it('filters by provided status and surfaces next cursor', async () => {
+      const captainId = 'captain-1';
+      const older = new Date(Date.now() - 2000);
+      const recent = new Date(Date.now() - 1000);
+      const mockOrders: OrderEntity[] = [
+        { id: 'order-1', captain_id: captainId, status: OrderStatus.DELIVERED, created_at: older } as OrderEntity,
+        { id: 'order-2', captain_id: captainId, status: OrderStatus.DELIVERED, created_at: recent } as OrderEntity,
+        { id: 'order-3', captain_id: 'other', status: OrderStatus.DELIVERED, created_at: recent } as OrderEntity,
+      ];
+      orderRepository.findByStatus.mockResolvedValue(mockOrders);
+
+      const result = await service.listOrders(captainId, { status: OrderStatus.DELIVERED, limit: 1 });
+
+      expect(orderRepository.findByStatus).toHaveBeenCalledWith(OrderStatus.DELIVERED, 2);
+      expect(result.items).toHaveLength(1);
+      expect(result.nextCursor).toBeDefined();
+    });
   });
 
   describe('getOrder', () => {
@@ -170,6 +188,17 @@ describe('DshCaptainsService', () => {
 
       expect(result.status).toBe(OrderStatus.PICKED_UP);
     });
+
+    it('throws when order is not in a pickable status', async () => {
+      const mockOrder: OrderEntity = {
+        id: 'order',
+        captain_id: 'captain-123',
+        status: OrderStatus.DELIVERED,
+      } as OrderEntity;
+      orderRepository.findOne.mockResolvedValue(mockOrder);
+
+      await expect(service.pickupOrder('captain-123', 'order')).rejects.toThrow(ForbiddenException);
+    });
   });
 
   describe('deliverOrder', () => {
@@ -189,6 +218,17 @@ describe('DshCaptainsService', () => {
 
       expect(result.status).toBe(OrderStatus.DELIVERED);
       expect(result.delivered_at).toBeDefined();
+    });
+
+    it('throws when delivering from invalid status', async () => {
+      const mockOrder: OrderEntity = {
+        id: 'order',
+        captain_id: 'captain-123',
+        status: OrderStatus.CONFIRMED,
+      } as OrderEntity;
+      orderRepository.findOne.mockResolvedValue(mockOrder);
+
+      await expect(service.deliverOrder('captain-123', 'order', {})).rejects.toThrow(ForbiddenException);
     });
   });
 });

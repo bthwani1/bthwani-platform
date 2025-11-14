@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\openapi\stateful\dependencies\inputs.py
+# hypothesis_version: 6.147.0
+
+['$ref', '/', 'body', 'content', 'description', 'id', 'items', 'message', 'post', 'properties', 'put', 'required', 'text', '{', '}']

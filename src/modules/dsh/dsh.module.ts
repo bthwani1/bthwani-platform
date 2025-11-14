@@ -10,6 +10,7 @@ import { DshCustomersController } from './controllers/dsh-customers.controller';
 import { DshCustomersService } from './services/dsh-customers.service';
 import { OrderEntity } from './entities/order.entity';
 import { OrderRepository } from './repositories/order.repository';
+import { DshIncentivesService } from './services/dsh-incentives.service';
 
 @Module({
   imports: [MikroOrmModule.forFeature([OrderEntity])],
@@ -24,6 +25,7 @@ import { OrderRepository } from './repositories/order.repository';
     DshCaptainsService,
     DshPartnersService,
     DshCustomersService,
+    DshIncentivesService,
     OrderRepository,
   ],
   exports: [
@@ -31,6 +33,7 @@ import { OrderRepository } from './repositories/order.repository';
     DshCaptainsService,
     DshPartnersService,
     DshCustomersService,
+    DshIncentivesService,
     OrderRepository,
   ],
 })

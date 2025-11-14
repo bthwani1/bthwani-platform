@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\openapi\negative\utils.py
+# hypothesis_version: 6.147.0
+
+['binary', 'byte', 'format', 'string', 'type']

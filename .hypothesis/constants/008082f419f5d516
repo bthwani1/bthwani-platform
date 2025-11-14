@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\graphql\nodes.py
+# hypothesis_version: 6.147.0
+
+['Boolean', 'Enum', 'Float', 'Int', 'List', 'Null', 'Object', 'String']

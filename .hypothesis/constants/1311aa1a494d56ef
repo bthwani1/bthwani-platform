@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\graphql\schemas.py
+# hypothesis_version: 6.147.0
+
+['.', 'Mutation.', 'POST', 'Positive test case', 'Query.', '__schema', '_client_schema', '_operation_type', '_parent', '_root_type', 'application/json', 'body', 'field_name', 'fields', 'fuzzing', 'mutationType', 'name', 'queryType', 'raw', 'root_type', 'type_', 'types']

@@ -1,0 +1,9 @@
+{
+  "mock": {
+    "dynamic": true,
+    "cors": true,
+    "errors": false
+  },
+  "cors": true
+}
+

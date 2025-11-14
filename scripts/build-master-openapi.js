@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+/* eslint-disable @typescript-eslint/no-var-requires */
 /**
  * Build the master OpenAPI contract by merging all per-service specifications.
  *
@@ -159,7 +159,8 @@ function isPlaceholderSchema(schema) {
     return false;
   }
 
-  const description = typeof schema.description === 'string' ? schema.description.toLowerCase() : '';
+  const description =
+    typeof schema.description === 'string' ? schema.description.toLowerCase() : '';
   if (description.includes('placeholder') || description.includes('[tbd]')) {
     return true;
   }
@@ -286,7 +287,11 @@ function mergePaths(target, source, context) {
 
     for (const [key, value] of Object.entries(sourceRoute)) {
       if (key === 'parameters') {
-        targetRoute.parameters = mergeNamedArray(targetRoute.parameters, value, `${context}.paths.${route}`);
+        targetRoute.parameters = mergeNamedArray(
+          targetRoute.parameters,
+          value,
+          `${context}.paths.${route}`,
+        );
         continue;
       }
 
@@ -378,5 +383,3 @@ function main() {
 }
 
 main();
-
-

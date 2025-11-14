@@ -4,7 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { ConfigModule } from '@nestjs/config';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs/typings';
 
 describe('Orders Integration (e2e)', () => {
   let app: INestApplication;
@@ -18,19 +18,16 @@ describe('Orders Integration (e2e)', () => {
         }),
         // Use in-memory database for integration tests
         MikroOrmModule.forRoot({
-          driver: PostgreSqlDriver,
-          type: 'postgresql',
-          dbName: 'bthwani_dsh_test',
+          autoLoadEntities: true,
+          allowGlobalContext: true,
           host: process.env.DB_HOST || 'localhost',
           port: parseInt(process.env.DB_PORT || '5432', 10),
           user: process.env.DB_USER || 'postgres',
           password: process.env.DB_PASSWORD || 'postgres',
+          dbName: 'bthwani_dsh_test',
           entities: ['dist/**/*.entity.js'],
           entitiesTs: ['src/**/*.entity.ts'],
-          allowGlobalContext: true,
-          // Use in-memory or test database
-          // For real integration tests, use a test database
-        }),
+        } satisfies MikroOrmModuleSyncOptions),
         AppModule,
       ],
     }).compile();

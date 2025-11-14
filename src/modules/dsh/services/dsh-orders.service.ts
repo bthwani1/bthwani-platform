@@ -7,6 +7,12 @@ import { WltService } from '../../../shared/services/wlt.service';
 import { PricingService } from '../../../shared/services/pricing.service';
 import { CatalogService } from '../../../shared/services/catalog.service';
 import { LoggerService } from '../../../core/services/logger.service';
+import { DshIncentivesService } from './dsh-incentives.service';
+import { IncentivesCalculationContext } from '../types/incentives.types';
+
+type OrderPricing = NonNullable<OrderEntity['pricing']>;
+type PricingAdjustmentRecord =
+  NonNullable<OrderPricing['adjustments']> extends Array<infer R> ? R : never;
 
 @Injectable()
 export class DshOrdersService {
@@ -15,6 +21,7 @@ export class DshOrdersService {
     private readonly wltService: WltService,
     private readonly pricingService: PricingService,
     private readonly catalogService: CatalogService,
+    private readonly incentivesService: DshIncentivesService,
     private readonly logger: LoggerService,
   ) {}
 
@@ -55,6 +62,27 @@ export class DshOrdersService {
       };
     }
     const pricing = await this.pricingService.calculatePricing(pricingRequest);
+    const baseSubtotal = this.toMinorUnits(pricing.subtotal.amount);
+    const baseDeliveryFee = this.toMinorUnits(pricing.deliveryFee.amount);
+
+    const incentivesContext: IncentivesCalculationContext = {
+      baseSubtotalYer: baseSubtotal,
+      baseDeliveryFeeYer: baseDeliveryFee,
+      ...(createOrderDto.delivery_address?.city && { city: createOrderDto.delivery_address.city }),
+      ...(createOrderDto.primary_category && { primaryCategory: createOrderDto.primary_category }),
+      ...(createOrderDto.subscription_plan_id && {
+        subscriptionPlanId: createOrderDto.subscription_plan_id,
+      }),
+      ...(createOrderDto.coupon_code && { couponCode: createOrderDto.coupon_code }),
+      ...(typeof createOrderDto.redeem_points === 'number' && {
+        pointsToRedeem: createOrderDto.redeem_points,
+      }),
+      ...(createOrderDto.user_type && { userType: createOrderDto.user_type }),
+    };
+
+    const incentivesResult = this.incentivesService.applyIncentives(incentivesContext);
+    const currency = pricing.total.currency || 'YER';
+    const totalAmountAfterIncentives = incentivesResult.totalYer.toString();
 
     // Create order entity
     const order = new OrderEntity();
@@ -97,11 +125,57 @@ export class DshOrdersService {
     order.payment_method = (createOrderDto.payment_method as PaymentMethod) || PaymentMethod.WALLET;
     order.payment_status = PaymentStatus.PENDING;
     order.status = OrderStatus.PENDING;
-    order.pricing = {
-      subtotal: pricing.subtotal,
-      delivery_fee: pricing.deliveryFee,
-      total: pricing.total,
+    const pricingPayload: OrderPricing = {
+      subtotal: {
+        amount: incentivesResult.subtotalYer.toString(),
+        currency,
+      },
+      delivery_fee: {
+        amount: incentivesResult.deliveryFeeYer.toString(),
+        currency,
+      },
+      total: {
+        amount: totalAmountAfterIncentives,
+        currency,
+      },
+      adjustments: incentivesResult.adjustments.map((adjustment) => {
+        const record: PricingAdjustmentRecord = {
+          id: adjustment.id,
+          label: adjustment.label,
+          source: adjustment.source,
+          target: adjustment.target,
+          mode: adjustment.mode,
+          amount: {
+            amount: adjustment.amountYer.toString(),
+            currency,
+          },
+        };
+        if (adjustment.metadata) {
+          record.metadata = adjustment.metadata;
+        }
+        return record;
+      }),
     };
+    if (pricing.tax) {
+      pricingPayload.tax = pricing.tax;
+    }
+    if (pricing.breakdown) {
+      pricingPayload.breakdown = pricing.breakdown;
+    }
+    if (incentivesResult.guardrailViolations?.length) {
+      pricingPayload.guardrail_violations = incentivesResult.guardrailViolations;
+    }
+    if (createOrderDto.subscription_plan_id) {
+      pricingPayload.subscription_plan_id = createOrderDto.subscription_plan_id;
+    }
+    const couponCodeToPersist = incentivesResult.appliedCouponCode ?? createOrderDto.coupon_code;
+    if (couponCodeToPersist) {
+      pricingPayload.coupon_code = couponCodeToPersist;
+    }
+    if (incentivesResult.pointsRedeemed && incentivesResult.pointsRedeemed > 0) {
+      pricingPayload.points_redeemed = incentivesResult.pointsRedeemed;
+    }
+    order.pricing = pricingPayload;
     if (createOrderDto.notes) {
       order.notes = createOrderDto.notes;
     }
@@ -111,8 +185,8 @@ export class DshOrdersService {
     if (order.payment_method === PaymentMethod.WALLET) {
       try {
         const paymentResponse = await this.wltService.authorizePayment({
-          amount: pricing.total.amount,
-          currency: pricing.total.currency,
+          amount: totalAmountAfterIncentives,
+          currency,
           orderId: order.id,
           customerId,
           idempotencyKey,
@@ -141,7 +215,7 @@ export class DshOrdersService {
     this.logger.log('Order created', {
       orderId: savedOrder.id,
       customerId,
-      total: pricing.total.amount,
+      total: totalAmountAfterIncentives,
     });
 
     return savedOrder;
@@ -191,5 +265,10 @@ export class DshOrdersService {
 
     // TODO: Admin/partner listing with filters
     throw new Error('Admin/partner listing not implemented');
+  }
+
+  private toMinorUnits(amount: string): number {
+    const parsed = Number(amount);
+    return Number.isNaN(parsed) ? 0 : parsed;
   }
 }

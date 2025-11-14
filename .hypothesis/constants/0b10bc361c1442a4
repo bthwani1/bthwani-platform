@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\core\failures.py
+# hypothesis_version: 6.147.0
+
+['\n    <BINARY>', '\n    <EMPTY>', '\n    <NO RESPONSE>', 'Server error', 'Unknown', 'case_id', 'colno', 'curl', 'deadline', 'document', 'elapsed', 'exception', 'failure', 'lineno', 'message', 'operation', 'origin', 'position', 's', 'severity', 'status', 'status_code', 'title', 'validation_message']

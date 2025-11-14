@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\openapi\expressions\nodes.py
+# hypothesis_version: 6.147.0
+
+['$method', '$request', '$response', '$statusCode', '$url', 'extractor', 'header', 'http://127.0.0.1', 'location', 'parameter', 'path', 'pointer', 'query', 'value']

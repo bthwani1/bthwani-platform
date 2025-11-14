@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\checks.py
+# hypothesis_version: 6.147.0
+
+[10.0, 'Case', 'CheckContext', 'Response', '_auth', '_checks', '_headers', '_override', '_recorder', '_transport_kwargs', 'config']

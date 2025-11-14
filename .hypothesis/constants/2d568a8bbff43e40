@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\cli\commands\run\handlers\cassettes.py
+# hypothesis_version: 6.147.0
+
+[1000, '\n      description: ', '\n      location: ', '\n      parameter: ', '\n  checks:\n', '\n  checks: []', '\n  metadata: null', '\n  response: null', '"', '"\\\x85\u2028\u2029\ufeff', '<unknown entrypoint>', 'Content-Type', 'Cookie', 'Location', 'Set-Cookie', '\\', 'base64', 'config', 'domain', 'expires', 'format', 'httponly', 'null', 'output', 'path', 'queue', 'recorder', 'replace', 'schemathesis', 'secure', 'seed', 'st', 'utf-8', 'utf8', 'worker', '{}', '~', 'ÿ', '\ud7ff', '\ue000', '�', '\uffff']

@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\engine\events.py
+# hypothesis_version: 6.147.0
+
+['EngineEvent', 'elapsed_time', 'exception', 'id', 'inferred_links', 'info', 'is_final', 'label', 'payload', 'phase', 'recorder', 'related_to_operation', 'running_time', 'skip_reason', 'status', 'suite_id', 'timestamp', 'value', 'warnings']

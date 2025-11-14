@@ -3,17 +3,17 @@
 on:
   pull_request:
   push:
-    branches: [ main, "release/**" ]
+    branches: [main, 'release/**']
 
 jobs:
   gates_contracts:
-    name: "gates / contracts"
+    name: 'gates / contracts'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
       - name: Install dependencies
         run: npm ci
@@ -21,13 +21,13 @@ jobs:
         run: npm run check:openapi
 
   gates_build:
-    name: "gates / build"
+    name: 'gates / build'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
       - name: Install dependencies
         run: npm ci
@@ -41,13 +41,13 @@ jobs:
           fi
 
   gates_lint:
-    name: "gates / lint"
+    name: 'gates / lint'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
       - name: Install dependencies
         run: npm ci
@@ -55,13 +55,13 @@ jobs:
         run: npm run lint
 
   gates_test:
-    name: "gates / test"
+    name: 'gates / test'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
       - name: Install dependencies
         run: npm ci
@@ -77,20 +77,20 @@ jobs:
           fail_ci_if_error: false
 
   gates_security:
-    name: "gates / security"
+    name: 'gates / security'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo security ok
 
   gates_perf:
-    name: "gates / perf"
+    name: 'gates / perf'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: '20'
           cache: npm
       - name: Install dependencies
         run: npm ci
@@ -101,259 +101,259 @@ jobs:
         continue-on-error: true
 
   gates_supply:
-    name: "gates / supply"
+    name: 'gates / supply'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo supply ok
 
   guard_ledger_invariants:
-    name: "guards / G-LEDGER-INVARIANTS"
+    name: 'guards / G-LEDGER-INVARIANTS'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo ledger invariants ok
 
   guard_idempotency:
-    name: "guards / G-IDEMPOTENCY"
+    name: 'guards / G-IDEMPOTENCY'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo idempotency ok
 
   guard_webhook_hmac:
-    name: "guards / G-WEBHOOK-HMAC<=300s"
+    name: 'guards / G-WEBHOOK-HMAC<=300s'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo webhook hmac ok
 
   guard_stepup:
-    name: "guards / G-STEPUP-GUARD"
+    name: 'guards / G-STEPUP-GUARD'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo stepup guard ok
 
   guard_audit_immutable:
-    name: "guards / G-AUDIT-IMMUTABLE"
+    name: 'guards / G-AUDIT-IMMUTABLE'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo audit immutable ok
 
   guard_privacy_export:
-    name: "guards / G-PRIVACY-EXPORT"
+    name: 'guards / G-PRIVACY-EXPORT'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo privacy export ok
 
   guard_no_secrets:
-    name: "guards / G-NO-SECRETS"
+    name: 'guards / G-NO-SECRETS'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo no secrets ok
 
   guard_backup_policy:
-    name: "guards / G-BACKUP-POLICY"
+    name: 'guards / G-BACKUP-POLICY'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo backup policy ok
 
   guard_trace:
-    name: "guards / G-TRACE=1.0"
+    name: 'guards / G-TRACE=1.0'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo trace ok
 
   guard_parity:
-    name: "guards / G-PARITY>=0.90"
+    name: 'guards / G-PARITY>=0.90'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo parity ok
 
   guard_snapshot_stale_block:
-    name: "guards / G-SNAPSHOT-STALE-BLOCK"
+    name: 'guards / G-SNAPSHOT-STALE-BLOCK'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo snapshot stale block ok
 
   guard_db_migrations_idempotent:
-    name: "guards / G-DB-MIGRATIONS-IDEMPOTENT"
+    name: 'guards / G-DB-MIGRATIONS-IDEMPOTENT'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo db migrations idempotent ok
 
   guard_sbom_licenses:
-    name: "guards / G-SBOM-LICENSES"
+    name: 'guards / G-SBOM-LICENSES'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo sbom licenses ok
 
   guard_alert_bind:
-    name: "guards / G-ALERT-BIND"
+    name: 'guards / G-ALERT-BIND'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo alert bind ok
 
   guard_opa_policy:
-    name: "guards / G-OPA-POLICY"
+    name: 'guards / G-OPA-POLICY'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo opa policy ok
 
   guard_bar_a11y:
-    name: "guards / G-BAR-A11Y"
+    name: 'guards / G-BAR-A11Y'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo bar a11y ok
 
   guard_bar_rbac_abac:
-    name: "guards / G-BAR-RBAC/ABAC"
+    name: 'guards / G-BAR-RBAC/ABAC'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo bar rbac abac ok
 
   guard_bar_perf:
-    name: "guards / G-BAR-PERF<=150ms"
+    name: 'guards / G-BAR-PERF<=150ms'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo bar perf ok
 
   guard_ui_a11y_negative:
-    name: "guards / G-UI-A11Y-NEGATIVE"
+    name: 'guards / G-UI-A11Y-NEGATIVE'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo ui a11y negative ok
 
   guard_sast_pass:
-    name: "guards / G-SAST-PASS"
+    name: 'guards / G-SAST-PASS'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo sast pass ok
 
   guard_trivy_pass:
-    name: "guards / G-TRIVY-PASS"
+    name: 'guards / G-TRIVY-PASS'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo trivy pass ok
 
   guard_dsh_pod_code:
-    name: "guards / G-DSH-POD-CODE=6"
+    name: 'guards / G-DSH-POD-CODE=6'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo dsh pod code ok
 
   guard_dsh_mask_faces_numbers:
-    name: "guards / G-DSH-MASK-FACES/NUMBERS"
+    name: 'guards / G-DSH-MASK-FACES/NUMBERS'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo dsh mask faces numbers ok
 
   guard_dsh_hold_on_dispute:
-    name: "guards / G-DSH-HOLD_ON_DISPUTE"
+    name: 'guards / G-DSH-HOLD_ON_DISPUTE'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo dsh hold on dispute ok
 
   guard_dsh_pricing_timeout:
-    name: "guards / G-DSH-PRICING-TIMEOUT-MS"
+    name: 'guards / G-DSH-PRICING-TIMEOUT-MS'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo dsh pricing timeout ok
 
   guard_dsh_stacking_max:
-    name: "guards / G-DSH-STACKING-MAX=2"
+    name: 'guards / G-DSH-STACKING-MAX=2'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo dsh stacking max ok
 
   guard_dsh_cancel_free:
-    name: "guards / G-DSH-CANCEL-FREE=3m"
+    name: 'guards / G-DSH-CANCEL-FREE=3m'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo dsh cancel free ok
 
   guard_chat_masking:
-    name: "guards / G-CHAT-MASKING"
+    name: 'guards / G-CHAT-MASKING'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo chat masking ok
 
   guard_chat_field_enc:
-    name: "guards / G-CHAT-FIELD-ENC"
+    name: 'guards / G-CHAT-FIELD-ENC'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo chat field enc ok
 
   guard_chat_retention:
-    name: "guards / G-CHAT-RETENTION"
+    name: 'guards / G-CHAT-RETENTION'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo chat retention ok
 
   guard_dsh_loc_share_stage:
-    name: "guards / G-DSH-LOC-SHARE-STAGE"
+    name: 'guards / G-DSH-LOC-SHARE-STAGE'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo dsh loc share stage ok
 
   guard_amn_safety:
-    name: "guards / G-AMN-SAFETY"
+    name: 'guards / G-AMN-SAFETY'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo amn safety ok
 
   guard_arb_escrow_policy:
-    name: "guards / G-ARB/ESCROW-POLICY"
+    name: 'guards / G-ARB/ESCROW-POLICY'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo arb escrow policy ok
 
   guard_wlt_provider:
-    name: "guards / G-WLT-PROVIDER"
+    name: 'guards / G-WLT-PROVIDER'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo wlt provider ok
 
   guard_rounding_rules_yer:
-    name: "guards / G-ROUNDING-RULES-YER"
+    name: 'guards / G-ROUNDING-RULES-YER'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: echo rounding rules yer ok
 
   guard_currency_lock_yer:
-    name: "guards / G-CURRENCY-LOCK-YER"
+    name: 'guards / G-CURRENCY-LOCK-YER'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -361,7 +361,7 @@ jobs:
 
   # مطلوب لحماية الفرع (contexts تشمل "gates / aggregate")
   gates_aggregate:
-    name: "gates / aggregate"
+    name: 'gates / aggregate'
     runs-on: ubuntu-latest
     needs:
       - gates_contracts
@@ -413,7 +413,7 @@ jobs:
   # مطلوب لحماية فرع release/*
   release_gate:
     if: startsWith(github.ref, 'refs/heads/release/')
-    name: "release-gate / G-OPA-RELEASE"
+    name: 'release-gate / G-OPA-RELEASE'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

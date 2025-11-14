@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\harfile\_models.py
+# hypothesis_version: 6.147.0
+
+['afterRequest', 'beforeRequest', 'blocked', 'bodySize', 'comment', 'compression', 'connect', 'content', 'contentType', 'cookies', 'dns', 'domain', 'eTag', 'encoding', 'expires', 'fileName', 'headers', 'headersSize', 'hitCount', 'httpOnly', 'httpVersion', 'lastAccess', 'method', 'mimeType', 'name', 'params', 'path', 'postData', 'queryString', 'receive', 'redirectURL', 'secure', 'send', 'size', 'slots', 'ssl', 'status', 'statusText', 'text', 'url', 'value', 'wait']

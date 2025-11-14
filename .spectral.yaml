@@ -1,5 +1,5 @@
-﻿extends: "spectral:oas"
+﻿extends: 'spectral:oas'
 rules:
-  oas3-api-servers: off        # سنفعلها لاحقًا بعد تثبيت عناوين الخوادم النهائية
-  info-contact: off            # سنضيف جهة الاتصال لاحقًا عبر متغيرات runtime/placeholders
-  info-description: off        # سنكمل الوصف التفصيلي لاحقًا لكل خدمة
+  oas3-api-servers: off # سنفعلها لاحقًا بعد تثبيت عناوين الخوادم النهائية
+  info-contact: off # سنضيف جهة الاتصال لاحقًا عبر متغيرات runtime/placeholders
+  info-description: off # سنكمل الوصف التفصيلي لاحقًا لكل خدمة

@@ -1,0 +1,390 @@
+{
+  "meta": {
+    "service_code": "DSH",
+    "version": "v1.0",
+    "wallet_mode": "Wallet=Ledger",
+    "currency": "YER",
+    "note": "Template for DSH subscriptions, discounts, coupons, rewards. All amounts/example values are placeholders and should be adjusted per city/region."
+  },
+  "subscriptions": {
+    "user_plans": [
+      {
+        "id": "sub_user_pro_monthly",
+        "name_ar": "بثواني برو - شهري",
+        "type": "user",
+        "billing_cycle": "monthly",
+        "price_yer": 0,
+        "active": true,
+        "features": {
+          "free_deliveries_per_cycle": 2,
+          "delivery_fee_pct_discount": 30,
+          "delivery_fee_flat_discount_yer": 0,
+          "min_delivery_fee_after_discount_yer": 200,
+          "priority_routing": true,
+          "priority_support": true,
+          "extra_rewards_multiplier": 1.5
+        },
+        "scope": {
+          "cities": ["ALL"],
+          "categories": ["supermarket", "groceries", "pharmacy"]
+        },
+        "vars": {
+          "VAR_DSH_SUB_USER_PRO_ENABLED": true,
+          "VAR_DSH_SUB_USER_PRO_MAX_FREE_ORDERS": 2,
+          "VAR_DSH_SUB_USER_PRO_PCT_DISCOUNT": 30
+        }
+      },
+      {
+        "id": "sub_user_family_yearly",
+        "name_ar": "بثواني فاميلي - سنوي",
+        "type": "user",
+        "billing_cycle": "yearly",
+        "price_yer": 0,
+        "active": false,
+        "features": {
+          "free_deliveries_per_cycle": 12,
+          "delivery_fee_pct_discount": 25,
+          "delivery_fee_flat_discount_yer": 0,
+          "min_delivery_fee_after_discount_yer": 200,
+          "priority_routing": true,
+          "priority_support": true,
+          "family_shared": true,
+          "family_max_members": 5,
+          "extra_rewards_multiplier": 2
+        },
+        "scope": {
+          "cities": ["ALL"],
+          "categories": ["ALL"]
+        },
+        "vars": {
+          "VAR_DSH_SUB_USER_FAMILY_ENABLED": false,
+          "VAR_DSH_SUB_USER_FAMILY_MAX_MEMBERS": 5
+        }
+      }
+    ],
+    "partner_plans": [
+      {
+        "id": "sub_partner_pro",
+        "name_ar": "شريك مميز - Partner Pro",
+        "type": "partner",
+        "billing_cycle": "monthly",
+        "price_yer": 0,
+        "active": true,
+        "effects": {
+          "base_commission_pct": 8,
+          "default_commission_pct_without_plan": 12,
+          "listing_rank_boost": 20,
+          "featured_badge": true,
+          "access_to_shared_coupons": true,
+          "access_to_marketing_tools": true
+        },
+        "scope": {
+          "cities": ["ALL"],
+          "categories": ["restaurant", "supermarket", "bakery"]
+        },
+        "vars": {
+          "VAR_DSH_SUB_PARTNER_PRO_ENABLED": true,
+          "VAR_DSH_SUB_PARTNER_PRO_COMMISSION_PCT": 8
+        }
+      }
+    ],
+    "captain_levels": [
+      {
+        "id": "captain_bronze",
+        "name_ar": "القائد برونزي",
+        "min_orders_per_month": 0,
+        "min_rating": 3.5,
+        "share_pct_of_delivery_fee": 70,
+        "priority_score": 1,
+        "monthly_bonus_yer": 0,
+        "vars": {
+          "VAR_DSH_CAPTAIN_BRONZE_SHARE_PCT": 70
+        }
+      },
+      {
+        "id": "captain_silver",
+        "name_ar": "القائد فضي",
+        "min_orders_per_month": 80,
+        "min_rating": 4.3,
+        "share_pct_of_delivery_fee": 75,
+        "priority_score": 2,
+        "monthly_bonus_yer": 0,
+        "vars": {
+          "VAR_DSH_CAPTAIN_SILVER_SHARE_PCT": 75
+        }
+      },
+      {
+        "id": "captain_gold",
+        "name_ar": "القائد ذهبي",
+        "min_orders_per_month": 150,
+        "min_rating": 4.6,
+        "share_pct_of_delivery_fee": 80,
+        "priority_score": 3,
+        "monthly_bonus_yer": 0,
+        "vars": {
+          "VAR_DSH_CAPTAIN_GOLD_SHARE_PCT": 80
+        }
+      },
+      {
+        "id": "captain_elite",
+        "name_ar": "القائد إيليت",
+        "min_orders_per_month": 250,
+        "min_rating": 4.8,
+        "share_pct_of_delivery_fee": 82,
+        "priority_score": 4,
+        "monthly_bonus_yer": 0,
+        "vars": {
+          "VAR_DSH_CAPTAIN_ELITE_SHARE_PCT": 82
+        }
+      }
+    ]
+  },
+  "discount_rules": [
+    {
+      "id": "disc_supermarket_weekend",
+      "name_ar": "خصم رسوم توصيل السوبرماركت نهاية الأسبوع",
+      "active": true,
+      "scope": {
+        "service": "DSH",
+        "cities": ["Sanaa"],
+        "categories": ["supermarket"],
+        "days_of_week": ["FRI", "SAT"],
+        "time_range": {
+          "from": "08:00",
+          "to": "23:59"
+        }
+      },
+      "condition": {
+        "min_basket_total_yer": 0,
+        "max_basket_total_yer": null
+      },
+      "effect": {
+        "target": "delivery_fee",
+        "type": "percent",
+        "value_pct": 15,
+        "max_discount_yer": 1000
+      },
+      "funding": {
+        "mode": "hybrid",
+        "platform_pct": 50,
+        "partner_pct": 50
+      },
+      "stacking": {
+        "applies_after_subscription_discounts": true,
+        "allows_coupon_stack": true
+      },
+      "ledger": {
+        "discount_account_code": "5xxx",
+        "platform_share_account_code": "5xyy",
+        "partner_share_account_code": "5xzz"
+      },
+      "vars": {
+        "VAR_DSH_DISC_SUPERMARKET_WEEKEND_ENABLED": true,
+        "VAR_DSH_DISC_SUPERMARKET_WEEKEND_PCT": 15
+      }
+    },
+    {
+      "id": "disc_large_basket",
+      "name_ar": "خصم سلة كبيرة",
+      "active": true,
+      "scope": {
+        "service": "DSH",
+        "cities": ["ALL"],
+        "categories": ["ALL"]
+      },
+      "condition": {
+        "min_basket_total_yer": 30000,
+        "max_basket_total_yer": null
+      },
+      "effect": {
+        "target": "delivery_fee",
+        "type": "flat",
+        "value_yer": 1000,
+        "max_discount_yer": 1000
+      },
+      "funding": {
+        "mode": "platform",
+        "platform_pct": 100,
+        "partner_pct": 0
+      },
+      "stacking": {
+        "applies_after_subscription_discounts": true,
+        "allows_coupon_stack": true
+      },
+      "ledger": {
+        "discount_account_code": "5xxx"
+      },
+      "vars": {
+        "VAR_DSH_DISC_LARGE_BASKET_ENABLED": true,
+        "VAR_DSH_DISC_LARGE_BASKET_MIN_TOTAL": 30000
+      }
+    }
+  ],
+  "coupon_definitions": [
+    {
+      "code": "WELCOME10",
+      "name_ar": "كوبون ترحيبي 10%",
+      "active": true,
+      "scope": {
+        "service": "DSH",
+        "cities": ["ALL"],
+        "categories": ["ALL"],
+        "partners": ["ALL"],
+        "eligible_user_types": ["new_users_only"]
+      },
+      "effect": {
+        "target": "basket_total",
+        "type": "percent",
+        "value_pct": 10,
+        "max_discount_yer": 2000
+      },
+      "limits": {
+        "per_user_usage_limit": 1,
+        "global_usage_limit": 10000,
+        "min_basket_total_yer": 5000
+      },
+      "validity": {
+        "starts_at": "PLACEHOLDER",
+        "ends_at": "PLACEHOLDER"
+      },
+      "funding": {
+        "mode": "platform",
+        "platform_pct": 100,
+        "partner_pct": 0
+      },
+      "stacking": {
+        "allows_with_subscription_discounts": true,
+        "allows_with_other_coupons": false
+      },
+      "vars": {
+        "VAR_DSH_COUPONS_ENABLED": false,
+        "VAR_DSH_COUPON_WELCOME10_MAX_DISCOUNT_YER": 2000
+      }
+    },
+    {
+      "code": "FREEDLV_SM",
+      "name_ar": "كوبون توصيل مجاني للسوبرماركت",
+      "active": true,
+      "scope": {
+        "service": "DSH",
+        "cities": ["Sanaa"],
+        "categories": ["supermarket"],
+        "partners": ["ALL"],
+        "eligible_user_types": ["all"]
+      },
+      "effect": {
+        "target": "delivery_fee",
+        "type": "free",
+        "value_pct": 100,
+        "max_discount_yer": 1500
+      },
+      "limits": {
+        "per_user_usage_limit": 3,
+        "global_usage_limit": 50000,
+        "min_basket_total_yer": 10000
+      },
+      "validity": {
+        "starts_at": "PLACEHOLDER",
+        "ends_at": "PLACEHOLDER"
+      },
+      "funding": {
+        "mode": "hybrid",
+        "platform_pct": 60,
+        "partner_pct": 40
+      },
+      "stacking": {
+        "allows_with_subscription_discounts": true,
+        "allows_with_other_coupons": false
+      },
+      "vars": {
+        "VAR_DSH_COUPON_FREEDLV_SM_MAX_DISCOUNT_YER": 1500
+      }
+    }
+  ],
+  "rewards_program": {
+    "enabled": true,
+    "earning_rules": {
+      "base_rate": {
+        "name_ar": "معدل أساسي لكسب النقاط",
+        "points_per_1000_yer": 1,
+        "applies_to": ["basket_total_after_discounts"],
+        "vars": {
+          "VAR_DSH_REWARDS_POINTS_PER_1000_YER": 1
+        }
+      },
+      "user_pro_multiplier": {
+        "name_ar": "مضاعف النقاط لمشتركي برو",
+        "multiplier": 1.5,
+        "applies_to_plans": ["sub_user_pro_monthly", "sub_user_family_yearly"],
+        "vars": {
+          "VAR_DSH_REWARDS_USER_PRO_MULTIPLIER": 1.5
+        }
+      },
+      "category_boosts": [
+        {
+          "id": "rewards_boost_supermarket_weekend",
+          "name_ar": "×2 نقاط للسوبرماركت نهاية الأسبوع",
+          "cities": ["Sanaa"],
+          "categories": ["supermarket"],
+          "days_of_week": ["FRI", "SAT"],
+          "multiplier": 2,
+          "vars": {
+            "VAR_DSH_REWARDS_SUPERMARKET_WEEKEND_MULTIPLIER": 2
+          }
+        }
+      ]
+    },
+    "redemption_rules": {
+      "enabled": true,
+      "conversion": {
+        "name_ar": "تحويل النقاط إلى خصم",
+        "points_to_yer_ratio": {
+          "points": 100,
+          "yer": 1000
+        },
+        "vars": {
+          "VAR_DSH_REWARDS_POINTS_PER_1000YER_DISCOUNT": 100
+        }
+      },
+      "limits": {
+        "max_discount_pct_per_order": 50,
+        "min_basket_total_yer_to_redeem": 5000,
+        "apply_to": "delivery_fee_first_then_basket",
+        "vars": {
+          "VAR_DSH_REWARDS_MAX_DISCOUNT_PCT_PER_ORDER": 50
+        }
+      }
+    },
+    "expiry_policy": {
+      "enabled": true,
+      "expiry_days_after_earn": 365,
+      "grace_period_days": 30,
+      "vars": {
+        "VAR_DSH_REWARDS_EXPIRY_DAYS": 365
+      }
+    },
+    "anti_fraud": {
+      "earn_only_after_order_status": "completed",
+      "revoke_on_refund_or_cancel": true,
+      "step_up_for_mass_redeem": true
+    }
+  },
+  "stacking_policy": {
+    "order_of_application": [
+      "base_price",
+      "subscription_discounts",
+      "automatic_discounts",
+      "rewards_redeem",
+      "coupon"
+    ],
+    "guards": {
+      "min_net_total_yer": 1000,
+      "max_total_discount_pct": 80,
+      "prevent_negative_or_zero_price": true
+    },
+    "vars": {
+      "VAR_DSH_MIN_NET_TOTAL_YER": 1000,
+      "VAR_DSH_MAX_TOTAL_DISCOUNT_PCT": 80
+    }
+  }
+}

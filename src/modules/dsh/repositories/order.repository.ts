@@ -1,6 +1,6 @@
-import { EntityRepository, EntityManager } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository, InjectEntityManager } from '@mikro-orm/nestjs';
+import { EntityRepository, EntityManager } from '@mikro-orm/core';
 import { OrderEntity, OrderStatus } from '../entities/order.entity';
 
 @Injectable()
@@ -27,17 +27,16 @@ export class OrderRepository {
     cursor?: string,
     limit: number = 20,
   ): Promise<OrderEntity[]> {
-    const qb = this.repository
-      .createQueryBuilder('o')
-      .where({ customer_id: customerId })
-      .orderBy({ created_at: 'DESC' })
-      .limit(limit);
-
+    const where: Record<string, unknown> = { customer_id: customerId };
+    
     if (cursor) {
-      qb.andWhere('o.created_at < ?', [new Date(cursor)]);
+      where.created_at = { $lt: new Date(cursor) };
     }
 
-    return qb.getResult();
+    return this.repository.find(where, {
+      limit,
+      orderBy: { created_at: 'DESC' },
+    });
   }
 
   async findByIdempotencyKey(idempotencyKey: string): Promise<OrderEntity | null> {

@@ -76,11 +76,13 @@ curl http://localhost:3000/api/health/live
 ### Protected Endpoints (Require JWT Bearer Token)
 
 #### Orders (Customers)
+
 - `POST /api/dls/orders` - Create order (requires Idempotency-Key header)
 - `GET /api/dls/orders` - List orders
 - `GET /api/dls/orders/:order_id` - Get order details
 
 #### Captains
+
 - `GET /api/dls/captains/me` - Get captain profile
 - `GET /api/dls/captains/orders` - List assigned orders
 - `PATCH /api/dls/captains/orders/:order_id/accept` - Accept order
@@ -88,12 +90,14 @@ curl http://localhost:3000/api/health/live
 - `PATCH /api/dls/captains/orders/:order_id/deliver` - Mark as delivered
 
 #### Partners
+
 - `GET /api/dls/partners/me` - Get partner profile
 - `GET /api/dls/partners/orders` - List partner orders
 - `POST /api/dls/partners/orders/:order_id/prepare` - Start preparation
 - `POST /api/dls/partners/orders/:order_id/ready` - Mark as ready
 
 #### Customers
+
 - `GET /api/dls/customers/me` - Get customer profile
 - `PATCH /api/dls/customers/me` - Update profile
 - `GET /api/dls/customers/addresses` - List addresses
@@ -151,6 +155,7 @@ npm run start:prod
 ### Database Connection Errors
 
 If you see database connection errors:
+
 1. Ensure PostgreSQL is running
 2. Check `.env` file has correct DB credentials
 3. Verify database exists: `createdb bthwani_dsh`
@@ -159,6 +164,7 @@ If you see database connection errors:
 ### JWT Authentication Errors
 
 If authentication fails:
+
 1. Ensure `JWT_SECRET` or `JWT_PUBLIC_KEY` is set in `.env`
 2. Verify token is valid and not expired
 3. Check token includes required claims (`sub`, `roles`)
@@ -166,6 +172,7 @@ If authentication fails:
 ### Port Already in Use
 
 If port 3000 is busy:
+
 ```bash
 # Set different port
 export HTTP_PORT=3001
@@ -183,4 +190,3 @@ npm run start:dev
 ## 🎉 Success!
 
 If you see the build succeed and the server starts, you're ready to develop!
-

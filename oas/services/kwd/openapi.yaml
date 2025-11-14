@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: "BThwani — Jobs (KWD) API"
+  title: 'BThwani — Jobs (KWD) API'
   description: Core endpoints for the jobs and opportunities service (KWD).
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: "0.0.0-seed"
+  version: '0.0.0-seed'
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev

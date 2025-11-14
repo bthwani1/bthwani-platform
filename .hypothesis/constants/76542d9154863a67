@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\config\_error.py
+# hypothesis_version: 6.147.0
+
+[0.6, ', ', 'a boolean', 'a number', 'a string', 'additionalProperties', 'an array', 'an integer', 'an object', 'anyOf', 'api_key', 'array', 'auth', 'bearer', 'boolean', 'enum', 'integer', 'items', 'minProperties', 'minimum', 'null', 'number', 'object', 'oneOf', 'openapi', 'operations', 'password', 'properties', 'required', 'root', 'string', 'type', 'username', 'value', 'workers']

@@ -1,8 +1,37 @@
-﻿{
+{
   "version": "0.0.2-local",
-  "updated_at": "2025-11-14T01:15:00+03:00",
+  "updated_at": "2025-11-14T18:45:00+03:00",
   "services": [
-    { "code": "DSH", "name": "Delivery & Shopping", "status": "READY", "owner": "Platform Guild", "notes": ["Includes MPC + Partner Store Listings modules (catalog v1)."], "artifacts": { "inventory": "dist/dsh/DSH_INVENTORY.md", "parity": "dist/dsh/PARITY.csv", "traceability": "dist/dsh/TRACEABILITY.csv", "param_spec": "dist/dsh/PARAM_SPEC.json", "guards_report": "dist/dsh/DSH_GUARDS_REPORT.md" } },
+    {
+      "code": "DSH",
+      "name": "Delivery & Shopping",
+      "status": "READY",
+      "owner": "Platform Guild",
+      "notes": ["Includes MPC + Partner Store Listings modules (catalog v1)."],
+      "artifacts": {
+        "inventory": "dist/dsh/DSH_INVENTORY.md",
+        "parity": "dist/dsh/PARITY.csv",
+        "traceability": "dist/dsh/TRACEABILITY.csv",
+        "param_spec": "dist/dsh/PARAM_SPEC.json",
+        "guards_report": "dist/dsh/DSH_GUARDS_REPORT.md",
+        "build_log": "dist/dsh/BUILD_LOG.txt",
+        "static_checks": "dist/dsh/STATIC_CHECKS.md",
+        "unit_report": "dist/dsh/TEST_REPORT_UNIT.json",
+        "e2e_report": "dist/dsh/TEST_REPORT_E2E.json",
+        "contract_summary": "dist/dsh/CONTRACT_TESTS_SUMMARY.md",
+        "schema_report": "dist/dsh/SCHEMA_REPORT.json",
+        "db_migrate": "dist/dsh/DB_MIGRATE_DRY.txt",
+        "db_seed": "dist/dsh/DB_SEED_DRY.txt",
+        "hadolint": "dist/dsh/HADOLINT.json",
+        "trivy": "dist/dsh/TRIVY_IMAGE.json",
+        "sbom": "dist/dsh/SBOM.json",
+        "provenance": "dist/dsh/PROVENANCE.json",
+        "runtime_probe": "dist/dsh/RUNTIME_PROBE.json",
+        "audit_summary": "dist/dsh/AUDIT_SUMMARY.md",
+        "pr_summary": "dist/dsh/PR_SUMMARY.md",
+        "artifacts_bundle": "dist/dsh/ARTIFACTS.zip"
+      }
+    },
     { "code": "WLT", "name": "Wallet / Ledger", "status": "DRAFT", "owner": "Platform Guild" },
     { "code": "ARB", "name": "Escrow & Bookings", "status": "DRAFT", "owner": "Platform Guild" },
     { "code": "ESF", "name": "Blood Donation", "status": "DRAFT", "owner": "Platform Guild" },
@@ -13,21 +42,37 @@
     { "code": "KWD", "name": "Jobs Platform", "status": "DRAFT", "owner": "Platform Guild" }
   ],
   "applications": [
-    { "code": "APP-USER", "status": "READY", "primary_services": ["DSH", "KNZ", "AMN", "KWD", "SND", "MRF", "ESF", "ARB", "WLT"] },
+    {
+      "code": "APP-USER",
+      "status": "READY",
+      "primary_services": ["DSH", "KNZ", "AMN", "KWD", "SND", "MRF", "ESF", "ARB", "WLT"]
+    },
     { "code": "APP-PARTNER", "status": "DRAFT", "primary_services": ["DSH", "ARB", "WLT"] },
     { "code": "APP-CAPTAIN", "status": "DRAFT", "primary_services": ["DSH", "AMN", "WLT"] },
     { "code": "APP-FIELD", "status": "DRAFT", "primary_services": ["DSH", "ARB"] }
   ],
   "dashboards": [
-    { "code": "admin", "status": "DRAFT", "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"] },
+    {
+      "code": "admin",
+      "status": "DRAFT",
+      "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"]
+    },
     { "code": "ops", "status": "DRAFT", "services": ["DSH", "AMN", "SND"] },
     { "code": "finance", "status": "DRAFT", "services": ["WLT", "DSH", "ARB"] },
     { "code": "support", "status": "DRAFT", "services": ["DSH", "AMN", "ARB", "ESF", "MRF"] },
     { "code": "marketing", "status": "DRAFT", "services": ["KNZ", "DSH"] },
     { "code": "fleet", "status": "DRAFT", "services": ["AMN", "DSH"] },
     { "code": "partner", "status": "DRAFT", "services": ["DSH", "ARB"] },
-    { "code": "bi", "status": "DRAFT", "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"] },
-    { "code": "ssot", "status": "DRAFT", "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"] },
+    {
+      "code": "bi",
+      "status": "DRAFT",
+      "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"]
+    },
+    {
+      "code": "ssot",
+      "status": "DRAFT",
+      "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"]
+    },
     { "code": "security", "status": "DRAFT", "services": ["WLT", "ESF", "MRF", "ARB"] }
   ],
   "version_matrix": {

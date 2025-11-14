@@ -70,6 +70,23 @@ describe('DshPartnersService', () => {
       expect(result.items).toHaveLength(10);
       expect(orderRepository.findByStatus).toHaveBeenCalled();
     });
+
+    it('honors status filter and emits cursor metadata', async () => {
+      const partnerId = 'partner-XYZ';
+      const now = new Date();
+      const mockOrders: OrderEntity[] = [
+        { id: 'o-1', partner_id: partnerId, status: OrderStatus.CANCELLED, created_at: new Date(now.getTime() - 2000) } as OrderEntity,
+        { id: 'o-2', partner_id: partnerId, status: OrderStatus.CANCELLED, created_at: new Date(now.getTime() - 1000) } as OrderEntity,
+        { id: 'o-3', partner_id: 'other', status: OrderStatus.CANCELLED, created_at: now } as OrderEntity,
+      ];
+      orderRepository.findByStatus.mockResolvedValue(mockOrders);
+
+      const result = await service.listOrders(partnerId, { status: OrderStatus.CANCELLED, limit: 1 });
+
+      expect(orderRepository.findByStatus).toHaveBeenCalledWith(OrderStatus.CANCELLED, 2);
+      expect(result.items).toHaveLength(1);
+      expect(result.nextCursor).toBeDefined();
+    });
   });
 
   describe('getOrder', () => {

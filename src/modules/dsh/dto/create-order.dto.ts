@@ -1,4 +1,13 @@
-import { IsString, IsArray, ValidateNested, IsOptional, IsEnum, IsObject } from 'class-validator';
+import {
+  IsString,
+  IsArray,
+  ValidateNested,
+  IsOptional,
+  IsEnum,
+  IsObject,
+  IsInt,
+  Min,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -118,4 +127,47 @@ export class CreateOrderDto {
   @IsString()
   @IsOptional()
   notes?: string;
+
+  @ApiProperty({
+    description: 'Primary catalog category used for automatic discounts/coupons',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  primary_category?: string;
+
+  @ApiProperty({
+    description: 'Active subscription plan identifier (e.g., sub_user_pro_monthly)',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  subscription_plan_id?: string;
+
+  @ApiProperty({
+    description: 'Coupon or promo code applied at checkout',
+    required: false,
+  })
+  @IsString()
+  @IsOptional()
+  coupon_code?: string;
+
+  @ApiProperty({
+    description: 'Rewards points requested for redemption',
+    required: false,
+    minimum: 0,
+  })
+  @IsInt()
+  @Min(0)
+  @IsOptional()
+  redeem_points?: number;
+
+  @ApiProperty({
+    enum: ['new', 'existing', 'subscriber'],
+    required: false,
+    description: 'User classification for eligibility checks',
+  })
+  @IsEnum(['new', 'existing', 'subscriber'])
+  @IsOptional()
+  user_type?: 'new' | 'existing' | 'subscriber';
 }

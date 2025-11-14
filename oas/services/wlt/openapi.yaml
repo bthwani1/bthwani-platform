@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
-  title: "BThwani — Wallet (WLT) API"
+  title: 'BThwani — Wallet (WLT) API'
   description: Core endpoints for the internal wallet and ledger service (WLT).
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: "0.0.0-seed"
+  version: '0.0.0-seed'
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev

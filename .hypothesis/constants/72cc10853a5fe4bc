@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\core\jsonschema\types.py
+# hypothesis_version: 6.147.0
+
+['array', 'boolean', 'integer', 'null', 'number', 'object', 'string', 'type']

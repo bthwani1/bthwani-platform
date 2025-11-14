@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\generation\hypothesis\builder.py
+# hypothesis_version: 6.147.0
+
+[',', ', ', '/', '_components', '_serializers', '_template', 'additionalProperties', 'api_operation', 'application', 'are', 'as_strategy_kwargs', 'auth_storage', 'before_add_examples', 'body', 'case', 'components', 'cookies', 'coverage', 'examples', 'false', 'fuzzing', 'given_args', 'given_kwargs', 'headers', 'hooks', 'ignore', 'invalid_regex', 'is', 'kwargs', 'media_type', 'minLength', 'modes', 'non_serializable', 'null', 'path', 'path_parameters', 'project', 'properties', 'query', 'required', 's', 'seed', 'settings', 'start', 'string', 'true', 'type', 'value']

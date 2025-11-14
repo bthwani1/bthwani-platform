@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\cli\commands\__init__.py
+# hypothesis_version: 6.147.0
+
+['--config-file', '--help', '--no-color', '-h', 'PATH', 'config_file', 'help_option_names', 'name', 'red', 'terminal_width']

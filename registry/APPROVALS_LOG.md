@@ -3,6 +3,7 @@
 ## Active Defects & Remediation
 
 ### Sev-1: Missing DSH Runtime Code
+
 - **Date**: 2025-01-XX
 - **Actor**: Platform Guild
 - **Status**: 🟢 **RESOLVED** — Implementation Complete
@@ -70,3 +71,4 @@
 ## Historical Approvals
 
 - 2025-11-14-DSH-WAVE-00 | actor: Cursor | status: pending | scope: SRV-DSH Wave 00 ultra-audit and auto-repair.
+- 2025-11-14-DSH-WAVE-02 | actor: Cursor (local) | action: BUILD_TEST | status: FAIL | notes: Lint/format errors, missing Nx/npm workspaces, absent contract/DB/container tooling on Windows runner prevent GO.

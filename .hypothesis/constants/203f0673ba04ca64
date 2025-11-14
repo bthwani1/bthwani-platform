@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\core\shell.py
+# hypothesis_version: 6.147.0
+
+[127, '$', "'", 'SHELL', '\\', "\\'", '\\\\', '\\n', '\\r', '\\t', '\\x7f', '`', 'bash', 'escaped_value', 'fish', 'needs_warning', 'original_bytes', 'shell_used', 'unknown', 'utf-8', 'zsh']

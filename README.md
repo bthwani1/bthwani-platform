@@ -18,17 +18,17 @@ This repository follows a **mono-repo architecture** where **everything** relate
 
 ### Services
 
-| Service | Code | Status | Version | Notes |
-|---------|------|--------|---------|-------|
-| Delivery & Shopping | DSH | 🟢 **READY** | 2.2 | **Runtime implementation complete** - Database, JWT auth, Orders/Captains/Partners/Customers APIs, CI/CD integrated |
-| Wallet / Ledger | WLT | DRAFT | 1.0 | Under development |
-| Escrow & Bookings | ARB | DRAFT | 2.0 | Under development |
-| Marketplace | KNZ | DRAFT | 1.1 | Under development |
-| Safe Taxi | AMN | DRAFT | 1.0 | Under development |
-| Jobs Platform | KWD | DRAFT | 1.0 | Under development |
-| On-demand Services | SND | DRAFT | 1.0 | Under development |
-| Lost & Found | MRF | DRAFT | 2.0 | Under development |
-| Blood Donation | ESF | DRAFT | 1.2 | Under development |
+| Service             | Code | Status       | Version | Notes                                                                                                               |
+| ------------------- | ---- | ------------ | ------- | ------------------------------------------------------------------------------------------------------------------- |
+| Delivery & Shopping | DSH  | 🟢 **READY** | 2.2     | **Runtime implementation complete** - Database, JWT auth, Orders/Captains/Partners/Customers APIs, CI/CD integrated |
+| Wallet / Ledger     | WLT  | DRAFT        | 1.0     | Under development                                                                                                   |
+| Escrow & Bookings   | ARB  | DRAFT        | 2.0     | Under development                                                                                                   |
+| Marketplace         | KNZ  | DRAFT        | 1.1     | Under development                                                                                                   |
+| Safe Taxi           | AMN  | DRAFT        | 1.0     | Under development                                                                                                   |
+| Jobs Platform       | KWD  | DRAFT        | 1.0     | Under development                                                                                                   |
+| On-demand Services  | SND  | DRAFT        | 1.0     | Under development                                                                                                   |
+| Lost & Found        | MRF  | DRAFT        | 2.0     | Under development                                                                                                   |
+| Blood Donation      | ESF  | DRAFT        | 1.2     | Under development                                                                                                   |
 
 ### Known Issues
 

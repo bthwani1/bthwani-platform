@@ -4,27 +4,23 @@ This guide captures the local workflow to keep the DSH specification and dataset
 
 ## 1. Regenerate the OpenAPI Spec
 
-`
-python scripts/generate_dsh_openapi.py \
+`python scripts/generate_dsh_openapi.py \
   --routes data/dsh/DSH_routes_complete.csv \
   --output oas/services/dsh/openapi.yaml \
-  --baseline oas/services/dsh/openapi.yaml
-`
+  --baseline oas/services/dsh/openapi.yaml`
 
 - --baseline preserves curated component schemas (orders, payroll, partner flows) instead of the placeholders emitted from the CSV.
 - The generator injects idempotency headers, pagination params, path parameters, surface tags, and guard annotations pulled from the CSV.
 
 ## 2. Bundle Downstream Artifacts
 
-`
-python scripts/build_dsh_artifacts.py \
+`python scripts/build_dsh_artifacts.py \
   --routes-csv data/dsh/DSH_routes_complete.csv \
   --screens-csv data/dsh/DSH_screens_complete.csv \
   --routes-summary data/dsh/routes_SUMMARY.json \
   --routes-excluded data/dsh/DSH_routes_excluded.json \
   --screens-summary data/dsh/screens_SUMMARY.json \
-  --screens-rejected data/dsh/SCREENS_REJECTED.json
-`
+  --screens-rejected data/dsh/SCREENS_REJECTED.json`
 
 Outputs a timestamped directory under uild/ plus an ARTIFACTS.zip with SHA-256 hashes for traceability.
 
@@ -32,7 +28,7 @@ Outputs a timestamped directory under uild/ plus an ARTIFACTS.zip with SHA-256 
 
 - [ ] Add the commands above to nightly/pre-merge pipelines so drift between CSVs and OAS is detected quickly.
 - [ ] Run Spectral and openapi-diff against the previous published spec to flag breaking changes before deploy.
-- [ ] Publish uild/**/BUILD_SUMMARY.json as an artifact to simplify release reviews.
+- [ ] Publish uild/\*\*/BUILD_SUMMARY.json as an artifact to simplify release reviews.
 - [ ] Export curated CSVs to data/dsh/ within the repo; the commands assume that path.
 
 ## 4. Manual Spot Validation

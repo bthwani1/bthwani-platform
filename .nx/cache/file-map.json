@@ -1,0 +1,2849 @@
+{
+  "version": "6.0",
+  "nxVersion": "18.0.3",
+  "deps": {
+    "@mikro-orm/core": "^6.6.0",
+    "@mikro-orm/migrations": "^6.6.0",
+    "@mikro-orm/nestjs": "^6.1.1",
+    "@mikro-orm/postgresql": "^6.6.0",
+    "@mikro-orm/sqlite": "^6.6.0",
+    "@nestjs/common": "^10.3.0",
+    "@nestjs/config": "^3.1.1",
+    "@nestjs/core": "^10.3.0",
+    "@nestjs/jwt": "^11.0.1",
+    "@nestjs/passport": "^11.0.5",
+    "@nestjs/platform-express": "^10.3.0",
+    "@nestjs/swagger": "^7.1.17",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.0",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.8.1",
+    "uuid": "^9.0.1",
+    "@mikro-orm/cli": "^6.6.0",
+    "@nestjs/cli": "^10.2.1",
+    "@nestjs/schematics": "^10.0.3",
+    "@nestjs/testing": "^10.3.0",
+    "@stoplight/spectral-cli": "^6.15.0",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.11",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^20.10.6",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/supertest": "^6.0.3",
+    "@types/uuid": "^10.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
+    "codecov": "^3.8.2",
+    "commander": "^14.0.2",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "jest": "^29.7.0",
+    "nx": "^18.0.3",
+    "playwright": "^1.40.0",
+    "prettier": "^3.1.1",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.1.4",
+    "ts-jest": "^29.1.1",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3",
+    "yaml": "^2.8.1"
+  },
+  "pathMappings": {
+    "@core/*": [
+      "src/core/*"
+    ],
+    "@shared/*": [
+      "src/shared/*"
+    ],
+    "@modules/*": [
+      "src/modules/*"
+    ]
+  },
+  "nxJsonPlugins": [],
+  "fileMap": {
+    "nonProjectFiles": [
+      {
+        "file": ".hypothesis/constants/31722252d7529a88",
+        "hash": "2702393533806449684"
+      },
+      {
+        "file": ".hypothesis/constants/4df4f46fe905a6cd",
+        "hash": "1243227755844832884"
+      },
+      {
+        "file": "README.md",
+        "hash": "17422785026621709899"
+      },
+      {
+        "file": ".hypothesis/constants/baf1e93b4616d3fb",
+        "hash": "17256622607784543078"
+      },
+      {
+        "file": ".hypothesis/constants/cfd7926adb4a02cb",
+        "hash": "11292736632368701069"
+      },
+      {
+        "file": ".hypothesis/constants/428c33f18aab47e4",
+        "hash": "7860343943717011150"
+      },
+      {
+        "file": ".hypothesis/constants/6eaa004ade4ee813",
+        "hash": "13059230787852546425"
+      },
+      {
+        "file": ".hypothesis/constants/fae59e8be639b72b",
+        "hash": "13515668583938318580"
+      },
+      {
+        "file": ".hypothesis/constants/cc9234ec06bdd97b",
+        "hash": "13762001880647009453"
+      },
+      {
+        "file": "scripts/wave/migrations-dry-run.js",
+        "hash": "8461422541190334734"
+      },
+      {
+        "file": ".hypothesis/constants/c7b727038ba2cfde",
+        "hash": "11706694245178314038"
+      },
+      {
+        "file": ".hypothesis/constants/2588add9e0f3cd5b",
+        "hash": "10022813270977496694"
+      },
+      {
+        "file": ".hypothesis/constants/d2266fcac9e074db",
+        "hash": "9780992621299407275"
+      },
+      {
+        "file": ".hypothesis/constants/0b10bc361c1442a4",
+        "hash": "3514575194441431880"
+      },
+      {
+        "file": ".hypothesis/constants/5139cf8e8c1d2fcc",
+        "hash": "14074145621208450992"
+      },
+      {
+        "file": ".hypothesis/constants/3b537bb106928bc0",
+        "hash": "742158462060908755"
+      },
+      {
+        "file": ".hypothesis/constants/4d5d0a93d2440cdd",
+        "hash": "6490151495822276690"
+      },
+      {
+        "file": ".hypothesis/constants/9b9573e26ec4f0cc",
+        "hash": "5647956354787626697"
+      },
+      {
+        "file": ".hypothesis/constants/bae8d3fc1cdd891f",
+        "hash": "15406499539852022531"
+      },
+      {
+        "file": ".hypothesis/constants/3d22539ae35a545a",
+        "hash": "16429621664941507915"
+      },
+      {
+        "file": ".hypothesis/constants/285b7a8c218fdace",
+        "hash": "17583760170255677797"
+      },
+      {
+        "file": ".hypothesis/constants/58bfffd74f8d33bb",
+        "hash": "12825693406607798524"
+      },
+      {
+        "file": ".hypothesis/constants/5747ab5a56465b4f",
+        "hash": "7904407580165445767"
+      },
+      {
+        "file": ".hypothesis/constants/320031d770fca209",
+        "hash": "1747878654241280338"
+      },
+      {
+        "file": ".hypothesis/constants/1ded7f35795764c2",
+        "hash": "7915201577852988034"
+      },
+      {
+        "file": ".hypothesis/constants/7eb85490a850ba3c",
+        "hash": "8644301062864955956"
+      },
+      {
+        "file": "oas/services/kwd/openapi.yaml",
+        "hash": "2992980579441311609"
+      },
+      {
+        "file": "src/core/interceptors/trace.interceptor.ts",
+        "hash": "12184024591826542907"
+      },
+      {
+        "file": ".hypothesis/constants/318e12dd096cbb00",
+        "hash": "12790771162599550195"
+      },
+      {
+        "file": ".hypothesis/constants/903f37f572599211",
+        "hash": "18427343479000165271"
+      },
+      {
+        "file": "dashboards/finance/SCREENS_CATALOG.csv",
+        "hash": "1646125498471518533"
+      },
+      {
+        "file": ".hypothesis/constants/52fb2b9e3dcee81f",
+        "hash": "11754654499218364860"
+      },
+      {
+        "file": ".hypothesis/constants/637074e37842f58d",
+        "hash": "5013363887363472217"
+      },
+      {
+        "file": ".hypothesis/constants/2e90e9b833b51a7e",
+        "hash": "17668379725617313534"
+      },
+      {
+        "file": ".hypothesis/constants/c4738536a499793e",
+        "hash": "6678094716283233132"
+      },
+      {
+        "file": ".hypothesis/constants/a4cb4dba1139fd8b",
+        "hash": "13054701210751550955"
+      },
+      {
+        "file": ".hypothesis/constants/653158ae05a430de",
+        "hash": "9998888381853546753"
+      },
+      {
+        "file": ".hypothesis/constants/2eb65901d8eeffe8",
+        "hash": "14162317031149388024"
+      },
+      {
+        "file": ".hypothesis/constants/97d8b90ab5f8d1ee",
+        "hash": "9729458050889271240"
+      },
+      {
+        "file": ".hypothesis/constants/f13ade3695328b0e",
+        "hash": "17610375534411397890"
+      },
+      {
+        "file": ".hypothesis/constants/235b77e1af45940b",
+        "hash": "2954498211427277662"
+      },
+      {
+        "file": "oas/services/amn/openapi.yaml",
+        "hash": "4694961255439324979"
+      },
+      {
+        "file": ".hypothesis/constants/c786ce4e1bc5b1b3",
+        "hash": "9220486760161824453"
+      },
+      {
+        "file": ".hypothesis/constants/2da7b4a7e7d66adb",
+        "hash": "17358357179776735259"
+      },
+      {
+        "file": ".hypothesis/constants/1cce0c53a0aa1633",
+        "hash": "18091975794532689455"
+      },
+      {
+        "file": ".hypothesis/constants/880701c49463935e",
+        "hash": "8512235953992394319"
+      },
+      {
+        "file": "docs/Guidancefiles/DASHBOARDS_OVERVIEW.mdc",
+        "hash": "14415523753543909526"
+      },
+      {
+        "file": ".hypothesis/constants/0161c23a757f6ab7",
+        "hash": "17931116788052275706"
+      },
+      {
+        "file": ".hypothesis/constants/db3d4fbed50eee81",
+        "hash": "285233007644919361"
+      },
+      {
+        "file": ".hypothesis/constants/648596e3ac1513e1",
+        "hash": "10880063926830592460"
+      },
+      {
+        "file": "dashboards/marketing/SCREENS_CATALOG.csv",
+        "hash": "677483041002254936"
+      },
+      {
+        "file": ".hypothesis/constants/98135dc524ea7458",
+        "hash": "1586972244706843689"
+      },
+      {
+        "file": ".hypothesis/constants/189a8ef4f8c0120a",
+        "hash": "13558018398873750566"
+      },
+      {
+        "file": ".hypothesis/constants/eaf4dd35edde1416",
+        "hash": "16611174568428132308"
+      },
+      {
+        "file": ".hypothesis/constants/df179f43dd3b6cab",
+        "hash": "7648729780555454513"
+      },
+      {
+        "file": "mikro-orm.config.ts",
+        "hash": "4079113679619047211"
+      },
+      {
+        "file": "src/core/decorators/current-user.decorator.ts",
+        "hash": "15458975520828784624"
+      },
+      {
+        "file": "src/core/decorators/public.decorator.ts",
+        "hash": "17960535925631508594"
+      },
+      {
+        "file": ".hypothesis/constants/83a8612a7fe67477",
+        "hash": "9010519446348948951"
+      },
+      {
+        "file": ".hypothesis/constants/1ef696454289071b",
+        "hash": "16276597257571061089"
+      },
+      {
+        "file": ".hypothesis/constants/3aace875fd7263ef",
+        "hash": "13734735615653649458"
+      },
+      {
+        "file": "oas/services/wlt/openapi.yaml",
+        "hash": "6314133053008618011"
+      },
+      {
+        "file": ".hypothesis/constants/a7d81715ed3613fc",
+        "hash": "15888570915647957485"
+      },
+      {
+        "file": ".hypothesis/constants/2f2b67ed264540fb",
+        "hash": "10290270324854063997"
+      },
+      {
+        "file": ".hypothesis/constants/351bd6f6a387ef73",
+        "hash": "4533155375679546591"
+      },
+      {
+        "file": "tools/gitleaks/gitleaks.exe",
+        "hash": "12236596935656067773"
+      },
+      {
+        "file": ".hypothesis/constants/3ac51bd906a9ba2e",
+        "hash": "7941347048170172884"
+      },
+      {
+        "file": ".hypothesis/constants/725bc64b5d71f747",
+        "hash": "13171198262279241762"
+      },
+      {
+        "file": ".hypothesis/constants/b8af1d5ead9765be",
+        "hash": "10155250883267510553"
+      },
+      {
+        "file": ".hypothesis/constants/7608722f83e11e11",
+        "hash": "7876149746805026352"
+      },
+      {
+        "file": "src/shared/shared.module.ts",
+        "hash": "5749076438750443803"
+      },
+      {
+        "file": ".hypothesis/constants/da39a3ee5e6b4b0d",
+        "hash": "1345086589072429531"
+      },
+      {
+        "file": ".hypothesis/constants/157989366f7be9b6",
+        "hash": "4311255826478374852"
+      },
+      {
+        "file": ".hypothesis/constants/ae0a47792b96e8f9",
+        "hash": "6519364945518204240"
+      },
+      {
+        "file": "scripts/generate_explainar.py",
+        "hash": "4765287040403922047"
+      },
+      {
+        "file": ".hypothesis/constants/5d1c4dec02428609",
+        "hash": "7087292236785213747"
+      },
+      {
+        "file": ".hypothesis/constants/f0bdec5436edb71a",
+        "hash": "120752916923785859"
+      },
+      {
+        "file": "scripts/build_dsh_artifacts.py",
+        "hash": "7183381785730121719"
+      },
+      {
+        "file": "web/website/README.md",
+        "hash": "2961960071975998651"
+      },
+      {
+        "file": ".hypothesis/constants/7e64c5168f0714df",
+        "hash": "10794091878322465722"
+      },
+      {
+        "file": ".hypothesis/constants/ef5d8d4475e85728",
+        "hash": "10978956226776688566"
+      },
+      {
+        "file": ".hypothesis/constants/3c4c956b37edbb80",
+        "hash": "136255722364336833"
+      },
+      {
+        "file": ".hypothesis/constants/891018bf1881df3d",
+        "hash": "17623248285801447228"
+      },
+      {
+        "file": ".hypothesis/constants/d83218b411a6469a",
+        "hash": "8502867845214915552"
+      },
+      {
+        "file": "dashboards/security/SCREENS_CATALOG.csv",
+        "hash": "17370377345594973558"
+      },
+      {
+        "file": ".hypothesis/constants/a08384193363cad7",
+        "hash": "5814393618444217434"
+      },
+      {
+        "file": ".hypothesis/constants/c3e2bf835012a270",
+        "hash": "9080864705717752636"
+      },
+      {
+        "file": ".hypothesis/constants/0cfa12dfbf9e9abb",
+        "hash": "6550138167869004328"
+      },
+      {
+        "file": ".hypothesis/constants/ae25126082582212",
+        "hash": "13723914773153858688"
+      },
+      {
+        "file": ".hypothesis/constants/b3358998476a51bf",
+        "hash": "8592374740925534650"
+      },
+      {
+        "file": ".hypothesis/constants/a411f81f95fdd8ea",
+        "hash": "13868475041655989663"
+      },
+      {
+        "file": ".hypothesis/constants/0fd4b74da00a762b",
+        "hash": "15789543384035527438"
+      },
+      {
+        "file": ".hypothesis/constants/978b738e7ea308e2",
+        "hash": "366802007915011243"
+      },
+      {
+        "file": ".hypothesis/constants/a39a2d750bc9c1d8",
+        "hash": "1859338951001814451"
+      },
+      {
+        "file": ".hypothesis/constants/91d3c4dab0918662",
+        "hash": "14837296398574426206"
+      },
+      {
+        "file": ".hypothesis/constants/8fa22f51da57c917",
+        "hash": "5543103392455909689"
+      },
+      {
+        "file": ".hypothesis/constants/73b23952cd94f85b",
+        "hash": "15990454501417437789"
+      },
+      {
+        "file": ".hypothesis/constants/8062bcd5f55e3d09",
+        "hash": "11665339680112913741"
+      },
+      {
+        "file": "docs/explainar/generated/dsh.generated.md",
+        "hash": "8418676774619223433"
+      },
+      {
+        "file": ".hypothesis/constants/b4db20a1ae3a8d76",
+        "hash": "960039091814507310"
+      },
+      {
+        "file": ".hypothesis/constants/09ae28b390a241d0",
+        "hash": "10624348320535071272"
+      },
+      {
+        "file": ".hypothesis/constants/15dfeb175e2a6c0a",
+        "hash": "15333290966915343523"
+      },
+      {
+        "file": ".hypothesis/constants/930a12ca53536ab3",
+        "hash": "5487757569917616502"
+      },
+      {
+        "file": ".hypothesis/constants/317d4461a4c8f165",
+        "hash": "7956951447665858241"
+      },
+      {
+        "file": "docs/CONTRACT_TESTS_REMEDIATION.md",
+        "hash": "5543434860358448831"
+      },
+      {
+        "file": ".hypothesis/constants/8212d65d0cc3b0ce",
+        "hash": "13410624847236509202"
+      },
+      {
+        "file": "src/core/guards/jwt-auth.guard.ts",
+        "hash": "17464496259499012442"
+      },
+      {
+        "file": ".hypothesis/constants/b1f8d8fd66efde14",
+        "hash": "5177429557021393148"
+      },
+      {
+        "file": ".hypothesis/constants/2f56a8c8b4e2b8f9",
+        "hash": "8951660893919558925"
+      },
+      {
+        "file": ".hypothesis/constants/f489dcb290f91185",
+        "hash": "16316226066457331437"
+      },
+      {
+        "file": ".hypothesis/constants/1e94174e4aac1fbb",
+        "hash": "11941179610720814698"
+      },
+      {
+        "file": ".hypothesis/constants/18bb1edc51f720ab",
+        "hash": "460832292708818366"
+      },
+      {
+        "file": "src/core/strategies/jwt.strategy.ts",
+        "hash": "11428110251504472899"
+      },
+      {
+        "file": ".hypothesis/constants/d664331dd1fa2cdc",
+        "hash": "16177870270264218338"
+      },
+      {
+        "file": ".hypothesis/constants/8f9be49f42359ffb",
+        "hash": "3531426792040094774"
+      },
+      {
+        "file": ".hypothesis/constants/e62a37bd5263eeb8",
+        "hash": "13689024720698200729"
+      },
+      {
+        "file": ".hypothesis/constants/006b559781a41f7f",
+        "hash": "7445389022157075357"
+      },
+      {
+        "file": ".hypothesis/constants/32b05670edd550d5",
+        "hash": "4401740753184790189"
+      },
+      {
+        "file": ".hypothesis/constants/493e4124afd5785c",
+        "hash": "3533617248340998399"
+      },
+      {
+        "file": "registry/APPROVALS_LOG.md",
+        "hash": "14703892158376682423"
+      },
+      {
+        "file": "docs/explainar/generated/arb.generated.md",
+        "hash": "11826414626957337428"
+      },
+      {
+        "file": ".hypothesis/constants/3532c31f1f251b22",
+        "hash": "13611082345013049535"
+      },
+      {
+        "file": ".hypothesis/constants/f06765aba6af1dce",
+        "hash": "9416727586394020518"
+      },
+      {
+        "file": ".hypothesis/constants/cf4ec727760e9090",
+        "hash": "5113647230895829776"
+      },
+      {
+        "file": ".hypothesis/constants/818de4a7b96e0635",
+        "hash": "8336734396268397052"
+      },
+      {
+        "file": ".hypothesis/constants/54c7583226fe1340",
+        "hash": "860288157381934750"
+      },
+      {
+        "file": ".hypothesis/constants/3eeefa53321c6c0d",
+        "hash": "4722918522191436604"
+      },
+      {
+        "file": ".hypothesis/constants/79a89f0061dc3ee9",
+        "hash": "9765225513848722765"
+      },
+      {
+        "file": ".hypothesis/constants/2235807621d8b725",
+        "hash": "7114316927091138351"
+      },
+      {
+        "file": ".hypothesis/constants/6b5ab497492e9281",
+        "hash": "2573258409088829427"
+      },
+      {
+        "file": "src/main.ts",
+        "hash": "739882953475882001"
+      },
+      {
+        "file": ".hypothesis/constants/663e6293b4ff31d4",
+        "hash": "4466073584359843591"
+      },
+      {
+        "file": ".hypothesis/constants/43a90479fd88ebce",
+        "hash": "17009488070879381162"
+      },
+      {
+        "file": ".hypothesis/constants/da59787152674743",
+        "hash": "11648337501809764089"
+      },
+      {
+        "file": ".hypothesis/constants/103505c4b1951c29",
+        "hash": "5548595422788384268"
+      },
+      {
+        "file": ".hypothesis/constants/565175e3ddabab6e",
+        "hash": "15455017722722130064"
+      },
+      {
+        "file": ".hypothesis/constants/831006252022ce5b",
+        "hash": "14608327651379745891"
+      },
+      {
+        "file": ".hypothesis/constants/9dce529752c817b3",
+        "hash": "7440870227276083203"
+      },
+      {
+        "file": "src/core/filters/all-exceptions.filter.ts",
+        "hash": "14627289660726989360"
+      },
+      {
+        "file": ".hypothesis/constants/4169a5b196b2cda1",
+        "hash": "17962784598125958883"
+      },
+      {
+        "file": ".hypothesis/constants/bd96146ba4180f81",
+        "hash": "425846382031138099"
+      },
+      {
+        "file": ".hypothesis/constants/9dfcabca12dbebb1",
+        "hash": "14276000660951453981"
+      },
+      {
+        "file": ".hypothesis/constants/c781bbe23c186641",
+        "hash": "9360998974148669568"
+      },
+      {
+        "file": ".hypothesis/constants/d7f1427c1b312b09",
+        "hash": "9059823793220841932"
+      },
+      {
+        "file": ".hypothesis/constants/8851b4084539a649",
+        "hash": "11831383793793724415"
+      },
+      {
+        "file": ".hypothesis/constants/d206739f97989527",
+        "hash": "4565447161454102140"
+      },
+      {
+        "file": ".hypothesis/constants/afff12a9422b8d92",
+        "hash": "2924292640553555104"
+      },
+      {
+        "file": ".hypothesis/constants/59d0f94b068010bf",
+        "hash": "268803409518621847"
+      },
+      {
+        "file": ".hypothesis/constants/8b0835c8db4c5000",
+        "hash": "11548423770844899229"
+      },
+      {
+        "file": ".hypothesis/constants/ae193b327b7b13a5",
+        "hash": "491750085948588673"
+      },
+      {
+        "file": ".hypothesis/constants/4069e90072e76f31",
+        "hash": "15624479913276035042"
+      },
+      {
+        "file": ".hypothesis/constants/5f7b9630cc311627",
+        "hash": "11159423250050096570"
+      },
+      {
+        "file": ".hypothesis/constants/c775d07a8fdf114e",
+        "hash": "2450437806129717890"
+      },
+      {
+        "file": ".hypothesis/constants/1311aa1a494d56ef",
+        "hash": "10994128691563207213"
+      },
+      {
+        "file": ".hypothesis/constants/30d8f64c874b5465",
+        "hash": "8069580259320929023"
+      },
+      {
+        "file": "dashboards/guards/hard_gates.yml",
+        "hash": "3302716112829994393"
+      },
+      {
+        "file": ".hypothesis/constants/5f0a1e92d16d7093",
+        "hash": "112296920866138268"
+      },
+      {
+        "file": ".hypothesis/constants/e78906a601db4e82",
+        "hash": "3450627790030232348"
+      },
+      {
+        "file": ".hypothesis/constants/95e212b629176320",
+        "hash": "17149124843043715800"
+      },
+      {
+        "file": ".hypothesis/constants/52582a188d43ada8",
+        "hash": "12352792677734966131"
+      },
+      {
+        "file": ".hypothesis/constants/92b8efacfd52d598",
+        "hash": "8332585362149334351"
+      },
+      {
+        "file": ".hypothesis/constants/8cba963941011d9e",
+        "hash": "15215404606042627357"
+      },
+      {
+        "file": "src/README.md",
+        "hash": "2893014867421581874"
+      },
+      {
+        "file": ".hypothesis/constants/76542d9154863a67",
+        "hash": "2356219246638062795"
+      },
+      {
+        "file": "src/core/controllers/health.controller.ts",
+        "hash": "16507578918394424182"
+      },
+      {
+        "file": "src/core/guards/rbac.guard.ts",
+        "hash": "10951100998859722456"
+      },
+      {
+        "file": ".hypothesis/constants/7791b0b57ea46b63",
+        "hash": "1992737308685686743"
+      },
+      {
+        "file": ".hypothesis/constants/47d382df5bedc623",
+        "hash": "4966032804691562760"
+      },
+      {
+        "file": ".hypothesis/constants/e2acc6d4ace747f7",
+        "hash": "3071535626152065121"
+      },
+      {
+        "file": ".hypothesis/constants/53c2e5e10f1240e6",
+        "hash": "3909404156108112942"
+      },
+      {
+        "file": ".eslintrc.js",
+        "hash": "4418520436423503201"
+      },
+      {
+        "file": ".hypothesis/constants/98cbe0dfc3b688b5",
+        "hash": "4657261020111249380"
+      },
+      {
+        "file": ".hypothesis/constants/6d5e921df6c4b35c",
+        "hash": "12252831864917751199"
+      },
+      {
+        "file": ".hypothesis/constants/904a118f4c9b48d6",
+        "hash": "18137020777864536945"
+      },
+      {
+        "file": ".hypothesis/constants/2bd626d222fb81b2",
+        "hash": "15948350237474053752"
+      },
+      {
+        "file": ".hypothesis/constants/e18bfca8312a495b",
+        "hash": "11371682903381051100"
+      },
+      {
+        "file": "src/core/services/metrics.service.ts",
+        "hash": "5879471259529304645"
+      },
+      {
+        "file": ".hypothesis/constants/1272c7bb27015196",
+        "hash": "5534866091638476876"
+      },
+      {
+        "file": ".hypothesis/constants/96f191c64ba37ec9",
+        "hash": "1235559426179972455"
+      },
+      {
+        "file": "playwright.config.ts",
+        "hash": "5148254067830565337"
+      },
+      {
+        "file": ".hypothesis/constants/985ad75f1d33d586",
+        "hash": "7182662877682560133"
+      },
+      {
+        "file": "docs/explainar/TEMPLATE.md",
+        "hash": "10760763861724933395"
+      },
+      {
+        "file": ".hypothesis/constants/7711d1ceddd433d7",
+        "hash": "2952501394835739719"
+      },
+      {
+        "file": ".hypothesis/constants/756bb63ba09e596e",
+        "hash": "17219452754708932637"
+      },
+      {
+        "file": "docs/explainar/generated/knz.generated.md",
+        "hash": "3850995356230048085"
+      },
+      {
+        "file": ".hypothesis/constants/845204382dd54f13",
+        "hash": "9912941421783893415"
+      },
+      {
+        "file": ".hypothesis/constants/fc80c89734d9067c",
+        "hash": "8111836295496971"
+      },
+      {
+        "file": ".hypothesis/constants/8fb6c7d34e76fd58",
+        "hash": "971456405607053456"
+      },
+      {
+        "file": ".hypothesis/constants/9504bdf728b8cd87",
+        "hash": "6895141623328448003"
+      },
+      {
+        "file": ".hypothesis/constants/3d7ea87610c8d67b",
+        "hash": "17573666255812186105"
+      },
+      {
+        "file": ".hypothesis/constants/fa44f6511c7b136d",
+        "hash": "14843862643483334208"
+      },
+      {
+        "file": "oas/services/esf/openapi.yaml",
+        "hash": "12160364540749371469"
+      },
+      {
+        "file": ".hypothesis/constants/995186cae2fd1d66",
+        "hash": "17862279478795237318"
+      },
+      {
+        "file": ".hypothesis/constants/d786b767da9b4766",
+        "hash": "9250909853123483495"
+      },
+      {
+        "file": ".hypothesis/constants/2571ff543fc1414d",
+        "hash": "14354226246439299465"
+      },
+      {
+        "file": ".hypothesis/constants/ebf323dfe0719b88",
+        "hash": "17484836129841531892"
+      },
+      {
+        "file": ".hypothesis/constants/0570a7c52cd987f9",
+        "hash": "5799508446843179739"
+      },
+      {
+        "file": "dashboards/guards/guards.yml",
+        "hash": "7703340553709134899"
+      },
+      {
+        "file": "docs/Guidancefiles/AI GUIDE.mdc",
+        "hash": "11002874542117499249"
+      },
+      {
+        "file": ".hypothesis/constants/4211cec45876cd6c",
+        "hash": "12556423688329571392"
+      },
+      {
+        "file": ".hypothesis/constants/f0b76ca49a9ccd5f",
+        "hash": "18174646857860707609"
+      },
+      {
+        "file": ".hypothesis/constants/abfd2a588d17314e",
+        "hash": "16495541617892087444"
+      },
+      {
+        "file": "scripts/enforce_dsh_hard_gates.py",
+        "hash": "11838093458444653929"
+      },
+      {
+        "file": ".hypothesis/constants/ec3c3efc4fd2575b",
+        "hash": "9048740720031074428"
+      },
+      {
+        "file": ".hypothesis/constants/a0dd8356f715e7e3",
+        "hash": "15310386158142024620"
+      },
+      {
+        "file": "jest.config.js",
+        "hash": "3809521054720830829"
+      },
+      {
+        "file": "docs/explainar/generated/kwd.generated.md",
+        "hash": "16913684661697272954"
+      },
+      {
+        "file": ".hypothesis/unicode_data/16.0.0/codec-utf-8.json.gz",
+        "hash": "10299831471931307971"
+      },
+      {
+        "file": ".hypothesis/constants/da9ab3c93e1f0f7f",
+        "hash": "1577548041047681958"
+      },
+      {
+        "file": ".hypothesis/constants/0f5ba03f2a5e8411",
+        "hash": "5790438854948696275"
+      },
+      {
+        "file": ".hypothesis/constants/e1e00b29d16f858f",
+        "hash": "9008352709552578168"
+      },
+      {
+        "file": ".hypothesis/constants/e5e696874cbb4c66",
+        "hash": "16043610715231983031"
+      },
+      {
+        "file": "oas/services/dsh/openapi.yaml",
+        "hash": "15600658741529638493"
+      },
+      {
+        "file": ".hypothesis/constants/6656f36f5150b02a",
+        "hash": "10760554340044022777"
+      },
+      {
+        "file": "test/jest-e2e.json",
+        "hash": "2478225037053745983"
+      },
+      {
+        "file": "package-lock.json",
+        "hash": "5009117357961412827"
+      },
+      {
+        "file": ".hypothesis/constants/af30ab1e2c46ca3b",
+        "hash": "17469304299152882931"
+      },
+      {
+        "file": ".hypothesis/constants/3d6697f35d2242be",
+        "hash": "18004690714945003731"
+      },
+      {
+        "file": ".hypothesis/constants/d940a8f7111744bc",
+        "hash": "12148904336267722917"
+      },
+      {
+        "file": ".hypothesis/constants/ab3bc865517e3504",
+        "hash": "18307462243350525212"
+      },
+      {
+        "file": ".hypothesis/constants/095b275c05f4e1b4",
+        "hash": "13978460224227266127"
+      },
+      {
+        "file": ".hypothesis/constants/c245eb88a2c9e5e1",
+        "hash": "16811739169511623465"
+      },
+      {
+        "file": ".hypothesis/constants/a77816ec7cd25a12",
+        "hash": "18123947262594451817"
+      },
+      {
+        "file": ".hypothesis/constants/2d83bc8194766190",
+        "hash": "11111526641370914481"
+      },
+      {
+        "file": "tools/gitleaks/README.md",
+        "hash": "13606461626217710444"
+      },
+      {
+        "file": ".hypothesis/constants/1a634ff75ef9b875",
+        "hash": "6284051402713680155"
+      },
+      {
+        "file": ".github/Cursor/rules/Vue.rules.mdc",
+        "hash": "17422115608576385097"
+      },
+      {
+        "file": ".github/workflows/contracts.yml",
+        "hash": "1225824121682633162"
+      },
+      {
+        "file": ".hypothesis/constants/11e12b17120b2c95",
+        "hash": "13169355783571433164"
+      },
+      {
+        "file": ".hypothesis/constants/881752eff0d1b2e1",
+        "hash": "14791255163958236939"
+      },
+      {
+        "file": "registry/dsh_incentives.json",
+        "hash": "12455813688185394556"
+      },
+      {
+        "file": ".hypothesis/constants/5bef1d723951a51c",
+        "hash": "14764488824949077265"
+      },
+      {
+        "file": "docs/explainar/generated/snd.generated.md",
+        "hash": "9834070490300183068"
+      },
+      {
+        "file": ".hypothesis/constants/9b10065e9a5ea3b0",
+        "hash": "2364135550691488088"
+      },
+      {
+        "file": ".hypothesis/constants/e97aab3f95ab94f7",
+        "hash": "7913245951339297892"
+      },
+      {
+        "file": ".hypothesis/constants/b7076f1997872af5",
+        "hash": "6263054197345532040"
+      },
+      {
+        "file": ".hypothesis/constants/af192c6e5bdda22f",
+        "hash": "6305387586403478355"
+      },
+      {
+        "file": ".hypothesis/constants/7dc392ff666a492c",
+        "hash": "7853072533116756922"
+      },
+      {
+        "file": "web/webapp/SERVICES.md",
+        "hash": "16523492991377607913"
+      },
+      {
+        "file": ".hypothesis/constants/4d3a8b1544612c9a",
+        "hash": "6027817152282060519"
+      },
+      {
+        "file": ".hypothesis/constants/12f73d3f1323b2f6",
+        "hash": "9261987193004549401"
+      },
+      {
+        "file": ".hypothesis/constants/ea2778900502b5df",
+        "hash": "3415244106187752653"
+      },
+      {
+        "file": ".hypothesis/constants/7944d9bda2e8389c",
+        "hash": "16188019018638968895"
+      },
+      {
+        "file": ".hypothesis/constants/5962944738f3a08c",
+        "hash": "3746470534093029328"
+      },
+      {
+        "file": "src/shared/services/pricing.service.ts",
+        "hash": "7782517324297841427"
+      },
+      {
+        "file": "scripts/verify-oas-metadata.ps1",
+        "hash": "3725952618286968398"
+      },
+      {
+        "file": ".hypothesis/constants/f81ac950f2b400d8",
+        "hash": "14798118647699476809"
+      },
+      {
+        "file": ".hypothesis/constants/be8feaa9094f6149",
+        "hash": "17226928066276254063"
+      },
+      {
+        "file": ".hypothesis/constants/750c870b790e177a",
+        "hash": "10027883824069015742"
+      },
+      {
+        "file": ".hypothesis/constants/cebc48b86c5fb4b5",
+        "hash": "11457583361711172068"
+      },
+      {
+        "file": ".hypothesis/constants/6be32578ed4612d1",
+        "hash": "5880012077008335331"
+      },
+      {
+        "file": ".hypothesis/constants/161b8e1ee81d034f",
+        "hash": "7542174973464480598"
+      },
+      {
+        "file": ".hypothesis/constants/594c70f458340a37",
+        "hash": "1596096464297689592"
+      },
+      {
+        "file": ".hypothesis/constants/44971ea411745967",
+        "hash": "689947982844167321"
+      },
+      {
+        "file": ".hypothesis/constants/f674d1917b627ad8",
+        "hash": "1781541090650621338"
+      },
+      {
+        "file": "docs/explainar/generated/amn.generated.md",
+        "hash": "3773777260350628520"
+      },
+      {
+        "file": ".hypothesis/constants/f8fe69c6eb011abf",
+        "hash": "18000831267943746878"
+      },
+      {
+        "file": "test/setup/test-db-setup.ts",
+        "hash": "17574976271770308663"
+      },
+      {
+        "file": ".hypothesis/constants/6bba934cd533e316",
+        "hash": "17553546859427505660"
+      },
+      {
+        "file": ".hypothesis/constants/1fe4a6863be314ea",
+        "hash": "13855063224831362439"
+      },
+      {
+        "file": "tools/gitleaks/LICENSE",
+        "hash": "4327145048569812183"
+      },
+      {
+        "file": ".hypothesis/constants/c4cccec3d49682ba",
+        "hash": "10649347881271324344"
+      },
+      {
+        "file": ".hypothesis/constants/4650eb900d3fdad1",
+        "hash": "14687129398019754644"
+      },
+      {
+        "file": ".hypothesis/constants/49dbff769e7e1ccb",
+        "hash": "362660879674348397"
+      },
+      {
+        "file": ".hypothesis/constants/187e768601e1fd96",
+        "hash": "926442629941894785"
+      },
+      {
+        "file": "nx.json",
+        "hash": "14704206747270682772"
+      },
+      {
+        "file": "src/shared/database/database.module.ts",
+        "hash": "15682324124687387394"
+      },
+      {
+        "file": ".hypothesis/constants/09daad7fc511056f",
+        "hash": "4209789887783557895"
+      },
+      {
+        "file": "dashboards/README.md",
+        "hash": "8352145231284144524"
+      },
+      {
+        "file": "scripts/wave/seeds-dry-run.js",
+        "hash": "4657289037501039522"
+      },
+      {
+        "file": ".hypothesis/constants/6a2f8939b0071101",
+        "hash": "13338704841070034427"
+      },
+      {
+        "file": "docs/README.md",
+        "hash": "144802168263517700"
+      },
+      {
+        "file": ".hypothesis/constants/e44997e633ffc044",
+        "hash": "5123522805288581033"
+      },
+      {
+        "file": ".hypothesis/constants/4d1688229c5707f5",
+        "hash": "9131472468719403922"
+      },
+      {
+        "file": ".hypothesis/constants/ef6b701d884514f0",
+        "hash": "10677752854165635623"
+      },
+      {
+        "file": ".prettierrc",
+        "hash": "13797375968714668536"
+      },
+      {
+        "file": ".hypothesis/constants/3fb619ba82fdde36",
+        "hash": "5321011117097084252"
+      },
+      {
+        "file": ".hypothesis/constants/c4872ee0b8ac277e",
+        "hash": "17492091926274601113"
+      },
+      {
+        "file": ".hypothesis/constants/302e806ecb15de78",
+        "hash": "14115967620961148213"
+      },
+      {
+        "file": ".hypothesis/constants/36e8de16d3865901",
+        "hash": "8708067146925428074"
+      },
+      {
+        "file": ".hypothesis/constants/5424f2905ff0ba93",
+        "hash": "15422953053367363779"
+      },
+      {
+        "file": ".hypothesis/constants/651359ef16bca5a1",
+        "hash": "5000456140546864623"
+      },
+      {
+        "file": ".hypothesis/constants/811787a5ef7c1fc5",
+        "hash": "18110902717372663860"
+      },
+      {
+        "file": ".hypothesis/constants/ecda34d9776d49dc",
+        "hash": "3230200809674685950"
+      },
+      {
+        "file": ".hypothesis/constants/c5f461d70a0eaaf5",
+        "hash": "5913979650599975564"
+      },
+      {
+        "file": ".hypothesis/constants/e1d00c451f33ac2e",
+        "hash": "14622016730564898648"
+      },
+      {
+        "file": ".hypothesis/constants/9c3bc07fcb8869dc",
+        "hash": "1401959788306206322"
+      },
+      {
+        "file": ".hypothesis/constants/43bb1130c4f48111",
+        "hash": "7984871070085504188"
+      },
+      {
+        "file": "runtime/RUNTIME_VARS_CATALOG.csv",
+        "hash": "9743200413736961641"
+      },
+      {
+        "file": ".hypothesis/constants/c4d12f33d966831e",
+        "hash": "2522710616151805076"
+      },
+      {
+        "file": ".github/workflows/explainar.yml",
+        "hash": "2695421461919416368"
+      },
+      {
+        "file": ".hypothesis/constants/782cc9858c00f58e",
+        "hash": "14259607039102434515"
+      },
+      {
+        "file": ".hypothesis/constants/9388294acaa1b59d",
+        "hash": "5566767010417426809"
+      },
+      {
+        "file": ".hypothesis/constants/5519860d4817d286",
+        "hash": "1241879966819531448"
+      },
+      {
+        "file": ".hypothesis/constants/506ac178e53c1525",
+        "hash": "5773541127601422467"
+      },
+      {
+        "file": ".hypothesis/constants/967b9783fe58cc5b",
+        "hash": "7016824841701565606"
+      },
+      {
+        "file": ".hypothesis/constants/13707d30eea783c5",
+        "hash": "6720385949625221367"
+      },
+      {
+        "file": ".hypothesis/constants/ae029dd6e77e38eb",
+        "hash": "6110306774160558379"
+      },
+      {
+        "file": "test/playwright/app-user/smoke.spec.ts",
+        "hash": "30721900288301364"
+      },
+      {
+        "file": ".hypothesis/constants/689f1c367a464343",
+        "hash": "7950651069119360124"
+      },
+      {
+        "file": ".hypothesis/constants/7f633e553e24d82f",
+        "hash": "2489348446167099040"
+      },
+      {
+        "file": ".hypothesis/constants/9b1f3ebaeb1d0fbe",
+        "hash": "14955507608241946167"
+      },
+      {
+        "file": ".hypothesis/constants/d7e60cc959673da6",
+        "hash": "11875288488372841804"
+      },
+      {
+        "file": "scripts/wave/provenance-stub.js",
+        "hash": "11606842542474923211"
+      },
+      {
+        "file": ".hypothesis/constants/24fc5ae58208a25f",
+        "hash": "1850349528634104867"
+      },
+      {
+        "file": ".hypothesis/constants/5eef2bcd12f514fc",
+        "hash": "14567197450694638024"
+      },
+      {
+        "file": ".hypothesis/constants/203f0673ba04ca64",
+        "hash": "5172877329123505409"
+      },
+      {
+        "file": ".hypothesis/constants/e8a71d394bdbc28a",
+        "hash": "646506338005730876"
+      },
+      {
+        "file": ".hypothesis/constants/03905f7aa7a42f3a",
+        "hash": "13019753415084791649"
+      },
+      {
+        "file": ".hypothesis/constants/e7605df0ef55c878",
+        "hash": "15118176617786828323"
+      },
+      {
+        "file": ".hypothesis/constants/653d6e01f7ae48c8",
+        "hash": "16999024972786412449"
+      },
+      {
+        "file": ".hypothesis/constants/58d09345c057154b",
+        "hash": "16282254388928414010"
+      },
+      {
+        "file": ".hypothesis/constants/8d1e020f0d2e190d",
+        "hash": "2734298138113860380"
+      },
+      {
+        "file": ".hypothesis/constants/df50585c103c1c2c",
+        "hash": "10689783022926278063"
+      },
+      {
+        "file": ".hypothesis/constants/66da256b882622f5",
+        "hash": "4542378675926219412"
+      },
+      {
+        "file": ".hypothesis/constants/a8b267d350868b49",
+        "hash": "6756348069085590935"
+      },
+      {
+        "file": ".hypothesis/constants/94970a117c4b9716",
+        "hash": "2954485484842471564"
+      },
+      {
+        "file": ".hypothesis/constants/fcb30837fdb989d5",
+        "hash": "243695336205752210"
+      },
+      {
+        "file": ".hypothesis/constants/1a51c14370129ae1",
+        "hash": "15372921025533360154"
+      },
+      {
+        "file": ".hypothesis/constants/fa1ee00b603010cd",
+        "hash": "1167536291978317072"
+      },
+      {
+        "file": ".hypothesis/constants/bf4444ec8b85c28d",
+        "hash": "12270943436261814595"
+      },
+      {
+        "file": "docs/explainar/generated/wlt.generated.md",
+        "hash": "585880432955699947"
+      },
+      {
+        "file": ".hypothesis/constants/66a01aaa2f82c4f0",
+        "hash": "4639050236865721892"
+      },
+      {
+        "file": "test/e2e/dsh-captains.e2e-spec.ts",
+        "hash": "679508957460626425"
+      },
+      {
+        "file": "scripts/generate_dsh_openapi.py",
+        "hash": "10213887178269386659"
+      },
+      {
+        "file": ".hypothesis/constants/7ef23cf71229b1e3",
+        "hash": "81007567666887153"
+      },
+      {
+        "file": ".hypothesis/constants/64c1a76eb2413ded",
+        "hash": "12422062740826470373"
+      },
+      {
+        "file": ".hypothesis/constants/008082f419f5d516",
+        "hash": "16446046788949725899"
+      },
+      {
+        "file": ".hypothesis/constants/a2785fa046dd008f",
+        "hash": "14982573400922956004"
+      },
+      {
+        "file": "test/playwright/app-partner/smoke.spec.ts",
+        "hash": "15981018040042124126"
+      },
+      {
+        "file": "traces/TRACE_TABLE.csv",
+        "hash": "7868920505021657423"
+      },
+      {
+        "file": ".hypothesis/constants/22651341202476e9",
+        "hash": "4533567078083215615"
+      },
+      {
+        "file": ".hypothesis/constants/76fe84eaad1a9d26",
+        "hash": "2660590555583350802"
+      },
+      {
+        "file": ".hypothesis/constants/8d75b1348457ff5f",
+        "hash": "9264923931868593832"
+      },
+      {
+        "file": ".hypothesis/constants/d231d6c88349821d",
+        "hash": "15395526325182809589"
+      },
+      {
+        "file": ".hypothesis/constants/437217e24eca6ed0",
+        "hash": "7710180180728055384"
+      },
+      {
+        "file": "scripts/build-master-openapi.js",
+        "hash": "9594507763741297829"
+      },
+      {
+        "file": ".hypothesis/constants/556d0e46aa956b95",
+        "hash": "4624935312322193571"
+      },
+      {
+        "file": ".hypothesis/constants/2d568a8bbff43e40",
+        "hash": "9982165994773634157"
+      },
+      {
+        "file": ".spectral.yaml",
+        "hash": "18144766245078537356"
+      },
+      {
+        "file": ".hypothesis/constants/825312f2bab16e5e",
+        "hash": "3976690530226617043"
+      },
+      {
+        "file": ".hypothesis/constants/0e8c407aff464047",
+        "hash": "10921790598596751339"
+      },
+      {
+        "file": ".hypothesis/constants/69fb43aafe0ea338",
+        "hash": "15841468500712368953"
+      },
+      {
+        "file": ".hypothesis/constants/52e90dfbc4caa40d",
+        "hash": "6193331986876284651"
+      },
+      {
+        "file": ".hypothesis/constants/b538e50ba24c9d88",
+        "hash": "18303540380193669630"
+      },
+      {
+        "file": ".hypothesis/constants/28510cb4d483533a",
+        "hash": "15027938181611643119"
+      },
+      {
+        "file": ".hypothesis/constants/c6c3ea432f6c4652",
+        "hash": "8668823034244119346"
+      },
+      {
+        "file": ".hypothesis/constants/86f81687390427c8",
+        "hash": "4509116868450183931"
+      },
+      {
+        "file": ".hypothesis/constants/a46f95349f8d9e1d",
+        "hash": "16728580555967736742"
+      },
+      {
+        "file": ".hypothesis/constants/cdf14c55960ed30f",
+        "hash": "787881236569204360"
+      },
+      {
+        "file": ".hypothesis/constants/9b22c60f4666d20e",
+        "hash": "14849986400013039029"
+      },
+      {
+        "file": ".hypothesis/constants/fa744409af98927d",
+        "hash": "6240662047399349458"
+      },
+      {
+        "file": ".hypothesis/constants/b9b1e0a4c614c75a",
+        "hash": "14674836675148247750"
+      },
+      {
+        "file": "migrations/Migration20250101000000.ts",
+        "hash": "2050949588968674081"
+      },
+      {
+        "file": "src/app.module.ts",
+        "hash": "16439878265087954831"
+      },
+      {
+        "file": ".hypothesis/constants/d8af9e23d48ff3bf",
+        "hash": "13193067408815471474"
+      },
+      {
+        "file": ".hypothesis/constants/cc785b461d93a381",
+        "hash": "17513271704362131835"
+      },
+      {
+        "file": ".hypothesis/constants/9211b1308ea9fb69",
+        "hash": "3667887427735940003"
+      },
+      {
+        "file": ".hypothesis/constants/d837ab20b9cbdd32",
+        "hash": "9449962923288223863"
+      },
+      {
+        "file": ".hypothesis/constants/799f552ee255887c",
+        "hash": "11055726045525585869"
+      },
+      {
+        "file": ".hypothesis/constants/8696a013babd419d",
+        "hash": "8040854365311761593"
+      },
+      {
+        "file": ".hypothesis/constants/14d4746d20ddef21",
+        "hash": "14065480430953089991"
+      },
+      {
+        "file": ".hypothesis/constants/71b3b033659554a5",
+        "hash": "634683817963251338"
+      },
+      {
+        "file": ".hypothesis/constants/f0a1348d14fb8403",
+        "hash": "3997202456825903435"
+      },
+      {
+        "file": ".hypothesis/constants/f36dd87e9a9a9718",
+        "hash": "17989371803397299810"
+      },
+      {
+        "file": ".hypothesis/constants/cdc2121ffa7cb1c4",
+        "hash": "13060869590415985815"
+      },
+      {
+        "file": "web/website/SERVICES.md",
+        "hash": "7940625043888590912"
+      },
+      {
+        "file": ".hypothesis/constants/f5fdebd0969bde9a",
+        "hash": "7822038880200220471"
+      },
+      {
+        "file": ".hypothesis/constants/c896e8fabdf53069",
+        "hash": "13806887402480852199"
+      },
+      {
+        "file": ".hypothesis/constants/c096f65762823133",
+        "hash": "13326779234001313836"
+      },
+      {
+        "file": ".hypothesis/constants/627a2b92d4859250",
+        "hash": "15245229317132293795"
+      },
+      {
+        "file": ".hypothesis/constants/d4af52a5c4f46835",
+        "hash": "4474593398044314923"
+      },
+      {
+        "file": ".hypothesis/constants/f6bf392e19f7d6e2",
+        "hash": "1645837196693893579"
+      },
+      {
+        "file": ".hypothesis/constants/5f7dee3ccc5b50b9",
+        "hash": "14095051422089562982"
+      },
+      {
+        "file": ".hypothesis/constants/b2633a63ea33003a",
+        "hash": "16574713937269003242"
+      },
+      {
+        "file": ".hypothesis/constants/7390f07b624ce069",
+        "hash": "6916233992114455787"
+      },
+      {
+        "file": ".hypothesis/constants/3846853299c71801",
+        "hash": "16434140186394945609"
+      },
+      {
+        "file": ".hypothesis/constants/5242f6e0e44a311b",
+        "hash": "16343676846222816632"
+      },
+      {
+        "file": "test/performance/orders.performance.spec.ts",
+        "hash": "5678271139444094346"
+      },
+      {
+        "file": "scripts/auto_dsh_audit.py",
+        "hash": "17156558786749213926"
+      },
+      {
+        "file": ".hypothesis/constants/ca5299b036ad8818",
+        "hash": "18016717413420679458"
+      },
+      {
+        "file": ".hypothesis/constants/e5d86b4c15c5184c",
+        "hash": "14624753826450567092"
+      },
+      {
+        "file": ".hypothesis/constants/079af817e138a6ef",
+        "hash": "3648994165980137200"
+      },
+      {
+        "file": ".hypothesis/constants/2091b3f5d63b1418",
+        "hash": "14819868839205749731"
+      },
+      {
+        "file": ".hypothesis/constants/7ec9a36b3d0fd0d7",
+        "hash": "2121985586454776372"
+      },
+      {
+        "file": ".hypothesis/constants/cc1ee18141df6290",
+        "hash": "17313618402355409613"
+      },
+      {
+        "file": ".github/workflows/gates.yml",
+        "hash": "17236976552893363096"
+      },
+      {
+        "file": ".hypothesis/constants/1b03421aacbc7cd8",
+        "hash": "8751389842753233334"
+      },
+      {
+        "file": ".hypothesis/constants/2664c6e75b00e0b7",
+        "hash": "16058334081183650628"
+      },
+      {
+        "file": ".hypothesis/constants/e2a547c87937c8e0",
+        "hash": "12638530691598144035"
+      },
+      {
+        "file": ".hypothesis/constants/d022c5316597e83f",
+        "hash": "1619627005566901554"
+      },
+      {
+        "file": ".hypothesis/constants/26584c6ae6c503eb",
+        "hash": "15402329302765912991"
+      },
+      {
+        "file": ".hypothesis/constants/63282bd83c7fce03",
+        "hash": "6864439961634815209"
+      },
+      {
+        "file": ".hypothesis/constants/ebe8bb1196d8225e",
+        "hash": "4930880940556080849"
+      },
+      {
+        "file": ".hypothesis/constants/ef965605f46ef149",
+        "hash": "1571649511972474736"
+      },
+      {
+        "file": ".hypothesis/constants/f3651c396c80a806",
+        "hash": "11960511853781844434"
+      },
+      {
+        "file": ".hypothesis/constants/d83abf7ca9ec6abc",
+        "hash": "17156761060128047575"
+      },
+      {
+        "file": ".hypothesis/constants/89e2cae050855d95",
+        "hash": "9330296041647853609"
+      },
+      {
+        "file": "scripts/wave/run-contract-tests.js",
+        "hash": "9621651523298380329"
+      },
+      {
+        "file": ".hypothesis/constants/db5aae0fa8a1bb6d",
+        "hash": "12005093282557928803"
+      },
+      {
+        "file": ".hypothesis/constants/86c09021378d7ae8",
+        "hash": "496168324496753607"
+      },
+      {
+        "file": ".hypothesis/unicode_data/16.0.0/charmap.json.gz",
+        "hash": "6977948588283719990"
+      },
+      {
+        "file": ".hypothesis/constants/bf23441276f14a9a",
+        "hash": "7134996512361610525"
+      },
+      {
+        "file": "src/shared/services/wlt.service.ts",
+        "hash": "261119018859913198"
+      },
+      {
+        "file": ".hypothesis/constants/160ee5cfa4e7341c",
+        "hash": "5655367229283412537"
+      },
+      {
+        "file": ".hypothesis/constants/877db6857d6a0955",
+        "hash": "15937155205722642631"
+      },
+      {
+        "file": ".hypothesis/constants/368621a6ca3ef9ff",
+        "hash": "190926444921206874"
+      },
+      {
+        "file": ".hypothesis/constants/a48da4f9ccf92128",
+        "hash": "4323278193267114737"
+      },
+      {
+        "file": ".hypothesis/constants/a3b6dd229aa3b2be",
+        "hash": "13293933131446076724"
+      },
+      {
+        "file": ".hypothesis/constants/79b5ae463e2c847f",
+        "hash": "17187001603837225083"
+      },
+      {
+        "file": ".gitattributes",
+        "hash": "2061962654986664749"
+      },
+      {
+        "file": ".hypothesis/constants/67d2ad11833cc754",
+        "hash": "14868251169018496096"
+      },
+      {
+        "file": ".hypothesis/constants/acf7d5cbf9355a44",
+        "hash": "14896612420260276622"
+      },
+      {
+        "file": ".hypothesis/constants/979ab46fb68c26b3",
+        "hash": "18427860751396444591"
+      },
+      {
+        "file": ".hypothesis/constants/0d65a410db824952",
+        "hash": "14511762084873318387"
+      },
+      {
+        "file": "src/core/guards/step-up.guard.ts",
+        "hash": "7917789443331049217"
+      },
+      {
+        "file": ".hypothesis/constants/43a12c56b1d568bc",
+        "hash": "1834428203395525467"
+      },
+      {
+        "file": ".hypothesis/constants/e9451b3bac90fb1b",
+        "hash": "14526327800254717240"
+      },
+      {
+        "file": ".hypothesis/constants/3550d503444d37bc",
+        "hash": "4147735922625418752"
+      },
+      {
+        "file": "QUICKSTART.md",
+        "hash": "8751574637032803912"
+      },
+      {
+        "file": ".hypothesis/constants/3e5ced2e9dc4bb20",
+        "hash": "2902507012579628272"
+      },
+      {
+        "file": ".hypothesis/constants/9fd76f4be41449f4",
+        "hash": "7866777806733880390"
+      },
+      {
+        "file": ".hypothesis/constants/7658fb3f10e8ccc5",
+        "hash": "13805052297412579451"
+      },
+      {
+        "file": ".hypothesis/constants/407f2d9812a7ca1b",
+        "hash": "3949307254379020829"
+      },
+      {
+        "file": ".hypothesis/constants/3bf637768f0ff256",
+        "hash": "17339448293120003780"
+      },
+      {
+        "file": ".hypothesis/constants/1ce0efde0cae1edc",
+        "hash": "1963622555879664419"
+      },
+      {
+        "file": ".hypothesis/constants/a450e6cd1180490f",
+        "hash": "11964366618448492165"
+      },
+      {
+        "file": ".hypothesis/constants/501c3239be5988bc",
+        "hash": "13324068310938669334"
+      },
+      {
+        "file": ".hypothesis/constants/0736e2d4acddd01a",
+        "hash": "977404668671401219"
+      },
+      {
+        "file": "src/core/interceptors/logging.interceptor.ts",
+        "hash": "1128825255681375841"
+      },
+      {
+        "file": ".hypothesis/constants/67a594e2c6d288e7",
+        "hash": "2892553686670999898"
+      },
+      {
+        "file": ".hypothesis/constants/e8180ae00e84a16a",
+        "hash": "9624772674198399884"
+      },
+      {
+        "file": "src/shared/services/catalog.service.ts",
+        "hash": "4860920232393048664"
+      },
+      {
+        "file": ".hypothesis/constants/a3d9f8437c2d7f5f",
+        "hash": "11389743892061263087"
+      },
+      {
+        "file": ".hypothesis/constants/02ab20cff8e8b48f",
+        "hash": "8340306036662646918"
+      },
+      {
+        "file": ".hypothesis/constants/8da049dab80770b8",
+        "hash": "3567200072496390894"
+      },
+      {
+        "file": ".hypothesis/constants/ffd9e6a06cdab64c",
+        "hash": "7900723325117974059"
+      },
+      {
+        "file": ".hypothesis/constants/896463bcd6481c02",
+        "hash": "11707372711529644049"
+      },
+      {
+        "file": ".hypothesis/constants/6bbac69d213e2ae7",
+        "hash": "10763481172645918599"
+      },
+      {
+        "file": ".hypothesis/constants/f8048afdfc8feedb",
+        "hash": "11335535484461989219"
+      },
+      {
+        "file": "dashboards/ops/SCREENS_CATALOG.csv",
+        "hash": "10925911611848060169"
+      },
+      {
+        "file": ".hypothesis/constants/aebc3e17831f43e3",
+        "hash": "5335302234697384054"
+      },
+      {
+        "file": ".hypothesis/constants/1906005afd5178ae",
+        "hash": "13470622568459796581"
+      },
+      {
+        "file": "test/app.e2e-spec.ts",
+        "hash": "5723233750738697834"
+      },
+      {
+        "file": ".hypothesis/constants/cf59c07d2dfa2847",
+        "hash": "5833638049799893336"
+      },
+      {
+        "file": ".hypothesis/constants/7882d1e7de023978",
+        "hash": "1105495704889512039"
+      },
+      {
+        "file": "docs/explainar/generated/esf.generated.md",
+        "hash": "5532158665825810677"
+      },
+      {
+        "file": "docs/explainar/generated/mrf.generated.md",
+        "hash": "15793866890671214275"
+      },
+      {
+        "file": ".hypothesis/constants/72a297844fdb3fc6",
+        "hash": "14735815041822912503"
+      },
+      {
+        "file": "docs/Guidancefiles/SER_OVER ai.mdc",
+        "hash": "16422421849912615527"
+      },
+      {
+        "file": "dashboards/partner/SCREENS_CATALOG.csv",
+        "hash": "2434805786338384989"
+      },
+      {
+        "file": ".hypothesis/constants/72cc10853a5fe4bc",
+        "hash": "122244368650267398"
+      },
+      {
+        "file": ".hypothesis/constants/7e5e632d359259c3",
+        "hash": "6455671197918561587"
+      },
+      {
+        "file": "scripts/wave/prism.config.json",
+        "hash": "2939390465736009609"
+      },
+      {
+        "file": ".hypothesis/constants/9a70f8922d2f859c",
+        "hash": "4093868248371756372"
+      },
+      {
+        "file": ".hypothesis/constants/78dce7ef10ee7c35",
+        "hash": "10567615406482978301"
+      },
+      {
+        "file": "tools/LICENSE",
+        "hash": "12649885980860800067"
+      },
+      {
+        "file": "scripts/DSH_OPENAPI_PIPELINE.md",
+        "hash": "6305768430240090289"
+      },
+      {
+        "file": ".hypothesis/constants/08ee83c289c5e7ec",
+        "hash": "16511202473482630420"
+      },
+      {
+        "file": "package.json",
+        "hash": "4484699524081454408"
+      },
+      {
+        "file": "test/e2e/dsh-partners.e2e-spec.ts",
+        "hash": "15357558511572875941"
+      },
+      {
+        "file": ".hypothesis/constants/be4c75cb103ef44c",
+        "hash": "8423423990208799455"
+      },
+      {
+        "file": ".hypothesis/constants/1da42ec9990dcf90",
+        "hash": "9642609775112195284"
+      },
+      {
+        "file": ".hypothesis/constants/9f25048bdda1c541",
+        "hash": "7653901671163180387"
+      },
+      {
+        "file": ".hypothesis/constants/1b26a6adf751cdff",
+        "hash": "1647834334654962584"
+      },
+      {
+        "file": ".hypothesis/constants/86b77d068601b3f1",
+        "hash": "4376249602715677211"
+      },
+      {
+        "file": ".hypothesis/constants/569013a5397612d7",
+        "hash": "3788999259048966623"
+      },
+      {
+        "file": ".hypothesis/constants/596dd71226145d35",
+        "hash": "11295101887732348242"
+      },
+      {
+        "file": "dashboards/fleet/SCREENS_CATALOG.csv",
+        "hash": "12359162587571827593"
+      },
+      {
+        "file": ".hypothesis/constants/3332e8a6730cbe54",
+        "hash": "11960221110402959334"
+      },
+      {
+        "file": ".hypothesis/constants/0ba83da467366a70",
+        "hash": "1582509227492201993"
+      },
+      {
+        "file": ".hypothesis/constants/1f73eb31e137843f",
+        "hash": "6130857270204992288"
+      },
+      {
+        "file": ".hypothesis/constants/354b4bb45a496be5",
+        "hash": "13301821102890195565"
+      },
+      {
+        "file": ".hypothesis/constants/d9a839daf291e48d",
+        "hash": "1956308235457217035"
+      },
+      {
+        "file": ".hypothesis/constants/215fc0748a458870",
+        "hash": "8281757236178990330"
+      },
+      {
+        "file": ".hypothesis/constants/1d32e987e368ca33",
+        "hash": "8821673596496509596"
+      },
+      {
+        "file": ".hypothesis/constants/78d59e903fecd211",
+        "hash": "5709027744610666248"
+      },
+      {
+        "file": ".hypothesis/constants/0dc31a664a0a4f83",
+        "hash": "6223537158422483999"
+      },
+      {
+        "file": ".hypothesis/constants/b148ef8cf58e78e1",
+        "hash": "18041686278769675382"
+      },
+      {
+        "file": ".hypothesis/constants/895694805f3018a0",
+        "hash": "2761758090932924537"
+      },
+      {
+        "file": ".hypothesis/constants/8ba3d739006c791b",
+        "hash": "11208836453754179479"
+      },
+      {
+        "file": "nest-cli.json",
+        "hash": "15136148581999789144"
+      },
+      {
+        "file": "oas/master/Master_OpenAPI.yaml",
+        "hash": "1735787467577122889"
+      },
+      {
+        "file": ".hypothesis/constants/fe048ef6ab57db5e",
+        "hash": "178354034920219317"
+      },
+      {
+        "file": ".hypothesis/constants/eb0c86a52b0105ab",
+        "hash": "14029575963937154417"
+      },
+      {
+        "file": ".hypothesis/constants/dbf5569770406bc3",
+        "hash": "14288900912061776033"
+      },
+      {
+        "file": "tsconfig.build.json",
+        "hash": "276845246908739715"
+      },
+      {
+        "file": ".hypothesis/constants/e1f6ab140aa52211",
+        "hash": "3260037773062642731"
+      },
+      {
+        "file": ".hypothesis/constants/edfffb8aeb67a01d",
+        "hash": "10295347179543325317"
+      },
+      {
+        "file": ".hypothesis/constants/ee198b57907e766d",
+        "hash": "5980824646401382352"
+      },
+      {
+        "file": ".hypothesis/constants/c84392363790fc3e",
+        "hash": "17984302216938124381"
+      },
+      {
+        "file": ".hypothesis/constants/915d3f0affe34656",
+        "hash": "1579861545276182675"
+      },
+      {
+        "file": ".hypothesis/constants/85e4867ff4c4032e",
+        "hash": "6909124483147410476"
+      },
+      {
+        "file": ".hypothesis/constants/02adf0b2b5b002a0",
+        "hash": "2086865136645752551"
+      },
+      {
+        "file": "scripts/guard_web_surfaces.py",
+        "hash": "16989350537076811120"
+      },
+      {
+        "file": "oas/services/knz/openapi.yaml",
+        "hash": "2225900951181880955"
+      },
+      {
+        "file": ".hypothesis/constants/ea4a8f1e76afac17",
+        "hash": "10759099805372043300"
+      },
+      {
+        "file": ".hypothesis/constants/dd122f9b3b8f9afd",
+        "hash": "10544421617006736435"
+      },
+      {
+        "file": "test/helpers/jwt.helper.ts",
+        "hash": "5073006707590239534"
+      },
+      {
+        "file": ".hypothesis/constants/2f49888d399714a6",
+        "hash": "7670323296438702087"
+      },
+      {
+        "file": "docs/ARCHITECTURE.md",
+        "hash": "12573939277489333241"
+      },
+      {
+        "file": ".hypothesis/constants/4e7aac8ea737744a",
+        "hash": "1973484387393428798"
+      },
+      {
+        "file": ".hypothesis/constants/a9cce3eff6af9b96",
+        "hash": "12168995162961445944"
+      },
+      {
+        "file": "src/core/interceptors/transform.interceptor.ts",
+        "hash": "12963715272945825691"
+      },
+      {
+        "file": ".hypothesis/constants/c17d59aadc42b6de",
+        "hash": "9597561590486840115"
+      },
+      {
+        "file": "docker/.dockerignore",
+        "hash": "3115841666155426538"
+      },
+      {
+        "file": "test/e2e/dsh-orders.e2e-spec.ts",
+        "hash": "6813566603924648903"
+      },
+      {
+        "file": ".hypothesis/constants/1890bff4302b6c9d",
+        "hash": "5434450760932653648"
+      },
+      {
+        "file": ".hypothesis/constants/8d7d358b0b44fe41",
+        "hash": "17791756131147505175"
+      },
+      {
+        "file": ".hypothesis/constants/83a2db0661568382",
+        "hash": "12472802019604941836"
+      },
+      {
+        "file": ".hypothesis/constants/22aee50d81961c02",
+        "hash": "8363107589371602729"
+      },
+      {
+        "file": "src/core/middlewares/request-id.middleware.ts",
+        "hash": "15052327438142864860"
+      },
+      {
+        "file": ".hypothesis/constants/cc2d17b5a7e8e984",
+        "hash": "11121446738326764077"
+      },
+      {
+        "file": ".hypothesis/constants/336c1b5495ecf253",
+        "hash": "12224081084026118553"
+      },
+      {
+        "file": ".hypothesis/constants/2f270b33053fb0a5",
+        "hash": "5601643685229245149"
+      },
+      {
+        "file": ".hypothesis/constants/723875262c9e6f01",
+        "hash": "714213483167035494"
+      },
+      {
+        "file": "web/webapp/README.md",
+        "hash": "15541885116080794029"
+      },
+      {
+        "file": ".hypothesis/constants/ef4ee13530911992",
+        "hash": "16954561373420850790"
+      },
+      {
+        "file": ".hypothesis/constants/57d23321cfc12bda",
+        "hash": "2797637380140568475"
+      },
+      {
+        "file": ".hypothesis/constants/cc34786760aa4a14",
+        "hash": "16618557415388969480"
+      },
+      {
+        "file": ".hypothesis/constants/eab8ba484293790f",
+        "hash": "14945769560937384714"
+      },
+      {
+        "file": ".hypothesis/constants/7617af66cc662698",
+        "hash": "17829775330561398876"
+      },
+      {
+        "file": ".hypothesis/constants/79fd270cb3f27adc",
+        "hash": "5769756311775929961"
+      },
+      {
+        "file": ".hypothesis/constants/469aeafb15441cd1",
+        "hash": "9835352139626623920"
+      },
+      {
+        "file": ".hypothesis/constants/f38fc0db54d1fa3e",
+        "hash": "12517827486131265250"
+      },
+      {
+        "file": ".hypothesis/constants/6c2aebe642d6471e",
+        "hash": "3777283248183151235"
+      },
+      {
+        "file": ".hypothesis/constants/d4df9abaad8e53d2",
+        "hash": "8196543248472484424"
+      },
+      {
+        "file": ".hypothesis/constants/7d7939f33993b56a",
+        "hash": "6773121889422361915"
+      },
+      {
+        "file": ".hypothesis/constants/1b0716e18c4d7b9f",
+        "hash": "17886618633589276458"
+      },
+      {
+        "file": ".hypothesis/constants/8704dd01632bd000",
+        "hash": "4976573049022863610"
+      },
+      {
+        "file": "tools/oasdiff.exe",
+        "hash": "2708056122180386626"
+      },
+      {
+        "file": ".hypothesis/constants/4dd5a255c1162ff5",
+        "hash": "12494008374448949366"
+      },
+      {
+        "file": ".hypothesis/constants/de1009b79d60ad39",
+        "hash": "13576699278239931227"
+      },
+      {
+        "file": ".hypothesis/constants/7093969d521d82c1",
+        "hash": "2261189754018329561"
+      },
+      {
+        "file": ".hypothesis/constants/b5c2c740b9ff7d27",
+        "hash": "13690470950237460962"
+      },
+      {
+        "file": ".hypothesis/constants/5b6bf23db05bb26e",
+        "hash": "14519961941193058983"
+      },
+      {
+        "file": ".hypothesis/constants/ca8d90506562c729",
+        "hash": "7219237612496098688"
+      },
+      {
+        "file": ".hypothesis/constants/16c1f55baaf446d6",
+        "hash": "14524179258241185828"
+      },
+      {
+        "file": ".gitignore",
+        "hash": "10940441657614868655"
+      },
+      {
+        "file": ".hypothesis/constants/a37eb9d20ff028a0",
+        "hash": "6356110651961907030"
+      },
+      {
+        "file": "oas/services/snd/openapi.yaml",
+        "hash": "14443567308567850174"
+      },
+      {
+        "file": ".hypothesis/constants/b5331a998620ca14",
+        "hash": "16429219512955094751"
+      },
+      {
+        "file": ".hypothesis/constants/63d214399108e3a9",
+        "hash": "8622443245194396612"
+      },
+      {
+        "file": "temp_dash_hr_artifacts.py",
+        "hash": "12947780653768476690"
+      },
+      {
+        "file": ".hypothesis/constants/1af3e112c9fa342e",
+        "hash": "2874711081939693545"
+      },
+      {
+        "file": ".hypothesis/constants/df59035e76a30337",
+        "hash": "7447150008707464037"
+      },
+      {
+        "file": ".hypothesis/constants/668eaff13635a6a4",
+        "hash": "10852649725892520187"
+      },
+      {
+        "file": ".hypothesis/constants/68208a9676afdd4b",
+        "hash": "2020675735416800489"
+      },
+      {
+        "file": ".hypothesis/constants/f7d8c4cbb576eb01",
+        "hash": "17878135017916254353"
+      },
+      {
+        "file": ".hypothesis/constants/3abdf061da375dff",
+        "hash": "6541588215039946782"
+      },
+      {
+        "file": ".hypothesis/constants/07cbc26405169bc8",
+        "hash": "6832181582380019052"
+      },
+      {
+        "file": ".hypothesis/constants/b3bbae08c1134ff7",
+        "hash": "682814706195420218"
+      },
+      {
+        "file": ".hypothesis/constants/127e8fa3efd6a7b8",
+        "hash": "1461534454958868116"
+      },
+      {
+        "file": ".hypothesis/constants/dbc53526280d604d",
+        "hash": "668148411924350123"
+      },
+      {
+        "file": ".hypothesis/constants/2cffc0d9cf7c5b87",
+        "hash": "12291699185963885913"
+      },
+      {
+        "file": "src/core/core.module.ts",
+        "hash": "13512557331970008685"
+      },
+      {
+        "file": ".hypothesis/examples/32fb0f91f5d0939d/8a1c64d854b59f34",
+        "hash": "4869525671490860511"
+      },
+      {
+        "file": ".hypothesis/constants/8d19506e58e55596",
+        "hash": "9767730763485400480"
+      },
+      {
+        "file": ".hypothesis/constants/58d77d5370203c00",
+        "hash": "10014570682858946715"
+      },
+      {
+        "file": "dashboards/bi/SCREENS_CATALOG.csv",
+        "hash": "7149545685811873383"
+      },
+      {
+        "file": ".hypothesis/constants/0d81dd8c57144454",
+        "hash": "12191992047145015237"
+      },
+      {
+        "file": ".hypothesis/constants/922b0533242e488d",
+        "hash": "8608875426706890782"
+      },
+      {
+        "file": ".hypothesis/constants/79e18ad0b76634a3",
+        "hash": "1031294277969683314"
+      },
+      {
+        "file": ".hypothesis/constants/122dca544cc92b69",
+        "hash": "1416540554267407886"
+      },
+      {
+        "file": "scripts/wave/build-fe-placeholder.js",
+        "hash": "16819962720864296604"
+      },
+      {
+        "file": ".hypothesis/constants/dd01a4835a924fcc",
+        "hash": "15180674182504686417"
+      },
+      {
+        "file": "registry/SSOT_INDEX.json",
+        "hash": "1285611190487608019"
+      },
+      {
+        "file": ".hypothesis/constants/5d0f199cd76dc0c2",
+        "hash": "2750666281237716861"
+      },
+      {
+        "file": ".hypothesis/constants/e94f2630956ed1de",
+        "hash": "10872296437020689496"
+      },
+      {
+        "file": ".hypothesis/constants/b11f027275210388",
+        "hash": "939093268005171568"
+      },
+      {
+        "file": ".hypothesis/constants/49bc1e11bfc56c18",
+        "hash": "1544734997433398257"
+      },
+      {
+        "file": "web/README.md",
+        "hash": "1215001414399961360"
+      },
+      {
+        "file": "tsconfig.json",
+        "hash": "6628787819459074082"
+      },
+      {
+        "file": "oas/services/arb/openapi.yaml",
+        "hash": "15985212569037626938"
+      },
+      {
+        "file": ".hypothesis/constants/5eb1bff546a70295",
+        "hash": "18043765957423202704"
+      },
+      {
+        "file": ".hypothesis/constants/f5adf3e14aa8803c",
+        "hash": "3801590296705925257"
+      },
+      {
+        "file": ".hypothesis/constants/64082bef79167e1a",
+        "hash": "17248416370736425765"
+      },
+      {
+        "file": "src/core/controllers/metrics.controller.ts",
+        "hash": "11476623363979529499"
+      },
+      {
+        "file": ".hypothesis/constants/66d3dffb3a0bb900",
+        "hash": "9215506194939707802"
+      },
+      {
+        "file": ".hypothesis/constants/cc50a2e39d015c1d",
+        "hash": "4775828621114511279"
+      },
+      {
+        "file": ".hypothesis/constants/0a174ab092bdf149",
+        "hash": "8241305499042897017"
+      },
+      {
+        "file": ".hypothesis/constants/24b63b5fc802a433",
+        "hash": "1701355861451719845"
+      },
+      {
+        "file": "docs/explainar/services/srv-dsh.md",
+        "hash": "17901148867591333515"
+      },
+      {
+        "file": ".github/CODEOWNERS",
+        "hash": "13357491512150565625"
+      },
+      {
+        "file": ".hypothesis/constants/3d079a3f15fadc4a",
+        "hash": "444809697153924116"
+      },
+      {
+        "file": ".hypothesis/constants/af457f602bc67c32",
+        "hash": "8427981292348151841"
+      },
+      {
+        "file": ".hypothesis/constants/a02f708e8aaae2c3",
+        "hash": "13317535097562463175"
+      },
+      {
+        "file": ".hypothesis/constants/eb1caafd92ab2272",
+        "hash": "6447154537856229720"
+      },
+      {
+        "file": ".hypothesis/constants/9f5ec7c1dc22e0e0",
+        "hash": "17668817760020674249"
+      },
+      {
+        "file": ".hypothesis/constants/7787009b7e883643",
+        "hash": "4644585517078166943"
+      },
+      {
+        "file": "oas/services/mrf/openapi.yaml",
+        "hash": "1455688044246160513"
+      },
+      {
+        "file": "dashboards/screens/SCREENS_CATALOG.csv",
+        "hash": "4569529296659710490"
+      },
+      {
+        "file": ".hypothesis/constants/394f52be4b2147e9",
+        "hash": "9279857479661678559"
+      },
+      {
+        "file": ".hypothesis/constants/ee6fcd67cf3974a0",
+        "hash": "1869374743820110762"
+      },
+      {
+        "file": "apps/captain/SCREENS_CATALOG.csv",
+        "hash": "8777999218681183485"
+      },
+      {
+        "file": ".hypothesis/constants/3839c42e07489fce",
+        "hash": "15271101228122810797"
+      },
+      {
+        "file": ".hypothesis/constants/398240c8d95ce7ef",
+        "hash": "7738001932442869800"
+      },
+      {
+        "file": ".hypothesis/constants/36c260594e012ee1",
+        "hash": "5280626693247079387"
+      },
+      {
+        "file": ".hypothesis/constants/62ca66d35df522c4",
+        "hash": "326347957730125382"
+      },
+      {
+        "file": "apps/field/SCREENS_CATALOG.csv",
+        "hash": "6203118267534685617"
+      },
+      {
+        "file": ".hypothesis/constants/d82940e8897931e8",
+        "hash": "454639023460241693"
+      },
+      {
+        "file": "test/integration/orders.integration.spec.ts",
+        "hash": "17983092811422544818"
+      },
+      {
+        "file": ".hypothesis/constants/02eceb2fd2d826c2",
+        "hash": "14229307138032206956"
+      },
+      {
+        "file": ".hypothesis/constants/95357861285f81c1",
+        "hash": "10783869529954175010"
+      },
+      {
+        "file": ".hypothesis/constants/de10d22ed825c70d",
+        "hash": "6047365361218066329"
+      },
+      {
+        "file": "scripts/guard_guidancefiles.py",
+        "hash": "924488825547352995"
+      },
+      {
+        "file": ".hypothesis/constants/57dbde145bf5d828",
+        "hash": "6204487787246230748"
+      },
+      {
+        "file": ".hypothesis/constants/de7a7614e26a4d6d",
+        "hash": "16255002591628056732"
+      },
+      {
+        "file": "oas/README.md",
+        "hash": "2040220858070509849"
+      },
+      {
+        "file": ".hypothesis/constants/f6ee3e2ba2642e27",
+        "hash": "6613825412263819338"
+      },
+      {
+        "file": ".hypothesis/constants/2fda912527187aee",
+        "hash": "3959333229599664620"
+      },
+      {
+        "file": ".hypothesis/constants/9f5f882e37c4ae94",
+        "hash": "3755095936594683681"
+      },
+      {
+        "file": ".hypothesis/constants/22172acb4b0c0058",
+        "hash": "4799825097681618006"
+      },
+      {
+        "file": ".hypothesis/constants/47c07ff2426f12e8",
+        "hash": "5801922137542853348"
+      },
+      {
+        "file": ".hypothesis/constants/15c8f1e9cdef777e",
+        "hash": "13773541299346904254"
+      },
+      {
+        "file": "dashboards/admin/SCREENS_CATALOG.csv",
+        "hash": "12738649505204165628"
+      },
+      {
+        "file": ".hypothesis/constants/04ec50c1536b870b",
+        "hash": "181343378894678637"
+      },
+      {
+        "file": "docker/DshService.Dockerfile",
+        "hash": "13512393419145180292"
+      },
+      {
+        "file": ".hypothesis/constants/f1e376e6e69a9013",
+        "hash": "13698078181197542878"
+      },
+      {
+        "file": ".hypothesis/constants/7dfdfd7557f0848e",
+        "hash": "16901422115184949623"
+      },
+      {
+        "file": ".hypothesis/constants/b45a3aa7eb8e3428",
+        "hash": "3167323776531631411"
+      },
+      {
+        "file": "docs/Guidancefiles/ReposiGOV.mdc",
+        "hash": "13378412497932560860"
+      },
+      {
+        "file": ".hypothesis/constants/a2130d46eb6f71c0",
+        "hash": "8778787674077251968"
+      },
+      {
+        "file": ".hypothesis/constants/1f4b62403fde35c2",
+        "hash": "7729663799507922656"
+      },
+      {
+        "file": ".hypothesis/constants/cecfbef0e10cb7f9",
+        "hash": "17357128601497113032"
+      },
+      {
+        "file": ".hypothesis/constants/2bf0ccbd070eb31e",
+        "hash": "6363636120670347354"
+      },
+      {
+        "file": ".hypothesis/examples/04e6b3400353b141/32fb0f91f5d0939d",
+        "hash": "6601981570499085377"
+      },
+      {
+        "file": ".hypothesis/constants/ccefad0761d9cb29",
+        "hash": "15159845199663420262"
+      },
+      {
+        "file": ".hypothesis/constants/181de77f50a57426",
+        "hash": "3323275230880456173"
+      },
+      {
+        "file": ".hypothesis/constants/3e0e191211470d5f",
+        "hash": "14546210125812242436"
+      },
+      {
+        "file": ".hypothesis/constants/95814ba0779bfed2",
+        "hash": "17882278794102553052"
+      },
+      {
+        "file": ".github/workflows/guidancefiles.yml",
+        "hash": "8846938100959415794"
+      },
+      {
+        "file": ".hypothesis/constants/b8ee82343100cf28",
+        "hash": "3651128048508910970"
+      },
+      {
+        "file": ".hypothesis/constants/587130b0fe6e056a",
+        "hash": "5918701625501442001"
+      },
+      {
+        "file": "apps/README.md",
+        "hash": "11245811188559712775"
+      },
+      {
+        "file": "dashboards/support/SCREENS_CATALOG.csv",
+        "hash": "16010520222815563207"
+      },
+      {
+        "file": ".hypothesis/constants/ce4646fc0b142117",
+        "hash": "8956676565323307660"
+      },
+      {
+        "file": ".hypothesis/constants/2196e604560785f8",
+        "hash": "2188408858032967152"
+      },
+      {
+        "file": ".hypothesis/constants/ff6e51eb06a3c2b2",
+        "hash": "806492224985551321"
+      },
+      {
+        "file": ".hypothesis/constants/d12a60b540996aaf",
+        "hash": "16816587437886042116"
+      },
+      {
+        "file": ".hypothesis/constants/8b17fde423630f6e",
+        "hash": "8052362657611393610"
+      },
+      {
+        "file": ".hypothesis/constants/86901e5dd67f2c61",
+        "hash": "12138734828412285493"
+      },
+      {
+        "file": "src/core/services/logger.service.ts",
+        "hash": "3780646578636697499"
+      },
+      {
+        "file": ".hypothesis/constants/2154959d1fbbe46b",
+        "hash": "14434896019966899755"
+      },
+      {
+        "file": ".hypothesis/constants/2a7022a8faeb67e3",
+        "hash": "1257269517284732850"
+      },
+      {
+        "file": "dashboards/ssot/SCREENS_CATALOG.csv",
+        "hash": "18016248185040062734"
+      },
+      {
+        "file": ".hypothesis/constants/bd7c22eddfd7ddeb",
+        "hash": "1799472525500071400"
+      },
+      {
+        "file": ".hypothesis/constants/1f4caa99abb65230",
+        "hash": "3330368138426704974"
+      },
+      {
+        "file": ".hypothesis/constants/9e68e57a05239693",
+        "hash": "13955154413010718398"
+      },
+      {
+        "file": ".hypothesis/constants/dfa65a499039a4d0",
+        "hash": "2590312679900645127"
+      },
+      {
+        "file": ".hypothesis/constants/d0ed013ca187d919",
+        "hash": "6769074552633286225"
+      },
+      {
+        "file": ".hypothesis/constants/fe0c3747cf14e696",
+        "hash": "11665166282846434129"
+      },
+      {
+        "file": "tsconfig.eslint.json",
+        "hash": "7171022457664790183"
+      },
+      {
+        "file": ".hypothesis/constants/6eb477e041fca67c",
+        "hash": "15032609372595512324"
+      },
+      {
+        "file": ".hypothesis/constants/46f3a04e091188c3",
+        "hash": "8822909989754299972"
+      },
+      {
+        "file": ".hypothesis/constants/2f92761e50ff6888",
+        "hash": "12877044684914372564"
+      },
+      {
+        "file": ".hypothesis/constants/cdfd2c79d499347e",
+        "hash": "7724109678478765418"
+      },
+      {
+        "file": ".hypothesis/constants/4340d0688006b083",
+        "hash": "9964612827735074519"
+      },
+      {
+        "file": ".hypothesis/constants/e0f568c41e89da39",
+        "hash": "2370416424409827150"
+      },
+      {
+        "file": "src/core/guards/idempotency.guard.ts",
+        "hash": "11750772827449832705"
+      },
+      {
+        "file": ".hypothesis/constants/f768307325c0240b",
+        "hash": "12916375890524377969"
+      },
+      {
+        "file": ".hypothesis/constants/8d34ce03d7508897",
+        "hash": "4816667954010770140"
+      },
+      {
+        "file": ".hypothesis/constants/4f20d1a3e31a9d8c",
+        "hash": "1248227167438465361"
+      }
+    ],
+    "projectFileMap": {
+      "app-partner": [
+        {
+          "file": "apps/partner/SCREENS_CATALOG.csv",
+          "hash": "11166549332999920979"
+        },
+        {
+          "file": "apps/partner/project.json",
+          "hash": "10023279409199703671"
+        }
+      ],
+      "srv-dsh": [
+        {
+          "file": "src/modules/dsh/README.md",
+          "hash": "9158897889027995722"
+        },
+        {
+          "file": "src/modules/dsh/config/dsh-incentives.config.ts",
+          "hash": "8210786575201594105"
+        },
+        {
+          "file": "src/modules/dsh/controllers/dsh-captains.controller.ts",
+          "hash": "11939278466883855041"
+        },
+        {
+          "file": "src/modules/dsh/controllers/dsh-customers.controller.ts",
+          "hash": "3445469313851264650"
+        },
+        {
+          "file": "src/modules/dsh/controllers/dsh-orders.controller.ts",
+          "hash": "4087355401281828774"
+        },
+        {
+          "file": "src/modules/dsh/controllers/dsh-partners.controller.ts",
+          "hash": "13875827890872428178"
+        },
+        {
+          "file": "src/modules/dsh/dsh.module.ts",
+          "hash": "10984212432977696691"
+        },
+        {
+          "file": "src/modules/dsh/dto/create-order.dto.ts",
+          "hash": "14089702165147301789"
+        },
+        {
+          "file": "src/modules/dsh/dto/get-order.dto.ts",
+          "hash": "13006184868279236034"
+        },
+        {
+          "file": "src/modules/dsh/dto/list-orders.dto.ts",
+          "hash": "12627396779498264057"
+        },
+        {
+          "file": "src/modules/dsh/entities/order.entity.ts",
+          "hash": "9807974014907029987"
+        },
+        {
+          "file": "src/modules/dsh/project.json",
+          "hash": "6603734907794940320"
+        },
+        {
+          "file": "src/modules/dsh/repositories/order.repository.spec.ts",
+          "hash": "18210780902107060226"
+        },
+        {
+          "file": "src/modules/dsh/repositories/order.repository.ts",
+          "hash": "15062914198965203756"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-captains.service.spec.ts",
+          "hash": "2383484737172238215"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-captains.service.ts",
+          "hash": "3688192042206501385"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-customers.service.spec.ts",
+          "hash": "5061158524250445568"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-customers.service.ts",
+          "hash": "16152812181911240857"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-incentives.service.spec.ts",
+          "hash": "18426155763394449351"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-incentives.service.ts",
+          "hash": "8935459162697995438"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-orders.service.spec.ts",
+          "hash": "3912565728213506962"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-orders.service.ts",
+          "hash": "2956602152347540425"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-partners.service.spec.ts",
+          "hash": "5002455358566307892"
+        },
+        {
+          "file": "src/modules/dsh/services/dsh-partners.service.ts",
+          "hash": "11521006642917631510"
+        },
+        {
+          "file": "src/modules/dsh/types/incentives.types.ts",
+          "hash": "5919813604044825511"
+        }
+      ],
+      "app-user": [
+        {
+          "file": "apps/user/SCREENS_CATALOG.csv",
+          "hash": "8058204701402080433"
+        },
+        {
+          "file": "apps/user/project.json",
+          "hash": "18438271326864438481"
+        }
+      ]
+    }
+  }
+}

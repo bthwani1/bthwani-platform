@@ -75,6 +75,25 @@ export class OrderEntity {
     delivery_fee?: { amount: string; currency: string };
     tax?: { amount: string; currency: string };
     total: { amount: string; currency: string };
+    breakdown?: Array<{
+      sku: string;
+      quantity: number;
+      unitPrice: { amount: string; currency: string };
+      total: { amount: string; currency: string };
+    }>;
+    adjustments?: Array<{
+      id: string;
+      label: string;
+      source: string;
+      target: string;
+      mode: 'discount' | 'surcharge';
+      amount: { amount: string; currency: string };
+      metadata?: Record<string, unknown>;
+    }>;
+    guardrail_violations?: string[];
+    subscription_plan_id?: string;
+    coupon_code?: string;
+    points_redeemed?: number;
   };
 
   @Property({ type: 'varchar', length: 500, nullable: true })

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "app-partner",
+  "sourceRoot": "apps/partner",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node scripts/wave/build-fe-placeholder.js app-partner"
+      },
+      "configurations": {
+        "production": {}
+      }
+    }
+  }
+}
+

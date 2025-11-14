@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\openapi\_hypothesis.py
+# hypothesis_version: 6.147.0
+
+[0.0, 0.05, 1.0, '\x00', '%2E', '%2E%2E', '*', ',', '.', '..', '/', 'Positive test case', 'Schema mutated', 'application', 'body', 'codec', 'cookies', 'exclude_characters', 'false', 'format', 'generator', 'headers', 'location', 'meta', 'null', 'object', 'path_parameters', 'properties', 'query', 'required', 'schema', 'string', 'true', 'type', 'value']

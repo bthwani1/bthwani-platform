@@ -5,8 +5,22 @@ module.exports = {
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
   },
-  collectCoverageFrom: ['**/*.(t|j)s'],
+  collectCoverageFrom: [
+    'modules/dsh/services/**/*.ts',
+    'modules/dsh/repositories/**/*.ts',
+    'modules/dsh/entities/**/*.ts',
+    'modules/dsh/config/**/*.ts',
+    '!modules/dsh/**/*.spec.ts',
+  ],
   coverageDirectory: '../coverage',
+  coverageThreshold: {
+    global: {
+      branches: 85,
+      functions: 90,
+      lines: 90,
+      statements: 90,
+    },
+  },
   testEnvironment: 'node',
   moduleNameMapper: {
     '^@core/(.*)$': '<rootDir>/core/$1',
@@ -14,4 +28,3 @@ module.exports = {
     '^@modules/(.*)$': '<rootDir>/modules/$1',
   },
 };
-

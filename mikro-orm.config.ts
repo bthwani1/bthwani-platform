@@ -1,8 +1,6 @@
-import { Options } from '@mikro-orm/core';
-import { PostgreSqlDriver } from '@mikro-orm/postgresql';
+import { defineConfig } from '@mikro-orm/postgresql';
 
-const config: Options<PostgreSqlDriver> = {
-  type: 'postgresql',
+export default defineConfig({
   host: process.env.DB_HOST || 'localhost',
   port: parseInt(process.env.DB_PORT || '5432', 10),
   user: process.env.DB_USER || 'postgres',
@@ -17,7 +15,4 @@ const config: Options<PostgreSqlDriver> = {
   },
   debug: process.env.NODE_ENV === 'development',
   timezone: 'Asia/Aden',
-};
-
-export default config;
-
+});

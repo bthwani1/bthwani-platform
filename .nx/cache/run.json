@@ -1,0 +1,21 @@
+{
+  "run": {
+    "command": "nx build srv-dsh --configuration=production",
+    "startTime": "2025-11-14T16:28:08.180Z",
+    "endTime": "2025-11-14T16:28:19.409Z",
+    "inner": false
+  },
+  "tasks": [
+    {
+      "taskId": "srv-dsh:build:production",
+      "target": "build",
+      "projectName": "srv-dsh",
+      "hash": "18303016490541654977",
+      "startTime": "2025-11-14T16:28:08.199Z",
+      "endTime": "2025-11-14T16:28:19.408Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    }
+  ]
+}

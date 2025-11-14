@@ -24,3 +24,29 @@ VAR_DSH_CATALOG_MODERATION_REQUIRED,GLOBAL,true,DSH,"اشتراط المرور �
 VAR_DSH_CATALOG_SEARCH_SYNONYMS,GLOBAL,"{""apple"":""تفاح"",""banana"":""موز""}",DSH,"مرادفات البحث الافتراضية (JSON)" ,DRAFT,
 VAR_DSH_CATALOG_SAFETY_STOCK_MIN,GLOBAL,5,DSH,"حد أمان المخزون الافتراضي عند غياب قيمة المتجر",DRAFT,
 VAR_DSH_CATALOG_SENSITIVE_POLICY,GLOBAL,restricted,DSH,"سياسة التعامل مع العناصر الحساسة (RBAC profile)",DRAFT,
+VAR_DSH_SUB_USER_PRO_ENABLED,DSH,true,DSH,"تفعيل خطة اشتراك المستخدم برو",DRAFT,"يرتبط بملف registry/dsh_incentives.json"
+VAR_DSH_SUB_USER_PRO_MAX_FREE_ORDERS,DSH,2,DSH,"عدد التوصيلات المجانية لكل دورة لمشتركي برو",DRAFT,
+VAR_DSH_SUB_USER_PRO_PCT_DISCOUNT,DSH,30,DSH,"نسبة خصم رسوم التوصيل في خطة برو",DRAFT,
+VAR_DSH_SUB_USER_FAMILY_ENABLED,DSH,false,DSH,"تفعيل خطة العائلة Family",DRAFT,
+VAR_DSH_SUB_USER_FAMILY_MAX_MEMBERS,DSH,5,DSH,"عدد أفراد العائلة المسموح لكل اشتراك Family",DRAFT,
+VAR_DSH_SUB_PARTNER_PRO_ENABLED,DSH,true,DSH,"تفعيل خطة Partner Pro للشركاء",DRAFT,
+VAR_DSH_SUB_PARTNER_PRO_COMMISSION_PCT,DSH,8,DSH,"نسبة عمولة المنصة بعد الاشتراك في Partner Pro",DRAFT,
+VAR_DSH_CAPTAIN_BRONZE_SHARE_PCT,DSH,70,DSH,"حصة الكابتن من رسوم التوصيل (Bronze)",DRAFT,
+VAR_DSH_CAPTAIN_SILVER_SHARE_PCT,DSH,75,DSH,"حصة الكابتن من رسوم التوصيل (Silver)",DRAFT,
+VAR_DSH_CAPTAIN_GOLD_SHARE_PCT,DSH,80,DSH,"حصة الكابتن من رسوم التوصيل (Gold)",DRAFT,
+VAR_DSH_CAPTAIN_ELITE_SHARE_PCT,DSH,82,DSH,"حصة الكابتن من رسوم التوصيل (Elite)",DRAFT,
+VAR_DSH_DISC_SUPERMARKET_WEEKEND_ENABLED,DSH,true,DSH,"تفعيل خصم نهاية الأسبوع للسوبرماركت",DRAFT,
+VAR_DSH_DISC_SUPERMARKET_WEEKEND_PCT,DSH,15,DSH,"نسبة خصم رسوم التوصيل أيام الجمعة/السبت",DRAFT,
+VAR_DSH_DISC_LARGE_BASKET_ENABLED,DSH,true,DSH,"تفعيل خصم السلة الكبيرة",DRAFT,
+VAR_DSH_DISC_LARGE_BASKET_MIN_TOTAL,DSH,30000,DSH,"حد أدنى لقيمة السلة لخصم السلة الكبيرة (YER)",DRAFT,
+VAR_DSH_COUPONS_ENABLED,DSH,false,DSH,"تفعيل طبقة الكوبونات في DSH",DRAFT,
+VAR_DSH_COUPON_WELCOME10_MAX_DISCOUNT_YER,DSH,2000,DSH,"الحد الأقصى لخصم كوبون WELCOME10",DRAFT,
+VAR_DSH_COUPON_FREEDLV_SM_MAX_DISCOUNT_YER,DSH,1500,DSH,"الحد الأقصى لكوبون التوصيل المجاني FREEDLV_SM",DRAFT,
+VAR_DSH_REWARDS_POINTS_PER_1000_YER,DSH,1,DSH,"عدد النقاط المكتسبة لكل 1000 YER بعد الخصومات",DRAFT,
+VAR_DSH_REWARDS_USER_PRO_MULTIPLIER,DSH,1.5,DSH,"مضاعف نقاط المشتركين في User Pro",DRAFT,
+VAR_DSH_REWARDS_SUPERMARKET_WEEKEND_MULTIPLIER,DSH,2,DSH,"مضاعف نقاط حملة نهاية الأسبوع للسوبرماركت",DRAFT,
+VAR_DSH_REWARDS_POINTS_PER_1000YER_DISCOUNT,DSH,100,DSH,"عدد النقاط اللازمة لخصم 1000 YER",DRAFT,
+VAR_DSH_REWARDS_MAX_DISCOUNT_PCT_PER_ORDER,DSH,50,DSH,"أقصى نسبة خصم بالنقاط لكل طلب",DRAFT,
+VAR_DSH_REWARDS_EXPIRY_DAYS,DSH,365,DSH,"مدة صلاحية النقاط بالأيام",DRAFT,
+VAR_DSH_MIN_NET_TOTAL_YER,DSH,1000,DSH,"أدنى صافي إجمالي بعد الخصومات",DRAFT,
+VAR_DSH_MAX_TOTAL_DISCOUNT_PCT,DSH,80,DSH,"الحد الأعلى لنسبة الخصومات المتراكمة",DRAFT,

@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\graphql\checks.py
+# hypothesis_version: 6.147.0
+
+[';locations:', ';path:', 'GraphQL client error', 'GraphQL server error', '_unique_key_cache', 'case_id', 'errors', 'locations', 'message', 'operation', 'path', 'severity', 'title', 'type_name']

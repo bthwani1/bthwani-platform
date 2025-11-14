@@ -16,6 +16,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
+import { TraceInterceptor } from './interceptors/trace.interceptor';
 import { MetricsService } from './services/metrics.service';
 @Global()
 @Module({
@@ -66,6 +67,10 @@ import { MetricsService } from './services/metrics.service';
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TraceInterceptor,
     },
     {
       provide: APP_GUARD,

@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\cli\commands\run\context.py
+# hypothesis_version: 6.147.0
+
+['body', 'case_id', 'cases_with_failures', 'cases_without_checks', 'code_sample', 'extraction_failures', 'failures', 'response', 'tested_operations', 'total_cases', 'unique_failures_map']

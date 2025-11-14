@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\specs\openapi\adapter\responses.py
+# hypothesis_version: 6.147.0
+
+['$ref', '/', '2', ';', 'X', '_default_media_type', '_headers', '_inner', '_schema', '_validation_cache', '_validator', 'adapter', 'content', 'default', 'definition', 'example', 'examples', 'headers', 'media_type', 'name', 'resolver', 'schema', 'scope', 'status_code', 'validator', 'value', 'x-example', 'x-examples']

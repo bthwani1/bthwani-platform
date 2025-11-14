@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\engine\phases\unit\__init__.py
+# hypothesis_version: 6.147.0
+
+[0.0, 0.1, '-', 'Error', 'cookies', 'headers', 'ignore', 'path_parameters', 'query', 'user-agent']

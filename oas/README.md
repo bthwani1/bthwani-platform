@@ -28,4 +28,3 @@ CI enforces these via:
 3. Commit any regenerated files under `docs/explainar/generated/` and `oas/master/`.
 
 Refer to `docs/ARCHITECTURE.md` for how OAS files align with runtime modules, apps, dashboards, and trace tables.
-

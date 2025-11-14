@@ -1,0 +1,4 @@
+# file: C:\Users\b\AppData\Roaming\Python\Python314\site-packages\schemathesis\generation\meta.py
+# hypothesis_version: 6.147.0
+
+['_dirty', 'components', 'const_value', 'coverage', 'data', 'default_value', 'description', 'duplicate_parameter', 'enum_value', 'example_value', 'examples', 'fuzzing', 'generation', 'incorrect_type', 'invalid_enum_value', 'invalid_format', 'invalid_pattern', 'location', 'maximum_items_array', 'maximum_value', 'minimum_items_array', 'minimum_value', 'missing_parameter', 'mode', 'name', 'near_boundary_number', 'non_unique_items', 'not_multiple_of', 'null_value', 'object_only_required', 'parameter', 'parameter_location', 'phase', 'scenario', 'stateful', 'time', 'valid_array', 'valid_boolean', 'valid_number', 'valid_object', 'valid_string', 'value_above_maximum', 'value_below_minimum']

@@ -1,9 +1,9 @@
 ﻿name: contracts
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
   push:
-    branches: [ feat/bootstrap-guides, feat/oas-servers-contact ]
+    branches: [feat/bootstrap-guides, feat/oas-servers-contact]
 jobs:
   spectral:
     runs-on: ubuntu-latest
