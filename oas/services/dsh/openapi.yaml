@@ -12,6 +12,9 @@ info:
     - app.bthwani.com -- customer web app (APP-USER).
 
     - bthwani.com -- marketing site (read-only via cached GET).'
+  contact:
+    name: BThwani Support
+    email: support@bthwani.com
 servers:
 - url: https://api-dev.bthwani.com
 - url: https://api-stage.bthwani.com

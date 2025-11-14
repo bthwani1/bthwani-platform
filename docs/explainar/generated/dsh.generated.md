@@ -116,7 +116,7 @@
 | POST | /api/dls/partners/{partner_id}/approve | Approve partner; requires step-up; writes immutable audit. |
 | PUT | /api/dls/partners/{partner_id}/bank | Set payout bank details with step-up verification. |
 | POST | /api/dls/partners/{partner_id}/documents | Upload KYC/permit documents with AV scan and immutable audit trail. |
-| POST | /api/dls/partners/{partner_id}/identity | Submit legal name, CRN, tax id, owner info. Sensitive fields masked on export. |
+| POST | /api/dls/partners/{partner_id}/identity | Submit legal name, CRN, tax id, owner info. Sensitive fields masked |
 | POST | /api/dls/partners/{partner_id}/notifications | Dispatch SMS/WhatsApp notification to partner. |
 | GET | /api/dls/partners/{partner_id}/policies | Get partner policies for platform/partner/pickup modes. |
 | POST | /api/dls/partners/{partner_id}/reject | Reject with reason; ticket remains for follow up. |
@@ -133,22 +133,22 @@
 | PUT | /api/dls/stores/{store_id}/zones | Define delivery coverage zones for the store. |
 | POST | /api/fin/settlements/requests | Create payout request (dual-sign later) |
 | GET | /api/fin/settlements/{settlement_id} | Settlement details |
-| GET | /api/fin/settlements?store_id={store_id} | Settlement batches for store |
+| GET | /api/fin/settlements | Settlement batches for store |
 | GET | /api/fleet/captains/{captain_id} | Load captain profile for review |
 | POST | /api/fleet/captains/{captain_id}/approve | Approve captain after KYC and vehicle check |
 | POST | /api/fleet/captains/{captain_id}/force-offline | Force captain offline with reason and TTL |
 | POST | /api/fleet/captains/{captain_id}/reject | Reject captain with reason |
 | POST | /api/fleet/dispatch/orders/{order_id}/assign | Assign order to captain manually |
 | POST | /api/fleet/dispatch/orders/{order_id}/reassign | Reassign order to another captain |
-| GET | /api/fleet/dispatch/unassigned?cursor={cursor}&limit={limit} | List unassigned delivery orders |
+| GET | /api/fleet/dispatch/unassigned | List unassigned delivery orders |
 | POST | /api/fleet/inbound/location | Inbound location webhook with HMAC |
 | POST | /api/fleet/incidents | Log operational or safety incident |
-| GET | /api/fleet/incidents?cursor={cursor}&limit={limit}&status={status} | List incidents with filters |
-| GET | /api/fleet/live/locations?city={city}&radius_km={radius_km} | Query live captain locations |
+| GET | /api/fleet/incidents | List incidents with filters |
+| GET | /api/fleet/live/locations | Query live captain locations |
 | POST | /api/fleet/shifts/{shift_id}/assign | Assign captain(s) to shift |
-| GET | /api/fleet/shifts?cursor={cursor}&limit={limit} | List active and planned shifts |
+| GET | /api/fleet/shifts | List active and planned shifts |
 | POST | /api/hr/attendance/{employee_id}/adjust | Adjust attendance record with audit. |
-| GET | /api/hr/attendance?from={from}&to={to} | Attendance window summary. |
+| GET | /api/hr/attendance | Attendance window summary. |
 | GET | /api/hr/benefits | List benefits. |
 | PATCH | /api/hr/benefits/{benefit_id} | Update benefit. |
 | GET | /api/hr/contracts | List contracts. |
@@ -256,23 +256,23 @@
 | POST | /dash/qa/runs/{run_id}/reject |  |
 | GET | /dash/qa/runs/{run_id}/report |  |
 | POST | /dash/qa/webhooks/ci |  |
-| PATCH | /fin/cod/controls |  |
-| POST | /fin/exports |  |
-| GET | /fin/exports/{id} |  |
-| GET | /fin/ledger/entries |  |
-| POST | /fin/ledger/journal |  |
-| GET | /fin/payouts |  |
-| POST | /fin/payouts |  |
-| GET | /fin/payouts/{id} |  |
-| POST | /fin/reconcile/run |  |
-| GET | /fin/reports/kpis |  |
-| GET | /fin/settlements |  |
-| POST | /fin/settlements |  |
-| GET | /fin/settlements/{id} |  |
-| POST | /fin/settlements/{id}/approve |  |
+| PATCH | /fin/cod/controls | Update COD settlement controls. |
+| POST | /fin/exports | Create finance export job. |
+| GET | /fin/exports/{id} | Fetch finance export details. |
+| GET | /fin/ledger/entries | List general ledger entries. |
+| POST | /fin/ledger/journal | Post manual journal entry. |
+| GET | /fin/payouts | List payout runs. |
+| POST | /fin/payouts | Create payout run. |
+| GET | /fin/payouts/{id} | Fetch payout run details. |
+| POST | /fin/reconcile/run | Trigger reconciliation run. |
+| GET | /fin/reports/kpis | Retrieve finance KPI report. |
+| GET | /fin/settlements | List settlement batches. |
+| POST | /fin/settlements | Create settlement batch. |
+| GET | /fin/settlements/{id} | Fetch settlement batch details. |
+| POST | /fin/settlements/{id}/approve | Approve settlement batch. |
 | POST | /pay/confirm | Confirm payment after provider callback. |
 | POST | /wallet/captures/adjust | Adjust capture amount for substitutions/returns (server-side) |
 | POST | /wallet/intents | Create payment intent for goods amount. |
 | GET | /wallet/intents/{id} | Poll payment intent status. |
 
-_source_sha256: 5f038d7e861808cc12f103eadeb02db539f069b1d22664757316fdf675ba54b6_
+_source_sha256: 324cdeaa0405be39b2da6744b92e763dbcf12113ca4623d623f39c11151f7648_
