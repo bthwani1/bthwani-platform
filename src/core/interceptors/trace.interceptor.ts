@@ -22,7 +22,7 @@ export class TraceInterceptor implements NestInterceptor {
       const allowedMethods = this.getAllowedMethods(context, request);
       response.setHeader('Allow', allowedMethods.join(', '));
       response.setHeader('Content-Type', 'message/http');
-      
+
       // Return TRACE response as per RFC7231
       return new Observable((observer) => {
         try {
@@ -50,31 +50,32 @@ export class TraceInterceptor implements NestInterceptor {
     // Try to extract allowed methods from route metadata
     const handler = context.getHandler();
     const controller = context.getClass();
-    
+
     // Check for custom metadata that might specify allowed methods
-    const routeMethods = this.reflector.get<string[]>('httpMethods', handler) ||
-                        this.reflector.get<string[]>('httpMethods', controller);
-    
+    const routeMethods =
+      this.reflector.get<string[]>('httpMethods', handler) ||
+      this.reflector.get<string[]>('httpMethods', controller);
+
     if (routeMethods && routeMethods.length > 0) {
       // Add standard methods that are always allowed
       const standardMethods = ['OPTIONS', 'HEAD'];
       return [...new Set([...routeMethods, ...standardMethods])].sort();
     }
-    
+
     // Extract from route path patterns
     const path = request.route?.path || request.url;
-    
+
     // Determine methods based on common REST patterns
     if (path.includes('/orders') || path.includes('/captains') || path.includes('/partners')) {
       // REST endpoints typically support GET, POST, PUT, PATCH, DELETE
       return ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'];
     }
-    
+
     if (path.startsWith('/api/health')) {
       // Health endpoints are read-only
       return ['GET', 'OPTIONS', 'HEAD'];
     }
-    
+
     // Default allowed methods for REST endpoints
     return ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'];
   }
@@ -93,4 +94,3 @@ export class TraceInterceptor implements NestInterceptor {
       .join('\r\n');
   }
 }
-

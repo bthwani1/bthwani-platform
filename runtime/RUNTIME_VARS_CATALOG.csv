@@ -50,3 +50,6 @@ VAR_DSH_REWARDS_MAX_DISCOUNT_PCT_PER_ORDER,DSH,50,DSH,"أقصى نسبة خصم 
 VAR_DSH_REWARDS_EXPIRY_DAYS,DSH,365,DSH,"مدة صلاحية النقاط بالأيام",DRAFT,
 VAR_DSH_MIN_NET_TOTAL_YER,DSH,1000,DSH,"أدنى صافي إجمالي بعد الخصومات",DRAFT,
 VAR_DSH_MAX_TOTAL_DISCOUNT_PCT,DSH,80,DSH,"الحد الأعلى لنسبة الخصومات المتراكمة",DRAFT,
+VAR_POD_RETENTION_DAYS,GLOBAL,180,DSH,"عدد أيام الاحتفاظ بصور إثبات التسليم (PoD)",DRAFT,"Guard: G-PRIVACY-EXPORT; Scope: Region>Service>Global"
+VAR_AMN_NEGOTIATION_ENABLED,AMN,true,AMN,"تفعيل التفاوض على الأجرة (80-120%) في خدمة أمانة",DRAFT,"Guard: G-PARITY>=0.90; Scope: City>Region>Global"
+VAR_WLT_PROVIDER_PRIMARY,GLOBAL,kuraimi_epay,WLT,"مزوّد المحفظة/الدفع الأساسي",DRAFT,"Guard: G-LEDGER-INVARIANTS; Scope: Global"

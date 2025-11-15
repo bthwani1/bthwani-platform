@@ -3,7 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const seedRoots = [path.resolve('registry'), path.resolve('seeds')];
-const reportPath = path.resolve('dist', 'dsh', 'DB_SEED_DRY.txt');
+const service = process.env.SERVICE || 'dsh';
+const reportPath = path.resolve('dist', service, 'DB_SEED_DRY.txt');
 
 function collectJsonFiles(dir) {
   if (!fs.existsSync(dir)) {

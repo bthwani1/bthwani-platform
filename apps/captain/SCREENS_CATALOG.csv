@@ -1,17 +1,27 @@
-screen_id,screen_title,related_service,main_endpoint,role,status,notes
-CAPTAIN_ORDERS_LIST,الطلبات المتاحة/المسندة,DSH,"/api/dls/captain/orders",captain,DRAFT,"قائمة الطلبات مع دعم cursor/limit"
-CAPTAIN_ORDER_DETAILS,تفاصيل الطلب,DSH,"/api/dls/captain/orders/{order_id}",captain,DRAFT,"عرض تفاصيل الطلب الحالية"
-CAPTAIN_ORDER_FLOW,تقدّم تنفيذ الطلب,DSH,"/api/dls/captain/orders/{order_id}/accept",captain,DRAFT,"قبول/رفض/إشعارات الوصول والتسليم"
-CAPTAIN_CHAT,الدردشة,DSH,"/api/dls/captain/orders/{order_id}/chat/messages",captain,DRAFT,"سجل الدردشة مع إرسال الرسائل"
-CAPTAIN_CHAT_READ_ACK,تأكيد قراءة الدردشة,DSH,"/api/dls/captain/orders/{order_id}/chat/read-ack",captain,DRAFT,"تأشير الرسائل كمقروءة"
-CAPTAIN_TIMELINE,الخط الزمني,DSH,"/api/dls/captain/orders/{order_id}/timeline",captain,DRAFT,"عرض الأحداث بالتسلسل"
-CAPTAIN_AVAILABILITY,التوفر,DSH,"/api/dls/captain/availability",captain,DRAFT,"تفعيل/تعطيل الدوام وتحديد المناطق"
-CAPTAIN_EARNINGS,الأرباح,DSH,"/api/dls/captain/earnings",captain,DRAFT,"عرض أرباح الكابتن"
-CAPTAIN_LOCATION_UPDATE,تحديث الموقع,DSH,"/api/dls/captain/location",captain,DRAFT,"نبضات الموقع الدورية"
-CAPTAIN_CHAT_HISTORY,سجل الدردشة,DSH,"/api/dls/captain/orders/{order_id}/chat/messages",captain,DRAFT,"استعراض سجل الدردشة مع دعم pagination"
-CAPTAIN_FLOW_ARRIVED_STORE,تسجيل الوصول إلى المتجر,DSH,"/api/dls/captain/orders/{order_id}/arrived-store",captain,DRAFT,"تأكيد الوصول إلى المتجر"
-CAPTAIN_FLOW_ARRIVED_CUSTOMER,تسجيل الوصول للعميل,DSH,"/api/dls/captain/orders/{order_id}/arrived-customer",captain,DRAFT,"تأكيد الوصول إلى العميل"
-CAPTAIN_FLOW_PICKED_UP,تأكيد استلام الطلب,DSH,"/api/dls/captain/orders/{order_id}/picked-up",captain,DRAFT,"إقرار استلام الطلب من المتجر"
-CAPTAIN_FLOW_DELIVERED,تأكيد التسليم,DSH,"/api/dls/captain/orders/{order_id}/delivered",captain,DRAFT,"إقرار إتمام التسليم النهائي"
-CAPTAIN_FLOW_REJECT,رفض الطلب,DSH,"/api/dls/captain/orders/{order_id}/reject",captain,DRAFT,"رفض الطلب مع سبب متوافق"
-
+screen_id,screen_name_ar,screen_name_en,section,service_code,main_components,system_links,next_screens,role,status,notes
+screen.captain_auth_landing,مرحبًا يا كابتن,Welcome Captain,Auth/Onboarding,GLOBAL,"Logo, Login, Create account",identity,"screen.captain_login,screen.captain_signup",captain,DRAFT,Entry point: Cold launch
+screen.captain_login,تسجيل الدخول,Login,Auth/Onboarding,GLOBAL,"Phone input, Continue",identity,screen.captain_otp_verify,captain,DRAFT,Entry point: auth_landing
+screen.captain_otp_verify,تأكيد الكود,Verify Code,Auth/Onboarding,GLOBAL,"OTP, Resend, Service eligibility info",identity,"screen.captain_onboarding_status,screen.home_status",captain,DRAFT,Entry point: login
+screen.captain_signup,إنشاء حساب كابتن,Create Captain Account,Auth/Onboarding,GLOBAL,"Name/phone/city, Service interest toggles, Consent",identity,screen.captain_documents_upload,captain,DRAFT,Entry point: auth_landing
+screen.captain_documents_upload,رفع المستندات,Upload Documents,Onboarding,"GLOBAL/AMN/DSH","ID, license, vehicle, AMN selfie + family/mahram","identity,amn",screen.captain_onboarding_status,captain,DRAFT,
+screen.captain_onboarding_status,حالة المراجعة,Review Status,Onboarding,GLOBAL,"DSH/AMN chips (Pending/Approved/Rejected)",identity,,captain,DRAFT,
+screen.home_status,حالة الكابتن,Captain Status,Home,GLOBAL,"Online/Offline, DSH/AMN toggles, Today summary, Safety banner",routing_dispatch,screen.jobs_offers_list,captain,DRAFT,
+screen.jobs_offers_list,العروض الحالية,Current Offers,Jobs,GLOBAL,"Filter chips: الكل/DSH/AMN, Cards with ETA/earning/timer, Active job mini-card","dsh,amn,routing_dispatch","screen.job_offer_dsh,screen.job_offer_amn",captain,DRAFT,
+screen.job_offer_dsh,عرض توصيل (DSH),Delivery Offer (DSH),Jobs/DSH,DSH,"Store/area, ETA, Estimated earning, Accept timer","dsh,routing_dispatch",screen.job_detail_dsh,captain,DRAFT,
+screen.job_detail_dsh,تفاصيل التوصيل,Delivery Detail,Jobs/DSH,DSH,"Status header, Store→Customer segments, Arrived/Picked/Arrived/Delivered, Masked contact","dsh,routing_dispatch","screen.job_navigation,screen.job_pod_code,screen.job_pod_photo",captain,DRAFT,
+screen.job_offer_amn,عرض مشوار (أمانة),Ride Offer (AMN),Jobs/AMN,AMN,"Pickup area, Destination area or est. distance, Fare estimate, Negotiation note (if enabled)","amn,routing_dispatch",screen.job_detail_amn,captain,DRAFT,
+screen.job_detail_amn,تفاصيل المشوار,Ride Detail,Jobs/AMN,AMN,"Arrived/Start/End, Masked contact, Fare estimate, Waiting counter, SOS","amn,routing_dispatch","screen.job_navigation,screen.job_sos_panel,screen.job_fare_summary",captain,DRAFT,
+screen.job_navigation,الخريطة,Navigation,Jobs/Map,GLOBAL,"In-app map, ETA & distance, Open external maps",routing_dispatch,,captain,DRAFT,
+screen.job_pod_code,إدخال كود التسليم,Enter Delivery Code,Jobs/DSH/PoD,DSH,"6-digit code, Guidance, Error feedback",dsh,,captain,DRAFT,
+screen.job_pod_photo,صورة إثبات التسليم,Delivery Photo,Jobs/DSH/PoD,DSH,"Camera with masking, Preview, Confirm",dsh,,captain,DRAFT,
+screen.job_fare_summary,ملخص الأجرة,Fare Summary,Jobs/AMN,"AMN/WLT","Base/distance/time/night/waiting, Negotiation delta, Final fare, Captain net earning","amn,wlt",,captain,DRAFT,
+screen.job_sos_panel,حالة طارئة (SOS),Emergency (SOS),Safety,"AMN/DSH","Send alert, Call local emergency, Silent alert","amn,notifications",,captain,DRAFT,
+screen.earnings_home,الأرباح,Earnings,Earnings,WLT,"Period filters, Totals, Available balance, Payout CTA",wlt,"screen.earnings_breakdown,screen.payout_request",captain,DRAFT,
+screen.earnings_breakdown,تفاصيل الأرباح,Earnings Breakdown,Earnings,WLT,"Tabs: DSH/AMN/All, List by trip/job",wlt,,captain,DRAFT,
+screen.payout_request,طلب سحب رصيد,Payout Request,Earnings/Payout,"WLT/FIN","Available balance, Amount input (min/max constraints), Channel (bank/cash office), Processing info",wlt,screen.payout_history,captain,DRAFT,
+screen.payout_history,سجل السحوبات,Payout History,Earnings/Payout,"WLT/FIN","List: date/amount/channel/status, Filters",wlt,,captain,DRAFT,
+screen.captain_more,المزيد,More,More,GLOBAL,"My profile, Vehicle, Docs & status, Safety guide, Language, Help & Support, About, Logout",identity,"screen.captain_profile,screen.captain_vehicle,screen.captain_documents_status,screen.captain_support_center",captain,DRAFT,
+screen.captain_profile,ملفي,My Profile,More,GLOBAL,"Name/photo/city, Service badges, Totals/rating",identity,,captain,DRAFT,
+screen.captain_vehicle,مركبتي,My Vehicle,More,GLOBAL,"Vehicle details, Expiry reminders, Request update",identity,,captain,DRAFT,
+screen.captain_documents_status,حالة المستندات,Documents Status,More,GLOBAL,"List with Valid/Pending/Expiring/Expired, Upload new docs",identity,,captain,DRAFT,
+screen.captain_support_center,مركز مساعدة الكباتن,Captain Help Center,More/Support,GLOBAL,"FAQ categories, Contact support CTA",,captain,DRAFT,

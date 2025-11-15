@@ -1,11 +1,41 @@
-openapi: 3.0.3
+openapi: 3.1.0
 info:
-  title: 'BThwani — Jobs (KWD) API'
-  description: Core endpoints for the jobs and opportunities service (KWD).
+  title: 'BThwani — KoWADER Jobs (KWD) API'
+  description: |
+    Core endpoints for KoWADER (KWD) — Free job board service.
+    
+    **Service Code:** SRV-KWD-01  
+    **Scope:** Free job listings; no payments; no booking.  
+    **Web Scope:** Search and details only (read-only). Full CRUD available via APP-USER mobile.
+    
+    ## Features
+    - Job listings management (create, update, delete, search)
+    - Admin review and approval workflow
+    - Support moderation and abuse reporting
+    - Skills catalog and ranking configuration
+    - Search with filters (location, skills, experience)
+    - Ranking: Sponsored > Freshness > Proximity > TextScore
+    
+    ## Security
+    - JWT Bearer Authentication
+    - Role-Based Access Control (User, Admin, Support)
+    - Step-Up Authentication for sensitive admin/support actions
+    - Idempotency for transactional writes (POST)
+    
+    ## Privacy & Retention
+    - Posts: 180 days
+    - Logs/Reports: 365 days
+    - No secrets in logs; no financial data
+    
+    ## Key Endpoints
+    - **Public:** Search, details, create, update, delete, report
+    - **Admin:** Review queue, approve/reject, catalog management, ranking config
+    - **Support:** Reports inbox, listing details with history, moderation actions
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: '0.0.0-seed'
+  version: '1.0.0'
+
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev
@@ -13,7 +43,1419 @@ servers:
     description: Stage
   - url: https://api.bthwani.com
     description: Prod
-paths: {}
+
+tags:
+  - name: KWD Public
+    description: Public job listing endpoints (search, CRUD, report)
+  - name: KWD Admin
+    description: Admin endpoints (review, approval, catalog, ranking)
+  - name: KWD Support
+    description: Support endpoints (reports, moderation, actions)
+
+paths:
+  /api/kawader/search:
+    get:
+      operationId: kwd_listings_search
+      tags:
+        - KWD Public
+      summary: Search KoWADER job listings
+      description: |
+        Search and filter job listings with pagination.
+        
+        **Ranking:** Sponsored > Freshness > Proximity > TextScore (weights configurable via admin).
+        
+        **Auth:** Optional. Anonymous for web; JWT for personalized results in app.
+        
+        **Filters:** keyword, region, city, skills, experience_years, entity_type, status.
+      security:
+        - {}
+        - bearerAuth: []
+      parameters:
+        - name: keyword
+          in: query
+          schema:
+            type: string
+            maxLength: 200
+          description: Search keyword (job title, description)
+        - name: region
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+          description: Filter by region (governorate)
+        - name: city
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+          description: Filter by city
+        - name: skills
+          in: query
+          schema:
+            type: array
+            items:
+              type: string
+              maxLength: 100
+            maxItems: 10
+          style: form
+          explode: true
+          description: Filter by skills (array)
+        - name: experience_years_min
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 50
+          description: Minimum experience years
+        - name: experience_years_max
+          in: query
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 50
+          description: Maximum experience years
+        - name: entity_type
+          in: query
+          schema:
+            type: string
+            enum: [individual, company]
+          description: Filter by entity type (individual employer or company)
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [published, closed]
+          description: Filter by status (default is published only)
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            maxLength: 500
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+          description: Results per page
+        - name: lat
+          in: query
+          schema:
+            type: number
+            format: double
+            minimum: -90
+            maximum: 90
+          description: User latitude for proximity ranking
+        - name: lon
+          in: query
+          schema:
+            type: number
+            format: double
+            minimum: -180
+            maximum: 180
+          description: User longitude for proximity ranking
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListingSearchResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/{id}:
+    get:
+      operationId: kwd_listing_get
+      tags:
+        - KWD Public
+      summary: Get listing details
+      description: |
+        Get full details of a job listing.
+        
+        **Auth:** Optional. Published listings are publicly readable.
+      security:
+        - {}
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Listing ID
+      responses:
+        '200':
+          description: Listing details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      operationId: kwd_listing_update
+      tags:
+        - KWD Public
+      summary: Update listing
+      description: |
+        Update an existing job listing. Owner or Admin only.
+        
+        **Auth:** User JWT (owner) or Admin JWT.
+        
+        **Note:** Some fields may be locked after approval per policy.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Listing ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateListingRequest'
+      responses:
+        '200':
+          description: Listing updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      operationId: kwd_listing_delete
+      tags:
+        - KWD Public
+      summary: Delete/close listing
+      description: |
+        Delete or close a job listing. Owner or Admin only.
+        
+        **Auth:** User JWT (owner) or Admin JWT.
+        
+        **Note:** Soft-delete or closed status based on policy. Audit retained up to 180 days.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Listing ID
+      responses:
+        '204':
+          description: Listing deleted/closed
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader:
+    post:
+      operationId: kwd_listing_create
+      tags:
+        - KWD Public
+      summary: Create listing
+      description: |
+        Create a new job listing.
+        
+        **Auth:** User JWT (employer/recruiter).
+        
+        **Idempotency:** Idempotency-Key header required.
+        
+        **Initial Status:** Typically pending_review (subject to moderation workflow).
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 128
+          description: Idempotency key for safe retries
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateListingRequest'
+      responses:
+        '201':
+          description: Listing created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/{id}/report:
+    post:
+      operationId: kwd_listing_report
+      tags:
+        - KWD Public
+      summary: Report listing
+      description: |
+        Report a suspicious or inappropriate job listing.
+        
+        **Auth:** User JWT.
+        
+        **Idempotency:** Idempotency-Key header required.
+        
+        **Severity:** Aggregated across multiple reports.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Listing ID to report
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 128
+          description: Idempotency key
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportListingRequest'
+      responses:
+        '201':
+          description: Report submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Report'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/admin/listings:
+    get:
+      operationId: kwd_admin_listings_review
+      tags:
+        - KWD Admin
+      summary: Admin review queue
+      description: |
+        Get listings pending review or filter by status/region/city.
+        
+        **Auth:** Admin JWT.
+        
+        **Pagination:** Cursor-based.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending_review, published, rejected, closed, hidden]
+          description: Filter by status
+        - name: region
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+          description: Filter by region
+        - name: city
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+          description: Filter by city
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            maxLength: 500
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Admin listings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminListingsResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/admin/listings/{id}/decision:
+    post:
+      operationId: kwd_admin_listing_decision
+      tags:
+        - KWD Admin
+      summary: Admin approve/reject listing
+      description: |
+        Approve or reject a listing.
+        
+        **Auth:** Admin JWT + Step-Up (for impactful decisions).
+        
+        **Idempotency:** Idempotency-Key header required.
+        
+        **Audit:** Immutable audit log; affects KPIs (admin_approval_time, rejection_rate).
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Listing ID
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 128
+        - name: X-Step-Up-Token
+          in: header
+          schema:
+            type: string
+          description: Step-Up authentication token for sensitive operations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdminDecisionRequest'
+      responses:
+        '200':
+          description: Decision applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/admin/catalog/skills:
+    get:
+      operationId: kwd_admin_catalog
+      tags:
+        - KWD Admin
+      summary: Get skills catalog
+      description: |
+        Get skills catalog with synonyms for autocomplete and filters.
+        
+        **Auth:** Admin JWT.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Skills catalog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillsCatalog'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      operationId: kwd_admin_catalog_update
+      tags:
+        - KWD Admin
+      summary: Update skills catalog
+      description: |
+        Update skills catalog (add/remove/update skills or synonyms).
+        
+        **Auth:** Admin JWT + Step-Up.
+        
+        **Audit:** Immutable audit log; may trigger search index rebuild.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: X-Step-Up-Token
+          in: header
+          schema:
+            type: string
+          description: Step-Up authentication token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSkillsCatalogRequest'
+      responses:
+        '200':
+          description: Catalog updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillsCatalog'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/admin/ranking/config:
+    get:
+      operationId: kwd_admin_ranking_config
+      tags:
+        - KWD Admin
+      summary: Get ranking weights
+      description: |
+        Get current ranking configuration (weights for sponsored, freshness, proximity, text_score).
+        
+        **Auth:** Admin JWT.
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Ranking config
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RankingConfig'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    patch:
+      operationId: kwd_admin_ranking_update
+      tags:
+        - KWD Admin
+      summary: Update ranking weights
+      description: |
+        Update ranking weights (preview then publish).
+        
+        **Auth:** Admin JWT + Step-Up.
+        
+        **Audit:** Immutable audit log.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: X-Step-Up-Token
+          in: header
+          schema:
+            type: string
+          description: Step-Up authentication token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRankingConfigRequest'
+      responses:
+        '200':
+          description: Ranking config updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RankingConfig'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/support/reports:
+    get:
+      operationId: kwd_support_reports_inbox
+      tags:
+        - KWD Support
+      summary: Support reports inbox
+      description: |
+        Get reports inbox filtered by reason/region/status, sorted by severity/freshness.
+        
+        **Auth:** Support JWT.
+        
+        **Pagination:** Cursor-based.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: reason
+          in: query
+          schema:
+            type: string
+            enum: [fraud, spam, offensive, misleading, duplicate, other]
+          description: Filter by report reason
+        - name: region
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+          description: Filter by listing region
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, under_review, resolved, dismissed]
+          description: Filter by report status
+        - name: cursor
+          in: query
+          schema:
+            type: string
+            maxLength: 500
+          description: Pagination cursor
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        '200':
+          description: Reports inbox
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportsInboxResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/support/listings/{id}:
+    get:
+      operationId: kwd_support_listing_detail
+      tags:
+        - KWD Support
+      summary: Support listing detail with full history
+      description: |
+        Get full listing details including all reports and prior actions.
+        
+        **Auth:** Support JWT.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: Listing ID
+      responses:
+        '200':
+          description: Listing with history
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SupportListingDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/kawader/support/actions:
+    post:
+      operationId: kwd_support_action_apply
+      tags:
+        - KWD Support
+      summary: Apply moderation action
+      description: |
+        Apply moderation action: hide, soft_delete, warn, temp_block.
+        
+        **Auth:** Support JWT + Step-Up (for strong actions).
+        
+        **Idempotency:** Idempotency-Key header required.
+        
+        **Audit:** Immutable audit log; reason required.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: Idempotency-Key
+          in: header
+          required: true
+          schema:
+            type: string
+            maxLength: 128
+        - name: X-Step-Up-Token
+          in: header
+          schema:
+            type: string
+          description: Step-Up token (required for strong actions)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SupportActionRequest'
+      responses:
+        '200':
+          description: Action applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModerationActionResult'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
-  schemas: {}
-  securitySchemes: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT authentication with role-based access control
+
+  schemas:
+    # Core Domain Models
+    Listing:
+      type: object
+      required:
+        - id
+        - entity_type
+        - title
+        - description
+        - location
+        - skills
+        - experience_years
+        - status
+        - owner_id
+        - is_sponsored
+        - boost_score
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Listing unique ID
+        entity_type:
+          type: string
+          enum: [individual, company]
+          description: Employer type
+        title:
+          type: string
+          maxLength: 200
+          description: Job title
+        description:
+          type: string
+          maxLength: 5000
+          description: Job description
+        location:
+          $ref: '#/components/schemas/Location'
+        skills:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          maxItems: 20
+          description: Required skills
+        experience_years:
+          type: integer
+          minimum: 0
+          maximum: 50
+          description: Required years of experience
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+          maxItems: 5
+          description: Supporting documents (optional)
+        is_sponsored:
+          type: boolean
+          description: Whether listing is sponsored (affects ranking)
+        boost_score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 100
+          description: Ranking boost score
+        status:
+          type: string
+          enum: [pending_review, published, rejected, closed, hidden]
+          description: Listing status
+        owner_id:
+          type: string
+          format: uuid
+          description: Owner user ID
+        rejection_reason:
+          type: string
+          maxLength: 500
+          nullable: true
+          description: Reason for rejection (if status is rejected)
+        created_at:
+          type: string
+          format: date-time
+          description: Creation timestamp (Asia/Aden)
+        updated_at:
+          type: string
+          format: date-time
+          description: Last update timestamp (Asia/Aden)
+
+    Location:
+      type: object
+      required:
+        - region
+        - city
+      properties:
+        region:
+          type: string
+          maxLength: 100
+          description: Region (governorate)
+        city:
+          type: string
+          maxLength: 100
+          description: City
+        geo:
+          $ref: '#/components/schemas/GeoCoordinates'
+
+    GeoCoordinates:
+      type: object
+      required:
+        - lat
+        - lon
+      properties:
+        lat:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+          description: Latitude
+        lon:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+          description: Longitude
+
+    Attachment:
+      type: object
+      required:
+        - url
+        - type
+      properties:
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+          description: Attachment URL
+        type:
+          type: string
+          enum: [image, document]
+          description: Attachment type
+        filename:
+          type: string
+          maxLength: 255
+          description: Original filename
+
+    Report:
+      type: object
+      required:
+        - id
+        - listing_id
+        - reporter_id
+        - reason
+        - status
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        listing_id:
+          type: string
+          format: uuid
+        reporter_id:
+          type: string
+          format: uuid
+        reason:
+          type: string
+          enum: [fraud, spam, offensive, misleading, duplicate, other]
+        description:
+          type: string
+          maxLength: 1000
+          nullable: true
+        status:
+          type: string
+          enum: [pending, under_review, resolved, dismissed]
+        resolution:
+          type: string
+          maxLength: 1000
+          nullable: true
+        resolved_by:
+          type: string
+          format: uuid
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        resolved_at:
+          type: string
+          format: date-time
+          nullable: true
+
+    SkillsCatalog:
+      type: object
+      required:
+        - skills
+        - updated_at
+      properties:
+        skills:
+          type: array
+          items:
+            $ref: '#/components/schemas/Skill'
+        updated_at:
+          type: string
+          format: date-time
+
+    Skill:
+      type: object
+      required:
+        - id
+        - name
+        - synonyms
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 100
+          description: Canonical skill name
+        synonyms:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          description: Skill synonyms for search
+
+    RankingConfig:
+      type: object
+      required:
+        - weights
+        - updated_at
+        - updated_by
+      properties:
+        weights:
+          type: object
+          required:
+            - sponsored
+            - freshness
+            - proximity
+            - text_score
+          properties:
+            sponsored:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+              description: Weight for sponsored listings
+            freshness:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+              description: Weight for freshness (recency)
+            proximity:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+              description: Weight for location proximity
+            text_score:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+              description: Weight for text relevance
+        updated_at:
+          type: string
+          format: date-time
+        updated_by:
+          type: string
+          format: uuid
+
+    # Request DTOs
+    CreateListingRequest:
+      type: object
+      required:
+        - entity_type
+        - title
+        - description
+        - location
+        - skills
+        - experience_years
+      properties:
+        entity_type:
+          type: string
+          enum: [individual, company]
+        title:
+          type: string
+          minLength: 5
+          maxLength: 200
+        description:
+          type: string
+          minLength: 20
+          maxLength: 5000
+        location:
+          $ref: '#/components/schemas/Location'
+        skills:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          minItems: 1
+          maxItems: 20
+        experience_years:
+          type: integer
+          minimum: 0
+          maximum: 50
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+          maxItems: 5
+
+    UpdateListingRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 5
+          maxLength: 200
+        description:
+          type: string
+          minLength: 20
+          maxLength: 5000
+        location:
+          $ref: '#/components/schemas/Location'
+        skills:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          minItems: 1
+          maxItems: 20
+        experience_years:
+          type: integer
+          minimum: 0
+          maximum: 50
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+          maxItems: 5
+        status:
+          type: string
+          enum: [published, closed]
+          description: Only published/closed allowed for user updates
+
+    ReportListingRequest:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+          enum: [fraud, spam, offensive, misleading, duplicate, other]
+        description:
+          type: string
+          minLength: 10
+          maxLength: 1000
+
+    AdminDecisionRequest:
+      type: object
+      required:
+        - decision
+      properties:
+        decision:
+          type: string
+          enum: [approve, reject]
+        reason:
+          type: string
+          maxLength: 500
+          description: Required for reject; optional for approve
+
+    UpdateSkillsCatalogRequest:
+      type: object
+      required:
+        - operations
+      properties:
+        operations:
+          type: array
+          items:
+            $ref: '#/components/schemas/CatalogOperation'
+          minItems: 1
+          maxItems: 50
+
+    CatalogOperation:
+      type: object
+      required:
+        - op
+        - skill
+      properties:
+        op:
+          type: string
+          enum: [add, update, remove]
+        skill:
+          $ref: '#/components/schemas/Skill'
+
+    UpdateRankingConfigRequest:
+      type: object
+      required:
+        - weights
+      properties:
+        weights:
+          type: object
+          required:
+            - sponsored
+            - freshness
+            - proximity
+            - text_score
+          properties:
+            sponsored:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+            freshness:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+            proximity:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+            text_score:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+
+    SupportActionRequest:
+      type: object
+      required:
+        - listing_id
+        - action
+        - reason
+      properties:
+        listing_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum: [hide, soft_delete, warn, temp_block]
+        reason:
+          type: string
+          minLength: 10
+          maxLength: 1000
+        duration_days:
+          type: integer
+          minimum: 1
+          maximum: 365
+          description: For temp_block action
+
+    # Response DTOs
+    ListingSearchResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Listing'
+        pagination:
+          $ref: '#/components/schemas/CursorPagination'
+
+    AdminListingsResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Listing'
+        pagination:
+          $ref: '#/components/schemas/CursorPagination'
+
+    ReportsInboxResponse:
+      type: object
+      required:
+        - data
+        - pagination
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportWithListing'
+        pagination:
+          $ref: '#/components/schemas/CursorPagination'
+
+    ReportWithListing:
+      allOf:
+        - $ref: '#/components/schemas/Report'
+        - type: object
+          properties:
+            listing:
+              $ref: '#/components/schemas/Listing'
+
+    SupportListingDetail:
+      type: object
+      required:
+        - listing
+        - reports
+        - actions
+      properties:
+        listing:
+          $ref: '#/components/schemas/Listing'
+        reports:
+          type: array
+          items:
+            $ref: '#/components/schemas/Report'
+        actions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ModerationAction'
+
+    ModerationAction:
+      type: object
+      required:
+        - id
+        - listing_id
+        - action
+        - reason
+        - applied_by
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        listing_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum: [hide, soft_delete, warn, temp_block, approve, reject]
+        reason:
+          type: string
+          maxLength: 1000
+        applied_by:
+          type: string
+          format: uuid
+        created_at:
+          type: string
+          format: date-time
+
+    ModerationActionResult:
+      type: object
+      required:
+        - action_id
+        - listing
+        - applied_at
+      properties:
+        action_id:
+          type: string
+          format: uuid
+        listing:
+          $ref: '#/components/schemas/Listing'
+        applied_at:
+          type: string
+          format: date-time
+
+    # Pagination
+    CursorPagination:
+      type: object
+      required:
+        - has_next
+      properties:
+        next_cursor:
+          type: string
+          nullable: true
+          description: Cursor for next page
+        prev_cursor:
+          type: string
+          nullable: true
+          description: Cursor for previous page
+        has_next:
+          type: boolean
+        has_prev:
+          type: boolean
+
+    # Standard Error Model (RFC7807-style)
+    ErrorResponse:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - code
+        - detail
+        - trace_id
+      properties:
+        type:
+          type: string
+          format: uri
+          description: Error type URI
+        title:
+          type: string
+          description: Short, human-readable error title
+        status:
+          type: integer
+          description: HTTP status code
+        code:
+          type: string
+          description: Application-specific error code
+        detail:
+          type: string
+          description: Detailed error message
+        trace_id:
+          type: string
+          description: Request trace ID for debugging
+        timestamp:
+          type: string
+          format: date-time
+        instance:
+          type: string
+          description: URI of specific occurrence
+
+  responses:
+    BadRequest:
+      description: Bad Request (validation failed)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Unauthorized:
+      description: Unauthorized (authentication required)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Forbidden:
+      description: Forbidden (insufficient permissions)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    Conflict:
+      description: Conflict (duplicate, idempotency violation)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    TooManyRequests:
+      description: Too Many Requests (rate limit exceeded)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

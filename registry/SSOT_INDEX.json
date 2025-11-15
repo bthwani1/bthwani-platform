@@ -1,13 +1,15 @@
 {
   "version": "0.0.2-local",
-  "updated_at": "2025-11-14T18:45:00+03:00",
+  "updated_at": "2025-11-15T01:13:55.078Z",
   "services": [
     {
       "code": "DSH",
       "name": "Delivery & Shopping",
       "status": "READY",
       "owner": "Platform Guild",
-      "notes": ["Includes MPC + Partner Store Listings modules (catalog v1)."],
+      "notes": [
+        "Includes MPC + Partner Store Listings modules (catalog v1)."
+      ],
       "artifacts": {
         "inventory": "dist/dsh/DSH_INVENTORY.md",
         "parity": "dist/dsh/PARITY.csv",
@@ -32,78 +34,359 @@
         "artifacts_bundle": "dist/dsh/ARTIFACTS.zip"
       }
     },
-    { "code": "WLT", "name": "Wallet / Ledger", "status": "DRAFT", "owner": "Platform Guild" },
-    { "code": "ARB", "name": "Escrow & Bookings", "status": "DRAFT", "owner": "Platform Guild" },
-    { "code": "ESF", "name": "Blood Donation", "status": "DRAFT", "owner": "Platform Guild" },
-    { "code": "MRF", "name": "Lost & Found", "status": "DRAFT", "owner": "Platform Guild" },
-    { "code": "KNZ", "name": "Marketplace", "status": "DRAFT", "owner": "Platform Guild" },
-    { "code": "AMN", "name": "Safe Taxi", "status": "DRAFT", "owner": "Platform Guild" },
-    { "code": "SND", "name": "On-demand Services", "status": "DRAFT", "owner": "Platform Guild" },
-    { "code": "KWD", "name": "Jobs Platform", "status": "DRAFT", "owner": "Platform Guild" }
+    {
+      "code": "WLT",
+      "name": "Wallet / Ledger",
+      "status": "DRAFT",
+      "owner": "Platform Guild"
+    },
+    {
+      "code": "ARB",
+      "name": "Escrow & Bookings",
+      "status": "DRAFT",
+      "owner": "Platform Guild"
+    },
+    {
+      "code": "ESF",
+      "name": "Blood Donation (اسعِفني)",
+      "status": "READY",
+      "owner": "Platform Guild",
+      "notes": [
+        "SRV-ESF-01 v1.2 — Emergency blood donation matching service"
+      ],
+      "artifacts": {
+        "guards_report": "dist/esf/ESF_GUARDS_REPORT.md",
+        "build_log": "dist/esf/BUILD_LOG.txt",
+        "static_checks": "dist/esf/STATIC_CHECKS.md",
+        "unit_report": "dist/esf/TEST_REPORT_UNIT.json",
+        "e2e_report": "dist/esf/TEST_REPORT_E2E.json",
+        "contract_summary": "dist/esf/CONTRACT_TESTS_SUMMARY.md",
+        "db_migrate": "dist/esf/DB_MIGRATE_DRY.txt",
+        "db_seed": "dist/esf/DB_SEED_DRY.txt",
+        "hadolint": "dist/esf/HADOLINT.json",
+        "trivy": "dist/esf/TRIVY_IMAGE.json",
+        "sbom": "dist/esf/SBOM.json",
+        "provenance": "dist/esf/PROVENANCE.json",
+        "runtime_probe": "dist/esf/RUNTIME_PROBE.json",
+        "audit_summary": "dist/esf/AUDIT_SUMMARY.md",
+        "pr_summary": "dist/esf/PR_SUMMARY.md",
+        "artifacts_bundle": "dist/esf/ARTIFACTS_WAVE_ESF_02.zip"
+      }
+    },
+    {
+      "code": "MRF",
+      "name": "Lost & Found",
+      "status": "DRAFT",
+      "owner": "Platform Guild"
+    },
+    {
+      "code": "KNZ",
+      "name": "Marketplace",
+      "status": "DRAFT",
+      "owner": "Platform Guild"
+    },
+    {
+      "code": "AMN",
+      "name": "Safe Taxi",
+      "status": "DRAFT",
+      "owner": "Platform Guild"
+    },
+    {
+      "code": "SND",
+      "name": "On-demand Services",
+      "status": "DRAFT",
+      "owner": "Platform Guild"
+    },
+    {
+      "code": "KWD",
+      "name": "Jobs Platform",
+      "status": "READY",
+      "owner": "Platform Guild",
+      "artifacts": {
+        "guards_report": "dist\\kwd\\KWD_GUARDS_REPORT.md",
+        "audit_summary": "dist\\kwd\\AUDIT_SUMMARY.md",
+        "pr_summary": "dist\\kwd\\PR_SUMMARY.md"
+      },
+      "version": "1.0.0",
+      "notes": [
+        "SRV-KWD-01 v1.0 (LOCKED) — Free job board platform"
+      ]
+    }
   ],
   "applications": [
     {
       "code": "APP-USER",
       "status": "READY",
-      "primary_services": ["DSH", "KNZ", "AMN", "KWD", "SND", "MRF", "ESF", "ARB", "WLT"]
+      "primary_services": [
+        "DSH",
+        "KNZ",
+        "AMN",
+        "KWD",
+        "SND",
+        "MRF",
+        "ESF",
+        "ARB",
+        "WLT"
+      ]
     },
-    { "code": "APP-PARTNER", "status": "DRAFT", "primary_services": ["DSH", "ARB", "WLT"] },
-    { "code": "APP-CAPTAIN", "status": "DRAFT", "primary_services": ["DSH", "AMN", "WLT"] },
-    { "code": "APP-FIELD", "status": "DRAFT", "primary_services": ["DSH", "ARB"] }
+    {
+      "code": "APP-PARTNER",
+      "status": "DRAFT",
+      "primary_services": [
+        "DSH",
+        "ARB",
+        "WLT"
+      ]
+    },
+    {
+      "code": "APP-CAPTAIN",
+      "status": "DRAFT",
+      "primary_services": [
+        "DSH",
+        "AMN",
+        "WLT"
+      ]
+    },
+    {
+      "code": "APP-FIELD",
+      "status": "DRAFT",
+      "primary_services": [
+        "DSH",
+        "ARB"
+      ]
+    }
   ],
   "dashboards": [
     {
       "code": "admin",
       "status": "DRAFT",
-      "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"]
+      "services": [
+        "DSH",
+        "WLT",
+        "ARB",
+        "KNZ",
+        "SND",
+        "KWD",
+        "AMN",
+        "ESF",
+        "MRF"
+      ]
     },
-    { "code": "ops", "status": "DRAFT", "services": ["DSH", "AMN", "SND"] },
-    { "code": "finance", "status": "DRAFT", "services": ["WLT", "DSH", "ARB"] },
-    { "code": "support", "status": "DRAFT", "services": ["DSH", "AMN", "ARB", "ESF", "MRF"] },
-    { "code": "marketing", "status": "DRAFT", "services": ["KNZ", "DSH"] },
-    { "code": "fleet", "status": "DRAFT", "services": ["AMN", "DSH"] },
-    { "code": "partner", "status": "DRAFT", "services": ["DSH", "ARB"] },
+    {
+      "code": "ops",
+      "status": "DRAFT",
+      "services": [
+        "DSH",
+        "AMN",
+        "SND"
+      ]
+    },
+    {
+      "code": "finance",
+      "status": "DRAFT",
+      "services": [
+        "WLT",
+        "DSH",
+        "ARB"
+      ]
+    },
+    {
+      "code": "support",
+      "status": "DRAFT",
+      "services": [
+        "DSH",
+        "AMN",
+        "ARB",
+        "ESF",
+        "MRF"
+      ]
+    },
+    {
+      "code": "marketing",
+      "status": "DRAFT",
+      "services": [
+        "KNZ",
+        "DSH"
+      ]
+    },
+    {
+      "code": "fleet",
+      "status": "DRAFT",
+      "services": [
+        "AMN",
+        "DSH"
+      ]
+    },
+    {
+      "code": "partner",
+      "status": "DRAFT",
+      "services": [
+        "DSH",
+        "ARB"
+      ]
+    },
     {
       "code": "bi",
       "status": "DRAFT",
-      "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"]
+      "services": [
+        "DSH",
+        "WLT",
+        "ARB",
+        "KNZ",
+        "SND",
+        "KWD",
+        "AMN",
+        "ESF",
+        "MRF"
+      ]
     },
     {
       "code": "ssot",
       "status": "DRAFT",
-      "services": ["DSH", "WLT", "ARB", "KNZ", "SND", "KWD", "AMN", "ESF", "MRF"]
+      "services": [
+        "DSH",
+        "WLT",
+        "ARB",
+        "KNZ",
+        "SND",
+        "KWD",
+        "AMN",
+        "ESF",
+        "MRF"
+      ]
     },
-    { "code": "security", "status": "DRAFT", "services": ["WLT", "ESF", "MRF", "ARB"] }
+    {
+      "code": "security",
+      "status": "DRAFT",
+      "services": [
+        "WLT",
+        "ESF",
+        "MRF",
+        "ARB"
+      ]
+    }
   ],
   "version_matrix": {
     "services": [
-      { "code": "DSH", "version": "2.2", "state": "READY" },
-      { "code": "KNZ", "version": "1.1", "state": "DRAFT" },
-      { "code": "AMN", "version": "1.0", "state": "DRAFT" },
-      { "code": "KWD", "version": "1.0", "state": "DRAFT" },
-      { "code": "SND", "version": "1.0", "state": "DRAFT" },
-      { "code": "MRF", "version": "2.0", "state": "DRAFT" },
-      { "code": "ESF", "version": "1.2", "state": "DRAFT" },
-      { "code": "ARB", "version": "2.0", "state": "DRAFT" },
-      { "code": "WLT", "version": "1.0", "state": "DRAFT" }
+      {
+        "code": "DSH",
+        "version": "2.2",
+        "state": "READY"
+      },
+      {
+        "code": "KNZ",
+        "version": "1.1",
+        "state": "DRAFT"
+      },
+      {
+        "code": "AMN",
+        "version": "1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "KWD",
+        "version": "1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "SND",
+        "version": "1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "MRF",
+        "version": "2.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "ESF",
+        "version": "1.2",
+        "state": "READY"
+      },
+      {
+        "code": "ARB",
+        "version": "2.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "WLT",
+        "version": "1.0",
+        "state": "DRAFT"
+      }
     ],
     "applications": [
-      { "code": "APP-USER", "version": "2.0.0", "state": "READY" },
-      { "code": "APP-PARTNER", "version": "2.0.0", "state": "DRAFT" },
-      { "code": "APP-CAPTAIN", "version": "2.0.0", "state": "DRAFT" },
-      { "code": "APP-FIELD", "version": "2.0.0", "state": "DRAFT" }
+      {
+        "code": "APP-USER",
+        "version": "2.0.0",
+        "state": "READY"
+      },
+      {
+        "code": "APP-PARTNER",
+        "version": "2.0.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "APP-CAPTAIN",
+        "version": "2.0.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "APP-FIELD",
+        "version": "2.0.0",
+        "state": "DRAFT"
+      }
     ],
     "dashboards": [
-      { "code": "admin", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "ops", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "finance", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "support", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "marketing", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "fleet", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "partner", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "bi", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "ssot", "version": "0.1.0", "state": "DRAFT" },
-      { "code": "security", "version": "0.1.0", "state": "DRAFT" }
+      {
+        "code": "admin",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "ops",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "finance",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "support",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "marketing",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "fleet",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "partner",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "bi",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "ssot",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      },
+      {
+        "code": "security",
+        "version": "0.1.0",
+        "state": "DRAFT"
+      }
     ],
     "notes": "Local snapshot derived from repo data (registry, runtime vars, OAS, screens catalogs)"
   },
@@ -111,5 +394,6 @@
     "ÙŠØªÙ… ØªØ­Ø¯ÙŠØ« Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù Ù…Ø¹ ÙƒÙ„ Wave Ø¬Ø¯ÙŠØ¯Ø© Ø¨Ù†Ø§Ø¡Ù‹ Ø¹Ù„Ù‰ Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø¯Ø§Ø®Ù„ Ù‡Ø°Ø§ Ø§Ù„Ù…Ø³ØªÙˆØ¯Ø¹ ÙÙ‚Ø·.",
     "Ù‚ÙÙŠÙŽÙ… Ø§Ù„Ù…Ø§Ù„Ùƒ ÙŠØªÙ… Ø¶Ø¨Ø·Ù‡Ø§ Ø§ÙØªØ±Ø§Ø¶ÙŠÙ‹Ø§ Ø¹Ù„Ù‰ Platform Guild Ø­ØªÙ‰ ÙŠØªÙ… ØªØ­Ø¯ÙŠØ¯ ÙØ±Ù‚ Ù…ØªØ®ØµØµØ©.",
     "ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù ÙƒÙ…ØµØ¯Ø± Ø±Ø¦ÙŠØ³ÙŠ Ù„Ù„Ø­Ø§Ù„Ø© Ø¯Ø§Ø®Ù„ Ø£Ø¯ÙˆØ§Øª Ø§Ù„Ø­ÙØ±Ù‘Ø§Ø³ Ø§Ù„Ù…Ø­Ù„ÙŠØ©."
-  ]
+  ],
+  "last_updated": "2025-11-15T01:13:55.078Z"
 }

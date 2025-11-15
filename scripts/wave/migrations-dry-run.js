@@ -8,7 +8,8 @@ require('ts-node').register({
 });
 
 const migrationsRoot = path.resolve('migrations');
-const reportPath = path.resolve('dist', 'dsh', 'DB_MIGRATE_DRY.txt');
+const service = process.env.SERVICE || 'dsh';
+const reportPath = path.resolve('dist', service, 'DB_MIGRATE_DRY.txt');
 
 function collectFiles(dir) {
   if (!fs.existsSync(dir)) {

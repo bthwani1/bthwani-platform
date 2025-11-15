@@ -1,19 +1,1095 @@
 openapi: 3.0.3
 info:
-  title: 'BThwani — Escrow/Booking (ARB) API'
-  description: Core endpoints for the Escrow and Booking service (ARB).
+  title: BThwani — Escrow/Booking (ARB) API (عربون)
+  version: '2025-01-15'
+  description: |
+    Escrow and booking service (ARB - عربون) for the BThwani platform.
+    
+    This service handles deposits and bookings for service offers with escrow management.
+    
+    Features:
+    - Offer management with deposit rules
+    - Booking system with escrow holds
+    - Escrow engine (hold/release/refund/forfeit)
+    - Encrypted chat between customers and partners
+    - Admin configuration and metrics
+    - Support dispute resolution
+    
+    Namespace: /arb/*
+    Timezone: Asia/Aden
+    Default Currency: YER
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: '0.0.0-seed'
 servers:
   - url: https://api-dev.bthwani.com
-    description: Dev
+    description: Development environment
   - url: https://api-stage.bthwani.com
-    description: Stage
+    description: Staging environment
   - url: https://api.bthwani.com
-    description: Prod
-paths: {}
+    description: Production environment
+x-host-policy:
+  https://api.bthwani.com:
+    scope: SRV-ARB-01 v2.0 API
+    allowedOrigins:
+      - https://app.bthwani.com
+      - https://partner.bthwani.com
+      - https://admin.bthwani.com
+    notes:
+      - JWT bearerAuth required; Idempotency-Key mandatory for writes.
+      - Chat messages encrypted with AES-256-GCM.
+      - Phone numbers masked in all responses.
+      - Wallet=Ledger internal only (no bank payouts).
+tags:
+  - name: APP-USER
+    description: User-facing endpoints (offers, bookings)
+  - name: APP-PARTNER
+    description: Partner-facing endpoints (bookings)
+  - name: DASH-ADMIN
+    description: Admin dashboard endpoints (config, KPIs)
+  - name: DASH-SUPPORT
+    description: Support console endpoints (disputes, resolutions)
+  - name: SYSTEM
+    description: System endpoints (health)
+paths:
+  /arb/offers:
+    get:
+      operationId: arb_offers_search
+      summary: Search offers
+      description: Search and filter service offers
+      tags:
+        - APP-USER
+      parameters:
+        - $ref: '#/components/parameters/Query'
+        - $ref: '#/components/parameters/CategoryId'
+        - $ref: '#/components/parameters/RegionCode'
+        - $ref: '#/components/parameters/MinPrice'
+        - $ref: '#/components/parameters/MaxPrice'
+        - $ref: '#/components/parameters/Sort'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Offers list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Offer'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+      security: []
+    post:
+      operationId: arb_offers_create
+      summary: Create offer
+      description: Create a new service offer with deposit rules
+      tags:
+        - APP-PARTNER
+      x-action-id: create_offer
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: partner
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOffer'
+      responses:
+        '201':
+          description: Offer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+  /arb/offers/{offer_id}:
+    get:
+      operationId: arb_offers_get
+      summary: Get offer details
+      description: Get offer details by ID
+      tags:
+        - APP-USER
+      parameters:
+        - $ref: '#/components/parameters/OfferId'
+      responses:
+        '200':
+          description: Offer details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security: []
+    patch:
+      operationId: arb_offers_update
+      summary: Update offer
+      description: Update offer details (partner only)
+      tags:
+        - APP-PARTNER
+      x-action-id: update_offer
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: partner
+      parameters:
+        - $ref: '#/components/parameters/OfferId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOffer'
+      responses:
+        '200':
+          description: Offer updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Offer'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /arb/bookings:
+    get:
+      operationId: arb_bookings_list
+      summary: List customer bookings
+      description: List bookings for authenticated customer
+      tags:
+        - APP-USER
+      x-rbac-role: customer
+      parameters:
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Bookings list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+    post:
+      operationId: arb_bookings_create
+      summary: Create booking
+      description: Create a new booking with escrow hold
+      tags:
+        - APP-USER
+      x-action-id: create_booking
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBooking'
+      responses:
+        '201':
+          description: Booking created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+  /arb/bookings/{booking_id}:
+    get:
+      operationId: arb_bookings_get
+      summary: Get booking details
+      description: Get booking details by ID (customer or partner)
+      tags:
+        - APP-USER
+        - APP-PARTNER
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+    post:
+      operationId: arb_bookings_update_status
+      summary: Update booking status
+      description: Update booking status (customer or partner)
+      tags:
+        - APP-USER
+        - APP-PARTNER
+      x-action-id: update_booking_status
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,Problem)
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateBookingStatus'
+      responses:
+        '200':
+          description: Booking status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /arb/bookings/{booking_id}/chat/messages:
+    get:
+      operationId: arb_chat_messages_list
+      summary: List chat messages
+      description: List chat messages for a booking (customer or partner)
+      tags:
+        - APP-USER
+        - APP-PARTNER
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Chat messages list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatMessage'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+    post:
+      operationId: arb_chat_messages_create
+      summary: Send chat message
+      description: Send a chat message (encrypted, phone/link masked)
+      tags:
+        - APP-USER
+        - APP-PARTNER
+      x-action-id: create_chat_message
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,Problem)
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatMessage'
+      responses:
+        '201':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /arb/partner/bookings:
+    get:
+      operationId: arb_partner_bookings_list
+      summary: List partner bookings
+      description: List bookings for authenticated partner
+      tags:
+        - APP-PARTNER
+      x-rbac-role: partner
+      parameters:
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Bookings list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /arb/admin/config:
+    get:
+      operationId: arb_admin_config_get
+      summary: Get configuration
+      description: Get ARB service configuration (admin only)
+      tags:
+        - DASH-ADMIN
+      x-rbac-role: admin
+      parameters:
+        - $ref: '#/components/parameters/ConfigScope'
+        - $ref: '#/components/parameters/ScopeValue'
+      responses:
+        '200':
+          description: Configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+    patch:
+      operationId: arb_admin_config_update
+      summary: Update configuration
+      description: Update ARB service configuration (admin only, step-up required)
+      tags:
+        - DASH-ADMIN
+      x-action-id: update_config
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,StepUp,Problem)
+      x-rbac-role: admin
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateConfig'
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Config'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /arb/admin/kpis:
+    get:
+      operationId: arb_admin_kpis_get
+      summary: Get KPIs
+      description: Get ARB service KPIs (admin only)
+      tags:
+        - DASH-ADMIN
+      x-rbac-role: admin
+      responses:
+        '200':
+          description: KPIs
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KPIs'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /arb/support/disputes:
+    get:
+      operationId: arb_support_disputes_list
+      summary: List disputes
+      description: List booking disputes (support only)
+      tags:
+        - DASH-SUPPORT
+      x-rbac-role: support
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Disputes list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Booking'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /arb/support/bookings/{booking_id}:
+    get:
+      operationId: arb_support_bookings_get
+      summary: Get support booking
+      description: Get booking details with audit messages (support only)
+      tags:
+        - DASH-SUPPORT
+      x-rbac-role: support
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: Booking details with audit messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  booking:
+                    $ref: '#/components/schemas/Booking'
+                  chat_messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatMessage'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /arb/support/resolutions:
+    post:
+      operationId: arb_support_resolutions_apply
+      summary: Apply dispute resolution
+      description: Apply dispute resolution (support only, step-up required)
+      tags:
+        - DASH-SUPPORT
+      x-action-id: apply_resolution
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,StepUp,Problem)
+      x-rbac-role: support
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyResolution'
+      responses:
+        '200':
+          description: Resolution applied successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Booking'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
 components:
-  schemas: {}
-  securitySchemes: {}
+  schemas:
+    MoneyValue:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: string
+          description: Amount in minor units (e.g. fils)
+          example: '50000'
+        currency:
+          type: string
+          description: ISO-4217 currency code
+          default: YER
+          example: YER
+    Offer:
+      type: object
+      required:
+        - id
+        - partner_id
+        - title_ar
+        - title_en
+        - price
+        - deposit_amount
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        partner_id:
+          type: string
+        title_ar:
+          type: string
+        title_en:
+          type: string
+        description_ar:
+          type: string
+          nullable: true
+        description_en:
+          type: string
+          nullable: true
+        images:
+          type: array
+          items:
+            type: string
+        price:
+          $ref: '#/components/schemas/MoneyValue'
+        deposit_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        category_id:
+          type: string
+          nullable: true
+        subcategory_id:
+          type: string
+          nullable: true
+        region_code:
+          type: string
+          nullable: true
+        location:
+          type: object
+          nullable: true
+        deposit_policy:
+          type: string
+          enum:
+            - full_refund
+            - partial_refund
+            - no_refund
+        release_days:
+          type: integer
+          nullable: true
+        status:
+          type: string
+          enum:
+            - draft
+            - active
+            - paused
+            - expired
+            - deleted
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CreateOffer:
+      type: object
+      required:
+        - title_ar
+        - title_en
+        - images
+        - price
+        - deposit_amount
+      properties:
+        title_ar:
+          type: string
+        title_en:
+          type: string
+        description_ar:
+          type: string
+        description_en:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        price:
+          $ref: '#/components/schemas/MoneyValue'
+        deposit_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        category_id:
+          type: string
+        subcategory_id:
+          type: string
+        region_code:
+          type: string
+        location:
+          type: object
+        deposit_policy:
+          type: string
+          enum:
+            - full_refund
+            - partial_refund
+            - no_refund
+        release_days:
+          type: integer
+        status:
+          type: string
+          enum:
+            - draft
+            - active
+            - paused
+            - expired
+            - deleted
+    UpdateOffer:
+      type: object
+      properties:
+        title_ar:
+          type: string
+        title_en:
+          type: string
+        description_ar:
+          type: string
+        description_en:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        price:
+          $ref: '#/components/schemas/MoneyValue'
+        deposit_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        category_id:
+          type: string
+        subcategory_id:
+          type: string
+        region_code:
+          type: string
+        location:
+          type: object
+        deposit_policy:
+          type: string
+          enum:
+            - full_refund
+            - partial_refund
+            - no_refund
+        release_days:
+          type: integer
+        status:
+          type: string
+          enum:
+            - draft
+            - active
+            - paused
+            - expired
+            - deleted
+    Booking:
+      type: object
+      required:
+        - id
+        - offer_id
+        - customer_id
+        - partner_id
+        - status
+        - escrow_status
+        - deposit_amount
+      properties:
+        id:
+          type: string
+          format: uuid
+        offer_id:
+          type: string
+          format: uuid
+        customer_id:
+          type: string
+        partner_id:
+          type: string
+        status:
+          type: string
+          enum:
+            - pending
+            - confirmed
+            - attended
+            - no_show
+            - cancelled
+            - completed
+            - disputed
+            - resolved
+        escrow_status:
+          type: string
+          enum:
+            - hold
+            - released
+            - partial_release
+            - refunded
+            - captured
+            - on_dispute
+        escrow_transaction_id:
+          type: string
+          nullable: true
+        deposit_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        slot:
+          type: object
+          nullable: true
+        customer_notes:
+          type: string
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CreateBooking:
+      type: object
+      required:
+        - offer_id
+      properties:
+        offer_id:
+          type: string
+          format: uuid
+        slot:
+          type: object
+        customer_notes:
+          type: string
+    UpdateBookingStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - pending
+            - confirmed
+            - attended
+            - no_show
+            - cancelled
+            - completed
+            - disputed
+            - resolved
+        notes:
+          type: string
+    ChatMessage:
+      type: object
+      required:
+        - id
+        - booking_id
+        - sender_id
+        - recipient_id
+        - direction
+        - body_encrypted
+      properties:
+        id:
+          type: string
+          format: uuid
+        booking_id:
+          type: string
+          format: uuid
+        sender_id:
+          type: string
+        recipient_id:
+          type: string
+        direction:
+          type: string
+          enum:
+            - customer_to_partner
+            - partner_to_customer
+        body_encrypted:
+          type: string
+        phone_masked:
+          type: boolean
+        links_masked:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    CreateChatMessage:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          type: string
+    Config:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        scope:
+          type: string
+          enum:
+            - global
+            - region
+            - category
+            - subcategory
+        scope_value:
+          type: string
+        release_days:
+          type: integer
+        no_show_keep_pct:
+          type: integer
+        no_show_cap:
+          $ref: '#/components/schemas/MoneyValue'
+        is_active:
+          type: boolean
+    UpdateConfig:
+      type: object
+      properties:
+        scope:
+          type: string
+          enum:
+            - global
+            - region
+            - category
+            - subcategory
+        scope_value:
+          type: string
+        release_days:
+          type: integer
+        no_show_keep_pct:
+          type: integer
+        no_show_cap:
+          $ref: '#/components/schemas/MoneyValue'
+        is_active:
+          type: boolean
+    KPIs:
+      type: object
+      properties:
+        total_offers:
+          type: integer
+        active_offers:
+          type: integer
+        total_bookings:
+          type: integer
+        pending_bookings:
+          type: integer
+        confirmed_bookings:
+          type: integer
+        completed_bookings:
+          type: integer
+        no_show_bookings:
+          type: integer
+        active_escrow_balance:
+          type: integer
+        escrow_on_hold:
+          type: integer
+        escrow_released:
+          type: integer
+        escrow_refunded:
+          type: integer
+        conversion_rate:
+          type: number
+        no_show_rate:
+          type: number
+        dispute_rate:
+          type: number
+        avg_release_time_days:
+          type: number
+    ApplyResolution:
+      type: object
+      required:
+        - booking_id
+        - resolution_type
+        - reason
+      properties:
+        booking_id:
+          type: string
+          format: uuid
+        resolution_type:
+          type: string
+          enum:
+            - full_refund
+            - partial_refund
+            - release_to_partner
+            - partial_release
+        refund_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        release_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        new_status:
+          type: string
+          enum:
+            - pending
+            - confirmed
+            - attended
+            - no_show
+            - cancelled
+            - completed
+            - disputed
+            - resolved
+        reason:
+          type: string
+    Problem:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - code
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        code:
+          type: string
+        detail:
+          type: string
+        traceId:
+          type: string
+  parameters:
+    OfferId:
+      name: offer_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    BookingId:
+      name: booking_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Query:
+      name: q
+      in: query
+      required: false
+      schema:
+        type: string
+    CategoryId:
+      name: category_id
+      in: query
+      required: false
+      schema:
+        type: string
+    RegionCode:
+      name: region_code
+      in: query
+      required: false
+      schema:
+        type: string
+    MinPrice:
+      name: min_price
+      in: query
+      required: false
+      schema:
+        type: integer
+    MaxPrice:
+      name: max_price
+      in: query
+      required: false
+      schema:
+        type: integer
+    Sort:
+      name: sort
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - price_asc
+          - price_desc
+          - created_desc
+    Status:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Idempotency key (UUID v4) for mutating operations
+      schema:
+        type: string
+        format: uuid
+    ConfigScope:
+      name: scope
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - global
+          - region
+          - category
+          - subcategory
+    ScopeValue:
+      name: scope_value
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Problem:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

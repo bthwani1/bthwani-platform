@@ -1,0 +1,1545 @@
+openapi: 3.0.3
+info:
+  title: BThwani — Partner/Vendor API (APP-PARTNER)
+  version: '1.0.0'
+  description: |
+    Backend-for-Frontend (BFF) API for APP-PARTNER (merchant/partner app).
+    
+    This API provides endpoints for:
+    - Partner authentication and profile management
+    - DSH orders management (accept, reject, ready, handoff)
+    - ARB bookings management (confirm, reject, view)
+    - Finance views (ledger, settlements, exports)
+    - Subscription management (Partner Pro plans)
+    - Store management (toggle open/close, branches, policies)
+    
+    **Key Principles:**
+    - Read-only finance views (no ledger modifications)
+    - Wallet=Ledger backend only (WLT service)
+    - CoA (Chart of Accounts) mapping for accounting exports
+    - Subscription billing via WLT
+    - RBAC/ABAC enforced
+    - Idempotency required for all mutating operations
+    - No direct bank transfers (settlements via internal finance dashboards)
+    
+    **Scope:**
+    - DSH: Order management only (no KNZ linkage)
+    - ARB: Booking management only
+    - WLT: Read-only ledger views, settlements, exports
+    - Identity: Partner authentication and profile
+    
+    **No KNZ Integration:**
+    - APP-PARTNER does not expose KNZ (marketplace) features to partners
+    - Partners manage only DSH orders and ARB bookings
+    
+    **Timezone:** Asia/Aden
+    **Default Currency:** YER (no fractional digits by default)
+  contact:
+    name: BThwani Support
+    email: support@bthwani.com
+servers:
+  - url: https://api-dev.bthwani.com
+    description: Development environment
+  - url: https://api-stage.bthwani.com
+    description: Staging environment
+  - url: https://api.bthwani.com
+    description: Production environment
+x-host-policy:
+  https://api.bthwani.com:
+    scope: APP-PARTNER BFF API
+    allowedOrigins:
+      - https://partner.bthwani.com
+      - https://app.bthwani.com
+    notes:
+      - JWT bearerAuth required
+      - Idempotency-Key mandatory for POST/PATCH/PUT
+      - RBAC roles: partner (owner, manager, cashier, marketer)
+      - Read-only finance (no ledger modifications)
+tags:
+  - name: Authentication
+    description: Partner authentication and profile
+  - name: DSH Orders
+    description: Delivery & Shopping orders management
+  - name: ARB Bookings
+    description: Deposits & Bookings management
+  - name: Finance
+    description: Finance views (ledger, settlements, exports) - read-only
+  - name: Subscriptions
+    description: Partner Pro subscription management
+  - name: Store
+    description: Store management (toggle, branches, policies)
+security:
+  - bearerAuth: []
+paths:
+  /partner/auth/login:
+    post:
+      operationId: partner_auth_login
+      summary: Partner login
+      description: Authenticate partner and receive JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerLoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerAuthResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+      security: []
+  /partner/auth/refresh:
+    post:
+      operationId: partner_auth_refresh
+      summary: Refresh JWT token
+      description: Refresh expired JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PartnerRefreshRequest'
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerAuthResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+      security: []
+  /partner/profile:
+    get:
+      operationId: partner_profile_get
+      summary: Get partner profile
+      description: Get current partner profile and store information
+      tags:
+        - Authentication
+      x-rbac-role: partner
+      responses:
+        '200':
+          description: Partner profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerProfile'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/orders:
+    get:
+      operationId: partner_orders_list
+      summary: List partner orders
+      description: List orders for authenticated partner with filters and cursor pagination
+      tags:
+        - DSH Orders
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.orders_list
+      parameters:
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - name: service
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [DSH]
+          description: Service filter (DSH only for partners)
+      responses:
+        '200':
+          description: Orders list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PartnerOrder'
+                  next_cursor:
+                    type: string
+                    nullable: true
+                  prev_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/orders/{order_id}:
+    get:
+      operationId: partner_orders_get
+      summary: Get order details
+      description: Get order details by ID
+      tags:
+        - DSH Orders
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.order_detail
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+      responses:
+        '200':
+          description: Order details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerOrderDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/orders/{order_id}/accept:
+    post:
+      operationId: partner_orders_accept
+      summary: Accept order
+      description: Accept order for fulfillment (partner or pickup modes)
+      tags:
+        - DSH Orders
+      x-rbac-role: partner
+      x-action-id: accept_order
+      x-entity-code: SRV-DSH-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.order_detail
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Order accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerOrderDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/orders/{order_id}/reject:
+    post:
+      operationId: partner_orders_reject
+      summary: Reject order
+      description: Reject order with reason
+      tags:
+        - DSH Orders
+      x-rbac-role: partner
+      x-action-id: reject_order
+      x-entity-code: SRV-DSH-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.order_detail
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectOrderRequest'
+      responses:
+        '200':
+          description: Order rejected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerOrderDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/orders/{order_id}/ready:
+    post:
+      operationId: partner_orders_ready
+      summary: Mark order as ready
+      description: Mark order as ready for pickup/delivery
+      tags:
+        - DSH Orders
+      x-rbac-role: partner
+      x-action-id: mark_order_ready
+      x-entity-code: SRV-DSH-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.order_detail
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Order marked as ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerOrderDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/orders/{order_id}/handoff:
+    post:
+      operationId: partner_orders_handoff
+      summary: Handoff order to platform
+      description: Handoff order to platform captain for delivery
+      tags:
+        - DSH Orders
+      x-rbac-role: partner
+      x-action-id: handoff_order
+      x-entity-code: SRV-DSH-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.order_detail
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Order handed off successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerOrderDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/orders/{order_id}/chat/messages:
+    get:
+      operationId: partner_chat_messages_list
+      summary: List chat messages
+      description: List chat messages for an order (phone numbers masked)
+      tags:
+        - DSH Orders
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.order_chat
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Chat messages list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatMessage'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      operationId: partner_chat_messages_create
+      summary: Send chat message
+      description: Send a chat message (phone numbers and links masked)
+      tags:
+        - DSH Orders
+      x-rbac-role: partner
+      x-action-id: send_chat_message
+      x-entity-code: SRV-DSH-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.order_chat
+      parameters:
+        - $ref: '#/components/parameters/OrderId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatMessage'
+      responses:
+        '201':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/bookings:
+    get:
+      operationId: partner_bookings_list
+      summary: List partner bookings
+      description: List bookings for authenticated partner with filters and cursor pagination
+      tags:
+        - ARB Bookings
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.bookings_list
+      parameters:
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Bookings list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PartnerBooking'
+                  next_cursor:
+                    type: string
+                    nullable: true
+                  prev_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/bookings/{booking_id}:
+    get:
+      operationId: partner_bookings_get
+      summary: Get booking details
+      description: Get booking details by ID
+      tags:
+        - ARB Bookings
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.booking_detail
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+      responses:
+        '200':
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerBookingDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/bookings/{booking_id}/confirm:
+    post:
+      operationId: partner_bookings_confirm
+      summary: Confirm booking
+      description: Confirm booking (partner only)
+      tags:
+        - ARB Bookings
+      x-rbac-role: partner
+      x-action-id: confirm_booking
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.booking_detail
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Booking confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerBookingDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/bookings/{booking_id}/reject:
+    post:
+      operationId: partner_bookings_reject
+      summary: Reject booking
+      description: Reject booking with reason
+      tags:
+        - ARB Bookings
+      x-rbac-role: partner
+      x-action-id: reject_booking
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.booking_detail
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RejectBookingRequest'
+      responses:
+        '200':
+          description: Booking rejected successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PartnerBookingDetail'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/bookings/{booking_id}/chat/messages:
+    get:
+      operationId: partner_booking_chat_messages_list
+      summary: List booking chat messages
+      description: List chat messages for a booking (phone numbers masked)
+      tags:
+        - ARB Bookings
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.booking_chat
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Chat messages list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatMessage'
+                  next_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+    post:
+      operationId: partner_booking_chat_messages_create
+      summary: Send booking chat message
+      description: Send a chat message for a booking (phone numbers and links masked)
+      tags:
+        - ARB Bookings
+      x-rbac-role: partner
+      x-action-id: send_booking_chat_message
+      x-entity-code: SRV-ARB-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.booking_chat
+      parameters:
+        - $ref: '#/components/parameters/BookingId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatMessage'
+      responses:
+        '201':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        default:
+          $ref: '#/components/responses/Problem'
+  /wallet/ledger:
+    get:
+      operationId: partner_wallet_ledger
+      summary: Get partner ledger view
+      description: |
+        Get partner ledger transactions (read-only view from WLT).
+        
+        Returns simplified ledger entries with:
+        - Transaction date and time
+        - Reference (order/booking ID)
+        - Description (sale, commission, refund, subscription fee, etc.)
+        - Amount (from partner perspective: +income, -deductions)
+        - CoA short code (for accounting mapping)
+        - Settlement status
+        
+        Filters by service (DSH/ARB), transaction type, and settlement status.
+      tags:
+        - Finance
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.finance_transactions
+      parameters:
+        - name: service
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [DSH, ARB]
+          description: Service filter (DSH or ARB)
+        - name: category
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [sale, commission, settlement, refund, subscription_fee]
+          description: Transaction category
+        - name: settlement_status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, settled, not_settled]
+          description: Settlement status
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - name: date_from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: Start date for filtering
+        - name: date_to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+          description: End date for filtering
+      responses:
+        '200':
+          description: Ledger transactions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LedgerEntry'
+                  next_cursor:
+                    type: string
+                    nullable: true
+                  prev_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+  /wallet/settlements:
+    get:
+      operationId: partner_wallet_settlements
+      summary: List partner settlements
+      description: |
+        List settlement batches for authenticated partner (read-only).
+        
+        Returns settlement batches with:
+        - Period covered (start/end dates)
+        - Total sales in period
+        - Total commissions and fees in period
+        - Net amount transferred to partner
+        - Settlement status (scheduled, transferred, under_review)
+        - Internal bank transfer reference (no sensitive data)
+        
+        Partner cannot create or modify settlements; only view status.
+      tags:
+        - Finance
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.finance_settlements
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [draft, pending_approval, approved, exported, reconciled]
+          description: Settlement status
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Settlements list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Settlement'
+                  next_cursor:
+                    type: string
+                    nullable: true
+                  prev_cursor:
+                    type: string
+                    nullable: true
+        default:
+          $ref: '#/components/responses/Problem'
+  /wallet/settlements/{settlement_id}:
+    get:
+      operationId: partner_wallet_settlement_get
+      summary: Get settlement details
+      description: Get settlement batch details with transaction breakdown
+      tags:
+        - Finance
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.finance_settlements
+      parameters:
+        - name: settlement_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Settlement details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SettlementDetail'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+  /wallet/exports:
+    post:
+      operationId: partner_wallet_exports
+      summary: Export finance report
+      description: |
+        Export finance report as CSV or PDF.
+        
+        Options:
+        - Time period selection
+        - Detail level (per transaction or daily/weekly summary)
+        - Include/exclude CoA codes
+        - Format (CSV or PDF)
+        
+        Reports are ready for accountant use and include CoA mapping for internal accounting systems.
+      tags:
+        - Finance
+      x-rbac-role: partner
+      x-action-id: request_finance_export
+      x-entity-code: SRV-WLT-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.finance_export
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExportRequest'
+      responses:
+        '202':
+          description: Export request accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExportResponse'
+        default:
+          $ref: '#/components/responses/Problem'
+  /wallet/finance/overview:
+    get:
+      operationId: partner_wallet_finance_overview
+      summary: Get finance overview
+      description: |
+        Get finance overview with simplified numbers for partner.
+        
+        Returns:
+        - Total sales (separated by DSH/ARB)
+        - Total platform commission (separated by service)
+        - Net payable (settleable amount)
+        - Pending balance (e.g., unclosed escrow deposits)
+        - Next settlement date and amount estimate
+        
+        Based on WLT ledger with partner-friendly simplification.
+      tags:
+        - Finance
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.finance_overview
+      responses:
+        '200':
+          description: Finance overview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FinanceOverview'
+        default:
+          $ref: '#/components/responses/Problem'
+  /subscriptions/status:
+    get:
+      operationId: partner_subscriptions_status
+      summary: Get subscription status
+      description: Get current Partner Pro subscription status and effects
+      tags:
+        - Subscriptions
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.subscription_status
+      responses:
+        '200':
+          description: Subscription status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionStatus'
+        default:
+          $ref: '#/components/responses/Problem'
+  /subscriptions/plans:
+    get:
+      operationId: partner_subscriptions_plans
+      summary: Get subscription plans
+      description: Get available Partner Pro subscription plans
+      tags:
+        - Subscriptions
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      x-screen: screen.subscription_plans
+      responses:
+        '200':
+          description: Subscription plans
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plans:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SubscriptionPlan'
+        default:
+          $ref: '#/components/responses/Problem'
+  /subscriptions/checkout:
+    post:
+      operationId: partner_subscriptions_checkout
+      summary: Checkout subscription
+      description: |
+        Request subscription upgrade/downgrade.
+        
+        Payment methods:
+        - Deduct from next settlement (if available)
+        - Deduct directly from wallet balance (if sufficient)
+        
+        Subscription fees appear as ledger entries in finance views.
+      tags:
+        - Subscriptions
+      x-rbac-role: partner
+      x-action-id: confirm_subscription_payment
+      x-entity-code: SRV-WLT-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.subscription_checkout
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionCheckoutRequest'
+      responses:
+        '200':
+          description: Subscription checkout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionStatus'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/store/toggle:
+    post:
+      operationId: partner_store_toggle
+      summary: Toggle store open/close
+      description: Toggle store open/close status
+      tags:
+        - Store
+      x-rbac-role: partner
+      x-action-id: toggle_store_status
+      x-entity-code: SRV-DSH-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-surface: APP-PARTNER
+      x-screen: screen.partner_dashboard
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleStoreRequest'
+      responses:
+        '200':
+          description: Store status updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoreStatus'
+        default:
+          $ref: '#/components/responses/Problem'
+  /partner/branches:
+    get:
+      operationId: partner_branches_list
+      summary: List partner branches
+      description: List partner branches/stores
+      tags:
+        - Store
+      x-rbac-role: partner
+      x-surface: APP-PARTNER
+      responses:
+        '200':
+          description: Branches list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Branch'
+        default:
+          $ref: '#/components/responses/Problem'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    OrderId:
+      name: order_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    BookingId:
+      name: booking_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Status:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Idempotency key (UUID v4) for mutating operations
+      schema:
+        type: string
+        format: uuid
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Problem:
+      description: Error response
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  schemas:
+    MoneyValue:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: string
+          description: Amount in minor units (e.g. fils) as string
+          example: '50000'
+        currency:
+          type: string
+          description: ISO-4217 currency code
+          default: YER
+          example: YER
+    PartnerLoginRequest:
+      type: object
+      required:
+        - phone
+        - otp
+      properties:
+        phone:
+          type: string
+          description: Phone number
+        otp:
+          type: string
+          description: OTP code
+    PartnerRefreshRequest:
+      type: object
+      required:
+        - refresh_token
+      properties:
+        refresh_token:
+          type: string
+          description: Refresh token
+    PartnerAuthResponse:
+      type: object
+      required:
+        - access_token
+        - refresh_token
+        - expires_in
+      properties:
+        access_token:
+          type: string
+          description: JWT access token
+        refresh_token:
+          type: string
+          description: Refresh token
+        expires_in:
+          type: integer
+          description: Token expiration in seconds
+    PartnerProfile:
+      type: object
+      required:
+        - id
+        - name
+        - store_name
+        - status
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        store_name:
+          type: string
+        status:
+          type: string
+          enum: [pending, approved, rejected, suspended]
+        services:
+          type: array
+          items:
+            type: string
+            enum: [DSH, ARB]
+    PartnerOrder:
+      type: object
+      required:
+        - id
+        - status
+        - total
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [new, accepted, preparing, ready, handed_off, delivered, cancelled, rejected]
+        total:
+          $ref: '#/components/schemas/MoneyValue'
+        created_at:
+          type: string
+          format: date-time
+        delivery_time_estimated:
+          type: string
+          format: date-time
+          nullable: true
+        channel:
+          type: string
+          enum: [APP-USER]
+          description: Order channel (APP-USER only, no KNZ)
+    PartnerOrderDetail:
+      type: object
+      required:
+        - id
+        - status
+        - total
+        - items
+        - customer
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [new, accepted, preparing, ready, handed_off, delivered, cancelled, rejected]
+        total:
+          $ref: '#/components/schemas/MoneyValue'
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              quantity:
+                type: integer
+              price:
+                $ref: '#/components/schemas/MoneyValue'
+        customer:
+          type: object
+          properties:
+            name:
+              type: string
+            delivery_area:
+              type: string
+            phone_masked:
+              type: string
+              description: Masked phone number (no raw phone)
+        delivery_mode:
+          type: string
+          enum: [platform, partner, pickup]
+        created_at:
+          type: string
+          format: date-time
+    RejectOrderRequest:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+          description: Rejection reason
+    PartnerBooking:
+      type: object
+      required:
+        - id
+        - status
+        - escrow_status
+        - deposit_amount
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, confirmed, attended, no_show, cancelled, completed, disputed, resolved]
+        escrow_status:
+          type: string
+          enum: [hold, released, partial_release, refunded, captured, on_dispute]
+        deposit_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        slot:
+          type: object
+          nullable: true
+        customer_name_masked:
+          type: string
+          description: Partially masked customer name
+        created_at:
+          type: string
+          format: date-time
+    PartnerBookingDetail:
+      type: object
+      required:
+        - id
+        - status
+        - escrow_status
+        - deposit_amount
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, confirmed, attended, no_show, cancelled, completed, disputed, resolved]
+        escrow_status:
+          type: string
+          enum: [hold, released, partial_release, refunded, captured, on_dispute]
+        deposit_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        final_amount:
+          $ref: '#/components/schemas/MoneyValue'
+          nullable: true
+        slot:
+          type: object
+          nullable: true
+        customer_name_masked:
+          type: string
+          description: Partially masked customer name
+        created_at:
+          type: string
+          format: date-time
+    RejectBookingRequest:
+      type: object
+      required:
+        - reason
+      properties:
+        reason:
+          type: string
+          description: Rejection reason
+    ChatMessage:
+      type: object
+      required:
+        - id
+        - body
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        body:
+          type: string
+          description: Message body (phone numbers and links masked)
+        sender_id:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    CreateChatMessage:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          type: string
+          description: Message body (will be masked automatically)
+    LedgerEntry:
+      type: object
+      required:
+        - id
+        - date
+        - description
+        - amount
+        - type
+      properties:
+        id:
+          type: string
+          format: uuid
+        date:
+          type: string
+          format: date-time
+        reference:
+          type: string
+          description: Order or booking ID
+          nullable: true
+        description:
+          type: string
+          description: Transaction description (sale, commission, refund, subscription fee, etc.)
+        amount:
+          type: string
+          description: Amount from partner perspective (+income, -deductions)
+        type:
+          type: string
+          enum: [sale, commission, settlement, refund, subscription_fee]
+        service:
+          type: string
+          enum: [DSH, ARB]
+          nullable: true
+        coa_code:
+          type: string
+          description: CoA short code for accounting mapping
+          nullable: true
+        settlement_status:
+          type: string
+          enum: [pending, settled, not_settled]
+          nullable: true
+    Settlement:
+      type: object
+      required:
+        - id
+        - period_start
+        - period_end
+        - net_amount
+        - status
+      properties:
+        id:
+          type: string
+          format: uuid
+        period_start:
+          type: string
+          format: date
+        period_end:
+          type: string
+          format: date
+        total_sales:
+          $ref: '#/components/schemas/MoneyValue'
+        total_commissions:
+          $ref: '#/components/schemas/MoneyValue'
+        net_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        status:
+          type: string
+          enum: [draft, pending_approval, approved, exported, reconciled]
+        bank_reference:
+          type: string
+          description: Internal bank transfer reference (no sensitive data)
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+    SettlementDetail:
+      type: object
+      required:
+        - id
+        - period_start
+        - period_end
+        - net_amount
+        - status
+        - transactions
+      properties:
+        id:
+          type: string
+          format: uuid
+        period_start:
+          type: string
+          format: date
+        period_end:
+          type: string
+          format: date
+        total_sales:
+          $ref: '#/components/schemas/MoneyValue'
+        total_commissions:
+          $ref: '#/components/schemas/MoneyValue'
+        net_amount:
+          $ref: '#/components/schemas/MoneyValue'
+        status:
+          type: string
+          enum: [draft, pending_approval, approved, exported, reconciled]
+        bank_reference:
+          type: string
+          description: Internal bank transfer reference (no sensitive data)
+          nullable: true
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LedgerEntry'
+        created_at:
+          type: string
+          format: date-time
+    FinanceOverview:
+      type: object
+      required:
+        - total_sales
+        - total_commissions
+        - net_payable
+        - pending_balance
+      properties:
+        total_sales:
+          type: object
+          properties:
+            dsh:
+              $ref: '#/components/schemas/MoneyValue'
+            arb:
+              $ref: '#/components/schemas/MoneyValue'
+            total:
+              $ref: '#/components/schemas/MoneyValue'
+        total_commissions:
+          type: object
+          properties:
+            dsh:
+              $ref: '#/components/schemas/MoneyValue'
+            arb:
+              $ref: '#/components/schemas/MoneyValue'
+            total:
+              $ref: '#/components/schemas/MoneyValue'
+        net_payable:
+          $ref: '#/components/schemas/MoneyValue'
+          description: Settleable amount
+        pending_balance:
+          $ref: '#/components/schemas/MoneyValue'
+          description: Pending balance (e.g., unclosed escrow deposits)
+        next_settlement:
+          type: object
+          nullable: true
+          properties:
+            date:
+              type: string
+              format: date
+            amount_estimate:
+              $ref: '#/components/schemas/MoneyValue'
+    ExportRequest:
+      type: object
+      required:
+        - period_start
+        - period_end
+        - format
+      properties:
+        period_start:
+          type: string
+          format: date
+        period_end:
+          type: string
+          format: date
+        detail_level:
+          type: string
+          enum: [transaction, daily, weekly]
+          default: transaction
+        include_coa:
+          type: boolean
+          default: true
+        format:
+          type: string
+          enum: [CSV, PDF]
+    ExportResponse:
+      type: object
+      required:
+        - export_id
+        - status
+      properties:
+        export_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [pending, ready, failed]
+        download_url:
+          type: string
+          format: uri
+          nullable: true
+    SubscriptionStatus:
+      type: object
+      required:
+        - plan_code
+        - status
+      properties:
+        plan_code:
+          type: string
+          enum: [partner_free, partner_pro, partner_pro_plus]
+        plan_name:
+          type: string
+        status:
+          type: string
+          enum: [active, expired, cancelled]
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+          nullable: true
+        commission_effect:
+          type: object
+          properties:
+            base_commission_pct:
+              type: number
+            default_commission_pct_without_plan:
+              type: number
+    SubscriptionPlan:
+      type: object
+      required:
+        - code
+        - name
+        - price
+        - benefits
+      properties:
+        code:
+          type: string
+          enum: [partner_free, partner_pro, partner_pro_plus]
+        name:
+          type: string
+        price:
+          $ref: '#/components/schemas/MoneyValue'
+        billing_cycle:
+          type: string
+          enum: [monthly, quarterly, yearly]
+        benefits:
+          type: array
+          items:
+            type: string
+        commission_discount_pct:
+          type: number
+          description: Commission discount percentage
+    SubscriptionCheckoutRequest:
+      type: object
+      required:
+        - plan_code
+        - billing_cycle
+      properties:
+        plan_code:
+          type: string
+          enum: [partner_free, partner_pro, partner_pro_plus]
+        billing_cycle:
+          type: string
+          enum: [monthly, quarterly, yearly]
+        payment_method:
+          type: string
+          enum: [settlement_deduction, wallet_balance]
+          default: settlement_deduction
+    ToggleStoreRequest:
+      type: object
+      required:
+        - is_open
+      properties:
+        is_open:
+          type: boolean
+          description: Store open status
+    StoreStatus:
+      type: object
+      required:
+        - is_open
+      properties:
+        is_open:
+          type: boolean
+        updated_at:
+          type: string
+          format: date-time
+    Branch:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+    Problem:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - code
+        - traceId
+      properties:
+        type:
+          type: string
+          format: uri
+          description: Machine-readable problem type URI
+        title:
+          type: string
+          description: Human-readable summary of the error condition
+        status:
+          type: integer
+          description: HTTP status code applied to the response
+        code:
+          type: string
+          description: Service-specific error code following {SERVICE}-{HTTP}-{KEY}
+          pattern: '^[A-Z]{3}-[0-9]{3}-[A-Z0-9\-]+$'
+        detail:
+          type: string
+          description: Additional context; must not contain raw PII
+        traceId:
+          type: string
+          description: Correlation identifier to link logs and traces
+        instance:
+          type: string
+          format: uri
+          description: Optional URI reference to a support ticket or incident
+        errors:
+          type: array
+          description: Field-level validation or domain errors
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+              message:
+                type: string
+

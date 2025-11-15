@@ -154,9 +154,96 @@ The service exposes 250+ routes spanning admin, customer, partner, captain, ops,
   - `DshOrdersService` now calls the incentives engine before persisting orders, storing adjustment line items, coupon/subscription metadata, guardrail hits, and points redeemed in `order.pricing`.
   - Wallet authorizations use the post-incentive total, ensuring ledger parity with invoice breakdown (basket, delivery, subscription discount, auto discount, coupon, rewards, guardrail rollbacks).
 
-## 8. References & Review
+## 8. Database Migrations & Seeders
+
+### 8.1 Migrations
+
+The DSH service includes database migrations for core entities:
+
+#### Migration: `dsh_categories` Table
+
+- **File**: `migrations/Migration20250201000008_CreateDshCategoriesTable.ts`
+- **Purpose**: Creates table for DSH internal categories (restaurants, supermarkets, quick tasks, etc.)
+- **Key Fields**:
+  - `code` (unique): Category code (e.g., `dsh_restaurants`, `dsh_quick_task`)
+  - `name_ar` / `name_en`: Localized names
+  - `description_ar` / `description_en`: Localized descriptions
+  - `status`: Category status (`active`, `inactive`, `archived`)
+  - `sort_order`: Display ordering
+  - `is_featured`: Featured category flag
+  - `is_active`: Active status flag
+  - `tags`: JSONB array for tags (NEARBY, NEW, TRENDING, SEASONAL, etc.)
+  - `available_regions` / `available_cities`: JSONB arrays for regional availability
+  - `var_enabled`: Runtime variable name for enable/disable control (e.g., `VAR_DSH_CAT_RESTAURANTS_ENABLED`)
+  - `icon_url` / `image_url`: Media URLs
+  - `metadata`: JSONB for additional metadata
+- **Indexes**:
+  - Unique index on `code`
+  - Composite index on `status, sort_order`
+  - Index on `is_featured`
+  - GIN indexes on `tags`, `available_regions`, `available_cities`
+
+#### Migration: `thwani_requests.dsh_category_code`
+
+- **File**: `migrations/Migration20250201000009_AddDshCategoryCodeToThwaniRequests.ts`
+- **Purpose**: Links Thwani requests to DSH category `dsh_quick_task`
+- **Changes**:
+  - Adds `dsh_category_code` column to `thwani_requests` table
+  - Sets default value `dsh_quick_task` for existing records
+  - Creates index on `dsh_category_code` for query performance
+
+### 8.2 Seeders
+
+#### Seeder: DSH Categories
+
+- **File**: `migrations/seeders/SeedDshCategories.ts`
+- **Purpose**: Seeds default DSH categories for initial setup
+- **Categories Seeded**:
+  1. `dsh_restaurants` (مطاعم) - Restaurants and cafes
+  2. `dsh_supermarkets` (سوبرماركت / بقالات) - Supermarkets and groceries
+  3. `dsh_fruits_veggies` (خضار وفواكه) - Fresh fruits and vegetables
+  4. `dsh_fashion` (أناقتي) - Fashion and style
+  5. `dsh_sweets_cafes` (حلا) - Sweets and cafes
+  6. `dsh_global_stores` (متاجر عالمية) - Global stores and websites
+  7. `dsh_quick_task` (طلبات فورية / مهام سريعة) - Instant requests / Quick tasks (Thwani)
+- **Behavior**: Idempotent — only creates categories that don't already exist (checks by `code`)
+- **Usage**:
+
+  ```bash
+  # Via npm script
+  npm run seed:dsh-categories
+
+  # Or via Node.js directly
+  node -e "require('./dist/migrations/seeders/SeedDshCategories').seedDshCategories(em).then(() => process.exit(0))"
+  ```
+
+### 8.3 Migration Execution
+
+**To run migrations:**
+
+```bash
+# Run all pending migrations
+npm run migration:up
+
+# Or via MikroORM CLI
+npx mikro-orm migration:up
+```
+
+**To run seeder:**
+
+```bash
+# After migrations are complete
+npm run seed:dsh-categories
+```
+
+**Note**: See `docs/MIGRATION_DEPLOYMENT.md` for detailed deployment instructions, including SQL fallback options if MikroORM CLI encounters entity discovery issues.
+
+## 9. References & Review
 
 - Sources: `oas/services/dsh/openapi.yaml`, `apps/**/SCREENS_CATALOG.csv`, `dashboards/**/SCREENS_CATALOG.csv`, `registry/SSOT_INDEX.json`, runtime catalog VARs.
+- Database: `migrations/Migration20250201000008_CreateDshCategoriesTable.ts`, `migrations/Migration20250201000009_AddDshCategoryCodeToThwaniRequests.ts`, `migrations/seeders/SeedDshCategories.ts`.
 - Last human review: 2025-11-14 02:30 +03.
 
-_source_sha256: 5f038d7e861808cc12f103eadeb02db539f069b1d22664757316fdf675ba54b6_
+---
+
+**Source SHA256**: `5f038d7e861808cc12f103eadeb02db539f069b1d22664757316fdf675ba54b6`

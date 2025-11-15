@@ -8,6 +8,7 @@ import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs/typings';
 import { SqliteDriver } from '@mikro-orm/sqlite';
 import { DatabaseModule } from '../../src/shared/database/database.module';
 import { generateCustomerToken } from '../helpers/jwt.helper';
+import { MikroORM } from '@mikro-orm/core';
 
 @Module({
   imports: [
@@ -23,11 +24,14 @@ import { generateCustomerToken } from '../helpers/jwt.helper';
       },
     } satisfies MikroOrmModuleSyncOptions),
   ],
+  exports: [MikroOrmModule],
 })
 class TestDatabaseModule {}
 
 describe('DSH Orders (e2e)', () => {
   let app: INestApplication;
+  let moduleFixture: TestingModule;
+  let orm: MikroORM;
   let customerToken: string;
   const customerId = 'test-customer-123';
 
@@ -36,7 +40,7 @@ describe('DSH Orders (e2e)', () => {
     process.env.JWT_SECRET = 'test-secret-key-for-e2e-tests';
     process.env.JWT_ALG = 'HS256';
 
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    moduleFixture = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
@@ -60,23 +64,24 @@ describe('DSH Orders (e2e)', () => {
     );
 
     await app.init();
-    
+
     // Run migrations for in-memory database
     try {
-      const orm = moduleFixture.get('MikroORM');
-      if (orm && orm.getSchemaGenerator) {
-        const generator = orm.getSchemaGenerator();
-        await generator.createSchema();
-      }
+      orm = moduleFixture.get(MikroORM);
+      const migrator = orm.getMigrator();
+      await migrator.up();
     } catch (error) {
       // Schema generation failed, but continue with tests
       console.warn('Schema generation skipped:', error);
     }
-    
+
     customerToken = generateCustomerToken(customerId);
   });
 
   afterAll(async () => {
+    if (orm) {
+      await orm.close(true);
+    }
     if (app) {
       await app.close();
     }
@@ -252,4 +257,3 @@ describe('DSH Orders (e2e)', () => {
     });
   });
 });
-

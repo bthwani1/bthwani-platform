@@ -1,4 +1,4 @@
-﻿# BThwani Platform
+# BThwani Platform
 
 **Mono-repository** containing specifications, runtime code, documentation, and governance for the BThwani multi-service platform.
 
@@ -26,7 +26,7 @@ This repository follows a **mono-repo architecture** where **everything** relate
 | Marketplace         | KNZ  | DRAFT        | 1.1     | Under development                                                                                                   |
 | Safe Taxi           | AMN  | DRAFT        | 1.0     | Under development                                                                                                   |
 | Jobs Platform       | KWD  | DRAFT        | 1.0     | Under development                                                                                                   |
-| On-demand Services  | SND  | DRAFT        | 1.0     | Under development                                                                                                   |
+| On-demand Services  | SND  | 🟢 **READY** | 1.0     | **Runtime implementation complete** - Instant help + specialized services, pricing engine, routing, chat, proof-of-close, wallet integration |
 | Lost & Found        | MRF  | DRAFT        | 2.0     | Under development                                                                                                   |
 | Blood Donation      | ESF  | DRAFT        | 1.2     | Under development                                                                                                   |
 

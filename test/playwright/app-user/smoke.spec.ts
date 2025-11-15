@@ -24,4 +24,3 @@ test.describe('APP-USER Smoke Tests', () => {
     expect(dir).toBe('rtl');
   });
 });
-

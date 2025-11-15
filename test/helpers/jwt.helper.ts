@@ -18,7 +18,10 @@ export function generateTestToken(payload: Partial<JwtPayload> = {}): string {
   });
 }
 
-export function generateCustomerToken(customerId: string, roles: string[] = ['user', 'customer']): string {
+export function generateCustomerToken(
+  customerId: string,
+  roles: string[] = ['user', 'customer'],
+): string {
   return generateTestToken({
     sub: customerId,
     roles,
@@ -38,4 +41,3 @@ export function generatePartnerToken(partnerId: string): string {
     roles: ['partner'],
   });
 }
-

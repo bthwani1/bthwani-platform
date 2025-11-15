@@ -28,7 +28,7 @@ export class OrderRepository {
     limit: number = 20,
   ): Promise<OrderEntity[]> {
     const where: Record<string, unknown> = { customer_id: customerId };
-    
+
     if (cursor) {
       where.created_at = { $lt: new Date(cursor) };
     }

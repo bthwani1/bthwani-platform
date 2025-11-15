@@ -379,8 +379,16 @@ describe('DshOrdersService', () => {
       const limit = 2;
       const now = new Date();
       const orders: OrderEntity[] = [
-        { id: 'o-1', customer_id: customerId, created_at: new Date(now.getTime() - 1000) } as OrderEntity,
-        { id: 'o-2', customer_id: customerId, created_at: new Date(now.getTime() - 500) } as OrderEntity,
+        {
+          id: 'o-1',
+          customer_id: customerId,
+          created_at: new Date(now.getTime() - 1000),
+        } as OrderEntity,
+        {
+          id: 'o-2',
+          customer_id: customerId,
+          created_at: new Date(now.getTime() - 500),
+        } as OrderEntity,
         { id: 'o-3', customer_id: customerId, created_at: now } as OrderEntity,
       ];
       orderRepository.findByCustomerId.mockResolvedValue(orders);

@@ -1,6 +1,6 @@
 /**
  * Test Database Setup Utility
- * 
+ *
  * This utility helps set up a test database for E2E tests.
  * It can work with:
  * 1. Real PostgreSQL database (if DB_HOST is set)
@@ -69,4 +69,3 @@ export async function teardownTestDatabase(orm: MikroORM): Promise<void> {
     await orm.close(true);
   }
 }
-

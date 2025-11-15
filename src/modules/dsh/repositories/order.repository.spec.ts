@@ -56,7 +56,9 @@ describe('OrderRepository', () => {
     expect(entityRepository.createQueryBuilder).toHaveBeenCalledWith('o');
     expect(qb.where).toHaveBeenCalledWith({ customer_id: 'cust-1' });
     expect(qb.limit).toHaveBeenCalledWith(10);
-    expect(qb.andWhere).toHaveBeenCalledWith('o.created_at < ?', [new Date('2025-01-01T00:00:00.000Z')]);
+    expect(qb.andWhere).toHaveBeenCalledWith('o.created_at < ?', [
+      new Date('2025-01-01T00:00:00.000Z'),
+    ]);
     expect(qb.getResult).toHaveBeenCalled();
   });
 
@@ -121,4 +123,3 @@ describe('OrderRepository', () => {
     expect(entityRepository.findOne).toHaveBeenCalledWith({ idempotency_key: 'idem' });
   });
 });
-

@@ -76,13 +76,31 @@ describe('DshCaptainsService', () => {
       const older = new Date(Date.now() - 2000);
       const recent = new Date(Date.now() - 1000);
       const mockOrders: OrderEntity[] = [
-        { id: 'order-1', captain_id: captainId, status: OrderStatus.DELIVERED, created_at: older } as OrderEntity,
-        { id: 'order-2', captain_id: captainId, status: OrderStatus.DELIVERED, created_at: recent } as OrderEntity,
-        { id: 'order-3', captain_id: 'other', status: OrderStatus.DELIVERED, created_at: recent } as OrderEntity,
+        {
+          id: 'order-1',
+          captain_id: captainId,
+          status: OrderStatus.DELIVERED,
+          created_at: older,
+        } as OrderEntity,
+        {
+          id: 'order-2',
+          captain_id: captainId,
+          status: OrderStatus.DELIVERED,
+          created_at: recent,
+        } as OrderEntity,
+        {
+          id: 'order-3',
+          captain_id: 'other',
+          status: OrderStatus.DELIVERED,
+          created_at: recent,
+        } as OrderEntity,
       ];
       orderRepository.findByStatus.mockResolvedValue(mockOrders);
 
-      const result = await service.listOrders(captainId, { status: OrderStatus.DELIVERED, limit: 1 });
+      const result = await service.listOrders(captainId, {
+        status: OrderStatus.DELIVERED,
+        limit: 1,
+      });
 
       expect(orderRepository.findByStatus).toHaveBeenCalledWith(OrderStatus.DELIVERED, 2);
       expect(result.items).toHaveLength(1);
@@ -228,7 +246,9 @@ describe('DshCaptainsService', () => {
       } as OrderEntity;
       orderRepository.findOne.mockResolvedValue(mockOrder);
 
-      await expect(service.deliverOrder('captain-123', 'order', {})).rejects.toThrow(ForbiddenException);
+      await expect(service.deliverOrder('captain-123', 'order', {})).rejects.toThrow(
+        ForbiddenException,
+      );
     });
   });
 });

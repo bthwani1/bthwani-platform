@@ -24,4 +24,3 @@ test.describe('APP-PARTNER Smoke Tests', () => {
     expect(dir).toBe('rtl');
   });
 });
-

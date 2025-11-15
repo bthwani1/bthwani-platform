@@ -23,11 +23,16 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest<TUser = unknown>(err: Error | null, user: TUser, info: unknown, context: ExecutionContext): TUser {
+  handleRequest<TUser = unknown>(
+    err: Error | null,
+    user: TUser,
+    info: unknown,
+    context: ExecutionContext,
+  ): TUser {
     if (err || !user) {
       const request = context.switchToHttp().getRequest();
       const traceId = (request.headers['x-request-id'] as string) || this.generateTraceId();
-      
+
       throw new UnauthorizedException({
         type: 'https://errors.bthwani.com/common/unauthorized',
         title: 'Unauthorized',

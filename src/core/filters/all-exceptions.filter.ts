@@ -80,7 +80,11 @@ export class AllExceptionsFilter implements ExceptionFilter {
         let errorCode = responseObj.code;
         if (!errorCode || !/^[A-Z]{3}-[0-9]{3}-[A-Z0-9\-]+$/.test(errorCode)) {
           const key = errorCode?.replace(/^[A-Z]{3}-[0-9]{3}-/, '') || 'ERROR';
-          errorCode = generateErrorCode(status, 'DSH', key.toUpperCase().replace(/[^A-Z0-9]/g, '-'));
+          errorCode = generateErrorCode(
+            status,
+            'DSH',
+            key.toUpperCase().replace(/[^A-Z0-9]/g, '-'),
+          );
         }
 
         problem = {
@@ -94,7 +98,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
         };
       } else {
         // String response
-        const message = typeof exceptionResponse === 'string' ? exceptionResponse : exception.message;
+        const message =
+          typeof exceptionResponse === 'string' ? exceptionResponse : exception.message;
         problem = {
           type: normalizeErrorType(undefined, status),
           title: exception.message || 'Error',
@@ -141,10 +146,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     // Set Content-Type header for RFC7807 compliance
     response.setHeader('Content-Type', 'application/problem+json');
-    
+
     // Ensure status is set before sending response
     response.status(problem.status);
-    
+
     // Send RFC7807-compliant problem response
     response.json(problem);
   }

@@ -13,6 +13,7 @@ import { IdempotencyGuard } from './guards/idempotency.guard';
 import { RbacGuard } from './guards/rbac.guard';
 import { StepUpGuard } from './guards/step-up.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RateLimitGuard } from './guards/rate-limit.guard';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { TransformInterceptor } from './interceptors/transform.interceptor';
@@ -87,6 +88,10 @@ import { MetricsService } from './services/metrics.service';
     {
       provide: APP_GUARD,
       useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RateLimitGuard,
     },
     JwtStrategy,
     LoggerService,

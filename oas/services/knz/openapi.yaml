@@ -1,11 +1,19 @@
 openapi: 3.0.3
 info:
-  title: 'BThwani — Marketplace (KNZ) API'
-  description: Core endpoints for the marketplace service (KNZ).
+  title: 'BThwani â€” Marketplace (KNZ) API'
+  description: |
+    Core endpoints for the marketplace service (KNZ). Handles listings, categories, orders, chat, fees, and moderation.
+    
+    ## Security
+    - JWT Bearer Authentication  
+    - Role-Based Access Control (RBAC)
+    - Step-Up Authentication for sensitive operations
+    - Idempotency for transactional writes
   contact:
     name: BThwani Support
     email: support@bthwani.com
   version: '0.0.0-seed'
+
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev
@@ -13,7 +21,19 @@ servers:
     description: Stage
   - url: https://api.bthwani.com
     description: Prod
+
+tags:
+  - name: KNZ Public Browse
+  - name: KNZ Public Listings
+  - name: KNZ Public Orders
+  - name: KNZ Categories Admin
+  - name: KNZ Fees Admin
+
 paths: {}
 components:
   schemas: {}
-  securitySchemes: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

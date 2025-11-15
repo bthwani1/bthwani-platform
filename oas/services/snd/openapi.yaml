@@ -1,19 +1,1256 @@
 openapi: 3.0.3
 info:
-  title: 'BThwani — Help (SND) API'
-  description: Core endpoints for the on-demand help service (SND).
+  title: BThwani — Help (SND) API (سند)
+  version: '2025-02-01'
+  description: |
+    On-demand help service (SND - سند) for the BThwani platform.
+    
+    This service provides instant help requests and specialized services with pricing, routing, chat, and proof-of-close workflows.
+    
+    Features:
+    - Request creation (instant|specialized)
+    - Pricing engine (instant only, ranges/caps)
+    - Routing engine (captain/specialized/manual)
+    - Encrypted chat with phone masking
+    - Proof-of-close with 6-digit codes (instant only)
+    - Wallet integration (ledger entries only, no bank payouts)
+    - Admin configuration and KPIs
+    - Support dispute resolution
+    
+    Service Code: SRV-SND-01
+    Namespace: /api/snd/*
+    Timezone: Asia/Aden
+    Default Currency: YER
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: '0.0.0-seed'
 servers:
   - url: https://api-dev.bthwani.com
-    description: Dev
+    description: Development environment
   - url: https://api-stage.bthwani.com
-    description: Stage
+    description: Staging environment
   - url: https://api.bthwani.com
-    description: Prod
-paths: {}
+    description: Production environment
+x-host-policy:
+  https://api.bthwani.com:
+    scope: SRV-SND-01 v1.0 API
+    allowedOrigins:
+      - https://app.bthwani.com
+      - https://admin.bthwani.com
+    notes:
+      - JWT bearerAuth required; Idempotency-Key mandatory for writes.
+      - Chat messages encrypted with AES-256-GCM.
+      - Phone numbers masked in all responses.
+      - Wallet=Ledger internal only (no bank payouts).
+tags:
+  - name: APP-USER
+  - name: APP-CAPTAIN
+  - name: DASH-ADMIN
+  - name: DASH-SUPPORT
+  - name: SYSTEM
+paths:
+  /api/snd/requests:
+    post:
+      operationId: snd_requests_create
+      summary: Create SND request
+      description: |
+        Create a new SND request (instant or specialized).
+        
+        - **Instant**: Includes pricing calculation, routing, and completion workflow
+        - **Specialized**: Chat-only tracking with external payment processing
+        
+        Requires Idempotency-Key header.
+      tags:
+        - APP-USER
+      x-action-id: create_request
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRequest'
+      responses:
+        '201':
+          description: Request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequest'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Idempotency-Key'
+    get:
+      operationId: snd_requests_list_user
+      summary: List user requests
+      description: List SND requests for the authenticated user
+      tags:
+        - APP-USER
+      x-action-id: list_requests
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Auth,Problem,Pagination)
+      x-rbac-role: customer
+      parameters:
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/RequestType'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Requests list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequestList'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/requests/{request_id}:
+    get:
+      operationId: snd_request_get_user
+      summary: Get request details
+      description: Get SND request details (accessible by requester, captain, or provider)
+      tags:
+        - APP-USER
+      x-action-id: get_request
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Auth,Problem,PathParam)
+      x-rbac-role: customer
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      responses:
+        '200':
+          description: Request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+    post:
+      operationId: snd_request_status_update
+      summary: Update request status
+      description: Update request status (requester, captain, or provider)
+      tags:
+        - APP-USER
+        - APP-CAPTAIN
+      x-action-id: update_status
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: customer
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRequestStatus'
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/requests/{request_id}/close:
+    post:
+      operationId: snd_request_close_with_code
+      summary: Close request with code
+      description: |
+        Close instant request with 6-digit code and recipient name.
+        Creates ledger entry via WLT adapter.
+        Only for instant requests.
+      tags:
+        - APP-USER
+      x-action-id: close_request
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: customer
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CloseRequest'
+      responses:
+        '200':
+          description: Request closed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequest'
+        '400':
+          description: Invalid close code or request type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/requests/{request_id}/messages:
+    get:
+      operationId: snd_messages_list
+      summary: List chat messages
+      description: List chat messages for a request (requester, captain, provider, or support)
+      tags:
+        - APP-USER
+        - APP-CAPTAIN
+      x-action-id: list_messages
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Auth,Problem,Pagination)
+      x-rbac-role: customer
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Chat messages list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageList'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+    post:
+      operationId: snd_message_create
+      summary: Send chat message
+      description: |
+        Send a chat message (encrypted with AES-256-GCM, phone/link masked).
+        Only for participants (requester, captain, or provider).
+      tags:
+        - APP-USER
+        - APP-CAPTAIN
+      x-action-id: create_message
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: customer
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatMessage'
+      responses:
+        '201':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/captain/requests:
+    get:
+      operationId: snd_requests_list_captain
+      summary: List instant requests for captain
+      description: List instant requests available for captain (instant type only)
+      tags:
+        - APP-CAPTAIN
+      x-action-id: list_captain_requests
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Auth,Problem,Pagination)
+      x-rbac-role: captain
+      parameters:
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Requests list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequestList'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/captain/requests/{request_id}:
+    get:
+      operationId: snd_request_get_captain
+      summary: Get request details
+      description: Get instant request details for captain
+      tags:
+        - APP-CAPTAIN
+      x-action-id: get_request
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Auth,Problem,PathParam)
+      x-rbac-role: captain
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+      responses:
+        '200':
+          description: Request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/captain/requests/{request_id}/accept:
+    post:
+      operationId: snd_request_accept_captain
+      summary: Accept instant request
+      description: Accept an instant request (captain only)
+      tags:
+        - APP-CAPTAIN
+      x-action-id: accept_request
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: captain
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AcceptRequest'
+      responses:
+        '200':
+          description: Request accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequest'
+        '400':
+          description: Invalid request type or status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/captain/requests/{request_id}/close-code:
+    post:
+      operationId: snd_request_generate_close_code
+      summary: Generate close code
+      description: Generate 6-digit close code for instant request (captain only)
+      tags:
+        - APP-CAPTAIN
+      x-action-id: generate_close_code
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: captain
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Idempotency-Key'
+      responses:
+        '200':
+          description: Close code generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  close_code:
+                    type: string
+                    pattern: '^[0-9]{6}$'
+                    description: 6-digit close code
+                    example: '123456'
+        '400':
+          description: Invalid request type or already closed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/captain/requests/{request_id}/status:
+    post:
+      operationId: snd_request_status_update_captain
+      summary: Update request status
+      description: Update request status (captain only)
+      tags:
+        - APP-CAPTAIN
+      x-action-id: update_status
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: captain
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRequestStatus'
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequest'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/captain/requests/{request_id}/messages:
+    get:
+      operationId: snd_messages_list_captain
+      summary: List chat messages
+      description: List chat messages for a request (captain)
+      tags:
+        - APP-CAPTAIN
+      x-action-id: list_messages
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Auth,Problem,Pagination)
+      x-rbac-role: captain
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Chat messages list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessageList'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+    post:
+      operationId: snd_message_create_captain
+      summary: Send chat message
+      description: Send a chat message (captain)
+      tags:
+        - APP-CAPTAIN
+      x-action-id: create_message
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: captain
+      parameters:
+        - $ref: '#/components/parameters/RequestId'
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChatMessage'
+      responses:
+        '201':
+          description: Message sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatMessage'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/admin/config:
+    get:
+      operationId: snd_admin_config_get
+      summary: Get SND configuration
+      description: Get SND service configuration (admin only)
+      tags:
+        - DASH-ADMIN
+      x-action-id: get_config
+      x-entity-code: SRV-SND-01
+      x-rbac-role: admin
+      parameters:
+        - $ref: '#/components/parameters/ConfigScope'
+        - $ref: '#/components/parameters/ScopeValue'
+        - $ref: '#/components/parameters/CategoryId'
+      responses:
+        '200':
+          description: Configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  config:
+                    type: object
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+    patch:
+      operationId: snd_admin_config_update
+      summary: Update SND configuration
+      description: Update SND service configuration (admin only, step-up required)
+      tags:
+        - DASH-ADMIN
+      x-action-id: update_config
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,StepUp,Problem)
+      x-rbac-role: admin
+      parameters:
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateConfig'
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/admin/pricing:
+    patch:
+      operationId: snd_admin_pricing_update
+      summary: Update pricing profile
+      description: Update pricing profile for instant requests (admin only, step-up required)
+      tags:
+        - DASH-ADMIN
+      x-action-id: update_pricing
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,StepUp,Problem)
+      x-rbac-role: admin
+      parameters:
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatePricingProfile'
+      responses:
+        '200':
+          description: Pricing profile updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/admin/kpis:
+    get:
+      operationId: snd_admin_kpis
+      summary: Get SND KPIs
+      description: Get SND service KPIs and metrics (admin/ops/finance only)
+      tags:
+        - DASH-ADMIN
+      x-action-id: get_kpis
+      x-entity-code: SRV-SND-01
+      x-rbac-role: admin
+      parameters:
+        - name: startDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: endDate
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: KPIs and metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndKPIs'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/support/cases:
+    get:
+      operationId: snd_support_cases_list
+      summary: List support cases
+      description: List SND support cases (support only)
+      tags:
+        - DASH-SUPPORT
+      x-action-id: list_cases
+      x-entity-code: SRV-SND-01
+      x-rbac-role: support
+      parameters:
+        - $ref: '#/components/parameters/Status'
+        - $ref: '#/components/parameters/RequestType'
+        - $ref: '#/components/parameters/CategoryId'
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: Support cases list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequestList'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/support/cases/{case_id}:
+    get:
+      operationId: snd_support_case_detail
+      summary: Get case details
+      description: Get support case details with audit messages (support only)
+      tags:
+        - DASH-SUPPORT
+      x-action-id: get_case
+      x-entity-code: SRV-SND-01
+      x-rbac-role: support
+      parameters:
+        - name: case_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Case details with chat messages
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request:
+                    $ref: '#/components/schemas/SndRequest'
+                  messages:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ChatMessage'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
+  /api/snd/support/actions:
+    post:
+      operationId: snd_support_action_apply
+      summary: Apply support action
+      description: |
+        Apply support action (discount, cancel, reroute, manual close, escalate).
+        Step-up required for sensitive operations.
+      tags:
+        - DASH-SUPPORT
+      x-action-id: apply_support_action
+      x-entity-code: SRV-SND-01
+      x-guards: PASS(Idem,Auth,StepUp,Problem)
+      x-rbac-role: support
+      parameters:
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplySupportAction'
+      responses:
+        '200':
+          description: Action applied successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SndRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        default:
+          $ref: '#/components/responses/Problem'
+      security:
+        - bearerAuth: []
 components:
-  schemas: {}
-  securitySchemes: {}
+  schemas:
+    SndRequest:
+      type: object
+      required:
+        - id
+        - requester_id
+        - type
+        - title
+        - description
+        - status
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        requester_id:
+          type: string
+        type:
+          type: string
+          enum:
+            - instant
+            - specialized
+        category_id:
+          type: string
+          format: uuid
+          nullable: true
+        title:
+          type: string
+          maxLength: 500
+        description:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+          nullable: true
+        location:
+          type: object
+          nullable: true
+          properties:
+            lat:
+              type: number
+            lon:
+              type: number
+        address:
+          type: string
+          maxLength: 500
+          nullable: true
+        status:
+          type: string
+          enum:
+            - pending
+            - pricing_review
+            - routed
+            - accepted
+            - in_progress
+            - completed
+            - cancelled
+            - escalated
+            - disputed
+            - closed
+        routing_type:
+          type: string
+          enum:
+            - captain
+            - specialized_provider
+            - manual_queue
+          nullable: true
+        assigned_captain_id:
+          type: string
+          nullable: true
+        assigned_provider_id:
+          type: string
+          nullable: true
+        price_min_yer:
+          type: integer
+          description: Minimum price in YER (minor units)
+          nullable: true
+        price_max_yer:
+          type: integer
+          description: Maximum price in YER (minor units)
+          nullable: true
+        price_final_yer:
+          type: integer
+          description: Final price in YER (minor units)
+          nullable: true
+        pricing_requires_review:
+          type: boolean
+          default: false
+        close_code:
+          type: string
+          pattern: '^[0-9]{6}$'
+          nullable: true
+        close_recipient_name:
+          type: string
+          nullable: true
+        closed_at:
+          type: string
+          format: date-time
+          nullable: true
+        ledger_transaction_id:
+          type: string
+          format: uuid
+          nullable: true
+        priced_at:
+          type: string
+          format: date-time
+          nullable: true
+        routed_at:
+          type: string
+          format: date-time
+          nullable: true
+        accepted_at:
+          type: string
+          format: date-time
+          nullable: true
+        in_progress_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        cancelled_at:
+          type: string
+          format: date-time
+          nullable: true
+        escalation_reason:
+          type: string
+          nullable: true
+        resolution_time_minutes:
+          type: integer
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    CreateRequest:
+      type: object
+      required:
+        - type
+        - title
+        - description
+      properties:
+        type:
+          type: string
+          enum:
+            - instant
+            - specialized
+        category_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+          maxLength: 500
+        description:
+          type: string
+        images:
+          type: array
+          items:
+            type: string
+        location:
+          type: object
+          properties:
+            lat:
+              type: number
+            lon:
+              type: number
+        address:
+          type: string
+          maxLength: 500
+    UpdateRequestStatus:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - pending
+            - pricing_review
+            - routed
+            - accepted
+            - in_progress
+            - completed
+            - cancelled
+            - escalated
+            - disputed
+            - closed
+        reason:
+          type: string
+          maxLength: 500
+    CloseRequest:
+      type: object
+      required:
+        - close_code
+        - recipient_name
+      properties:
+        close_code:
+          type: string
+          pattern: '^[0-9]{6}$'
+          description: 6-digit close code
+          example: '123456'
+        recipient_name:
+          type: string
+          maxLength: 255
+    AcceptRequest:
+      type: object
+      properties:
+        notes:
+          type: string
+          maxLength: 500
+    SndRequestList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SndRequest'
+        next_cursor:
+          type: string
+          nullable: true
+    ChatMessage:
+      type: object
+      required:
+        - id
+        - request_id
+        - sender_id
+        - recipient_id
+        - direction
+        - body_encrypted
+        - created_at
+      properties:
+        id:
+          type: string
+          format: uuid
+        request_id:
+          type: string
+          format: uuid
+        sender_id:
+          type: string
+        recipient_id:
+          type: string
+        direction:
+          type: string
+          enum:
+            - requester_to_captain
+            - captain_to_requester
+            - requester_to_provider
+            - provider_to_requester
+        body_encrypted:
+          type: string
+          description: Decrypted message body (encrypted at rest)
+        phone_masked:
+          type: string
+          nullable: true
+        links_masked:
+          type: array
+          items:
+            type: string
+          nullable: true
+        is_read:
+          type: boolean
+          default: false
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_urgent:
+          type: boolean
+          default: false
+        created_at:
+          type: string
+          format: date-time
+    CreateChatMessage:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          type: string
+          maxLength: 2000
+        is_urgent:
+          type: boolean
+          default: false
+    ChatMessageList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        next_cursor:
+          type: string
+          nullable: true
+    UpdateConfig:
+      type: object
+      required:
+        - scope
+        - key
+        - value
+      properties:
+        scope:
+          type: string
+          enum:
+            - global
+            - region
+            - category
+            - category_region
+        scope_value:
+          type: string
+        category_id:
+          type: string
+          format: uuid
+        key:
+          type: string
+        value:
+          type: object
+        description:
+          type: string
+        is_active:
+          type: boolean
+          default: true
+    UpdatePricingProfile:
+      type: object
+      required:
+        - scope
+        - min_price_yer
+        - max_price_yer
+      properties:
+        scope:
+          type: string
+          enum:
+            - global
+            - region
+            - category
+            - category_region
+        scope_value:
+          type: string
+        category_id:
+          type: string
+          format: uuid
+        min_price_yer:
+          type: integer
+          minimum: 0
+          description: Minimum price in YER (minor units)
+        max_price_yer:
+          type: integer
+          minimum: 0
+          description: Maximum price in YER (minor units)
+        requires_review:
+          type: boolean
+          default: false
+        is_active:
+          type: boolean
+          default: true
+    ApplySupportAction:
+      type: object
+      required:
+        - request_id
+        - action
+        - reason
+      properties:
+        request_id:
+          type: string
+          format: uuid
+        action:
+          type: string
+          enum:
+            - discount
+            - cancel
+            - reroute
+            - manual_close
+            - escalate
+        reason:
+          type: string
+          maxLength: 500
+        discount_amount_yer:
+          type: integer
+          minimum: 0
+          description: Discount amount in YER (for discount action)
+        new_assigned_id:
+          type: string
+          description: New captain/provider ID (for reroute action)
+        close_code:
+          type: string
+          pattern: '^[0-9]{6}$'
+          description: Close code (for manual close)
+        recipient_name:
+          type: string
+          maxLength: 255
+          description: Recipient name (for manual close)
+    SndKPIs:
+      type: object
+      properties:
+        requests_total:
+          type: integer
+        requests_instant_count:
+          type: integer
+        requests_specialized_count:
+          type: integer
+        requests_instant_vs_specialized_ratio:
+          type: number
+        sla_compliance_rate:
+          type: number
+        cancellation_rate:
+          type: number
+        dispute_rate:
+          type: number
+        reroute_count:
+          type: integer
+        avg_resolution_time_minutes:
+          type: number
+        requests_by_status:
+          type: object
+          additionalProperties:
+            type: integer
+        requests_by_type:
+          type: object
+          additionalProperties:
+            type: integer
+    Problem:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - code
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        code:
+          type: string
+        detail:
+          type: string
+        traceId:
+          type: string
+  parameters:
+    RequestId:
+      name: request_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    Status:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - pending
+          - pricing_review
+          - routed
+          - accepted
+          - in_progress
+          - completed
+          - cancelled
+          - escalated
+          - disputed
+          - closed
+    RequestType:
+      name: type
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - instant
+          - specialized
+    CategoryId:
+      name: category_id
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    Idempotency-Key:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: Idempotency key (UUID v4) for mutating operations
+      schema:
+        type: string
+        format: uuid
+    ConfigScope:
+      name: scope
+      in: query
+      required: false
+      schema:
+        type: string
+        enum:
+          - global
+          - region
+          - category
+          - category_region
+    ScopeValue:
+      name: scope_value
+      in: query
+      required: false
+      schema:
+        type: string
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+    Problem:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Problem'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

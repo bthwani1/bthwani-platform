@@ -104,7 +104,9 @@ describe('DshIncentivesService', () => {
       });
 
       expect(result.deliveryFeeYer).toBeLessThan(1000);
-      expect(result.adjustments.find((adj) => adj.id.startsWith('subscription-flat'))).toBeDefined();
+      expect(
+        result.adjustments.find((adj) => adj.id.startsWith('subscription-flat')),
+      ).toBeDefined();
     } finally {
       plan!.features.delivery_fee_flat_discount_yer = originalFlat;
     }
@@ -158,8 +160,7 @@ describe('DshIncentivesService', () => {
       max_total_discount_pct?: number | undefined;
       min_net_total_yer?: number | undefined;
     };
-    const rewardsRules = configRef.rewards_program
-      .redemption_rules as unknown as {
+    const rewardsRules = configRef.rewards_program.redemption_rules as unknown as {
       enabled: boolean;
       limits: {
         max_discount_pct_per_order?: number | undefined;
@@ -207,8 +208,7 @@ describe('DshIncentivesService', () => {
 
   it('warns when rewards redemption is disabled', () => {
     const configRef = (service as unknown as { config: Mutable<DshIncentivesConfig> }).config;
-    const rules = configRef.rewards_program
-      .redemption_rules as unknown as {
+    const rules = configRef.rewards_program.redemption_rules as unknown as {
       enabled: boolean;
       limits: { min_basket_total_yer_to_redeem?: number | undefined };
     };
@@ -233,8 +233,7 @@ describe('DshIncentivesService', () => {
 
   it('warns when basket total below rewards minimum', () => {
     const configRef = (service as unknown as { config: DshIncentivesConfig }).config;
-    const rules = configRef.rewards_program
-      .redemption_rules as unknown as {
+    const rules = configRef.rewards_program.redemption_rules as unknown as {
       enabled: boolean;
       limits: { min_basket_total_yer_to_redeem?: number };
     };
@@ -265,7 +264,9 @@ describe('DshIncentivesService', () => {
   it('skips rewards when conversion ratio is invalid', () => {
     const configRef = (service as unknown as { config: Mutable<DshIncentivesConfig> }).config;
     const ratio = configRef.rewards_program.redemption_rules.conversion
-      .points_to_yer_ratio as Mutable<DshIncentivesConfig['rewards_program']['redemption_rules']['conversion']['points_to_yer_ratio']>;
+      .points_to_yer_ratio as Mutable<
+      DshIncentivesConfig['rewards_program']['redemption_rules']['conversion']['points_to_yer_ratio']
+    >;
     const original = { points: ratio.points, yer: ratio.yer };
     ratio.points = 0;
 
@@ -286,7 +287,9 @@ describe('DshIncentivesService', () => {
   it('skips rewards when computed discount rounds down to zero', () => {
     const configRef = (service as unknown as { config: Mutable<DshIncentivesConfig> }).config;
     const ratio = configRef.rewards_program.redemption_rules.conversion
-      .points_to_yer_ratio as Mutable<DshIncentivesConfig['rewards_program']['redemption_rules']['conversion']['points_to_yer_ratio']>;
+      .points_to_yer_ratio as Mutable<
+      DshIncentivesConfig['rewards_program']['redemption_rules']['conversion']['points_to_yer_ratio']
+    >;
     const original = { points: ratio.points, yer: ratio.yer };
     ratio.points = 1000;
     ratio.yer = 1;
@@ -323,7 +326,7 @@ describe('DshIncentivesService', () => {
       expect(result.pointsRedeemed).toBeUndefined();
     } finally {
       if (originalMaxPct !== undefined) {
-      limits.max_discount_pct_per_order = originalMaxPct;
+        limits.max_discount_pct_per_order = originalMaxPct;
       } else {
         delete limits.max_discount_pct_per_order;
       }

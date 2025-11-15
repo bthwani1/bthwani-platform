@@ -1,0 +1,1016 @@
+{
+  "meta": {
+    "model_name": "C4_APP-CAPTAIN_ALL_SURFACES",
+    "version": "2025-11-15.r2",
+    "entity_code": "APP-CAPTAIN",
+    "scope": [
+      "Captain/Driver mobile app (delivery via DSH + rides via AMN)",
+      "All navigation, screens, states, and flows from onboarding to daily work and earnings",
+      "DSH DLS orders (pickup & delivery), AMN trips, limited WLT earnings & payout requests",
+      "Safety systems (SOS, masking, trip logs) for AMN and DSH",
+      "NO coupling with Kawader (KWD) or Ma3ruf (MRF) per SSoT; SND المتخصصة مخفية عن المنفّذ"
+    ],
+    "description": "C4 + Information Architecture for APP-CAPTAIN. Unified availability and job handling (DSH, AMN), read-only wallet balances, payout intents only. Enforces global guards and privacy.",
+    "ssot_refs": [
+      "DEC-DASH-20251104-A1 (global guards: Wallet=Ledger, Idempotency, HMAC≤300s, Step-Up, Privacy-Export, Audit-Immutable, Trace=1.0, Parity≥0.90, No-Secrets)",
+      "DEC-LANDING-2025-11-06 (hosts, CWV budgets, RTL/ar+en UI)",
+      "SRV-DSH-01 v2.2 (Delivery & Shopping / DLS — captains for deliveries, PoD policy)",
+      "SRV-AMN-01 v1.0 (Amani Safe Taxi — female captains, family/mahram option, SOS)",
+      "SRV-WLT-01 v1.0 (Wallet & Ledger — earnings & payouts for captains)",
+      "SRV-SND-01 v1.0 (سند) — «الخدمات المتخصصة لا تظهر لتطبيق المنفّذ»",
+      "SRV-ESF-01 v1.2 (اسعفني) — سياسة إخفاء الأرقام وتشفير حقول الرسائل",
+      "SRV-MRF-01/02 (Ma3ruf) — NO direct link to APP-CAPTAIN by policy",
+      "SRV-KWD-01 v1.0 (Kawader) — NO direct link to APP-CAPTAIN by policy"
+    ]
+  },
+  "governance": {
+    "guards": [
+      "G-LEDGER-INVARIANTS",
+      "G-IDEMPOTENCY",
+      "G-WEBHOOK-HMAC<=300s",
+      "G-STEPUP-GUARD",
+      "G-PRIVACY-EXPORT",
+      "G-TRACE=1.0",
+      "G-PARITY>=0.90",
+      "G-AUDIT-IMMUTABLE",
+      "G-NO-SECRETS",
+      "G-BAR-A11Y",
+      "G-BAR-RBAC/ABAC",
+      "G-BAR-PERF<=150ms"
+    ],
+    "policies": {
+      "wallet": "ledger_internal",
+      "payouts": "bank_dual_sign",
+      "privacy": {
+        "phone_masking": true,
+        "chat_field_encryption": "AES-GCM"
+      }
+    }
+  },
+  "rbac_roles": [
+    {
+      "role": "captain",
+      "capabilities": [
+        "dsh_jobs",
+        "availability_toggle",
+        "navigation",
+        "pod_submit",
+        "earnings_view",
+        "payout_request"
+      ]
+    },
+    {
+      "role": "captain_amn",
+      "capabilities": [
+        "amn_trips",
+        "sos_trigger",
+        "masked_contact",
+        "fare_summary_view"
+      ],
+      "constraints": [
+        "female_only",
+        "city_policy_compliance"
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "name": "Captain Device ↔ BFF",
+      "type": "network",
+      "rules": [
+        "TLS1.2+",
+        "JWT auth",
+        "rate-limit per device_id",
+        "no PII in logs"
+      ]
+    },
+    {
+      "name": "BFF ↔ Services",
+      "type": "trust",
+      "rules": [
+        "mutual TLS (where supported)",
+        "service tokens",
+        "idempotent POST",
+        "Problem+error_code responses"
+      ]
+    },
+    {
+      "name": "Privacy",
+      "type": "privacy",
+      "rules": [
+        "mask phones",
+        "PoD faces/numbers masking=true",
+        "PII minimal exposure on client"
+      ]
+    }
+  ],
+  "level1_context": {
+    "people": [
+      {
+        "id": "person.captain_delivery_only",
+        "type": "Person",
+        "name": "Captain (Delivery Only)",
+        "description": "Courier using a motorbike/car to deliver DSH orders.",
+        "goals": [
+          "Receive clear jobs",
+          "Navigate efficiently",
+          "Record PoD correctly",
+          "See income and payouts clearly"
+        ]
+      },
+      {
+        "id": "person.captain_delivery_and_amn",
+        "type": "Person",
+        "name": "Captain (Delivery + Amani)",
+        "description": "Female captain (per AMN policy) for AMN rides and DSH deliveries.",
+        "goals": [
+          "Switch between services",
+          "Stay safe with SOS & masking",
+          "Understand pricing/negotiation",
+          "Track earnings by service"
+        ]
+      },
+      {
+        "id": "person.fleet_supervisor",
+        "type": "Person",
+        "name": "Fleet / Operations Supervisor",
+        "description": "Dashboards user to monitor captains, assign jobs, and handle escalations.",
+        "goals": [
+          "Monitor online captains & SLAs",
+          "Reassign/intervene",
+          "Investigate incidents via logs/PoD"
+        ]
+      }
+    ],
+    "systems": [
+      {
+        "id": "system.app_captain",
+        "type": "SoftwareSystem",
+        "name": "APP-CAPTAIN Mobile App",
+        "description": "Driver-facing mobile app for DSH deliveries and AMN rides. RTL-first, Arabic+English."
+      },
+      {
+        "id": "system.app_captain_bff",
+        "type": "SoftwareSystem",
+        "name": "APP-CAPTAIN BFF/API Gateway",
+        "description": "Orchestrates identity, DSH, AMN, WLT, routing, and notifications for APP-CAPTAIN."
+      },
+      {
+        "id": "system.dsh",
+        "type": "SoftwareSystem",
+        "name": "DSH Service (DLS)",
+        "description": "Delivery jobs: pickup from store/warehouse and deliver to customer; PoD controls."
+      },
+      {
+        "id": "system.amn",
+        "type": "SoftwareSystem",
+        "name": "AMN Service (Amani Safe Taxi)",
+        "description": "Safe taxi with female captains, family/mahram, negotiation, SOS."
+      },
+      {
+        "id": "system.wlt",
+        "type": "SoftwareSystem",
+        "name": "WLT Service (Wallet & Ledger)",
+        "description": "Ledger-backed balances, earnings, payout requests; no client-side math."
+      },
+      {
+        "id": "system.identity",
+        "type": "SoftwareSystem",
+        "name": "Identity & Captain Registry",
+        "description": "AuthN/Z, captain profile, vehicle docs, AMN eligibility, service permissions."
+      },
+      {
+        "id": "system.routing_dispatch",
+        "type": "SoftwareSystem",
+        "name": "Routing & Dispatch Engine",
+        "description": "Allocation, ETAs, route optimization, online presence tracking."
+      },
+      {
+        "id": "system.notifications",
+        "type": "SoftwareSystem",
+        "name": "Notifications Hub",
+        "description": "Push/WhatsApp/SMS for offers, statuses, security alerts."
+      },
+      {
+        "id": "system.admin_dashboards",
+        "type": "SoftwareSystem",
+        "name": "Admin/Ops/Fleet Dashboards",
+        "description": "Monitor captains, trips, PoD, SOS, payouts, compliance."
+      }
+    ],
+    "relationships": [
+      {
+        "source": "person.captain_delivery_only",
+        "target": "system.app_captain",
+        "description": "Use app for DSH jobs",
+        "technology": "Android primary"
+      },
+      {
+        "source": "person.captain_delivery_and_amn",
+        "target": "system.app_captain",
+        "description": "Use app for DSH + AMN",
+        "technology": "Mobile"
+      },
+      {
+        "source": "person.fleet_supervisor",
+        "target": "system.admin_dashboards",
+        "description": "Monitor & intervene",
+        "technology": "Web"
+      },
+      {
+        "source": "system.app_captain",
+        "target": "system.app_captain_bff",
+        "description": "All API calls",
+        "technology": "HTTPS/JSON, JWT"
+      },
+      {
+        "source": "system.app_captain_bff",
+        "target": "system.identity",
+        "description": "Auth, profile & docs, AMN eligibility",
+        "technology": "HTTPS/JSON"
+      },
+      {
+        "source": "system.app_captain_bff",
+        "target": "system.dsh",
+        "description": "DLS jobs lifecycle, PoD, location pings",
+        "technology": "HTTPS/JSON + events"
+      },
+      {
+        "source": "system.app_captain_bff",
+        "target": "system.amn",
+        "description": "Rides lifecycle, negotiation, SOS",
+        "technology": "HTTPS/JSON + events"
+      },
+      {
+        "source": "system.app_captain_bff",
+        "target": "system.routing_dispatch",
+        "description": "Availability & allocation",
+        "technology": "HTTPS/JSON + WebSockets"
+      },
+      {
+        "source": "system.app_captain_bff",
+        "target": "system.wlt",
+        "description": "Balances & payouts (read-only + create payout request)",
+        "technology": "HTTPS/JSON"
+      },
+      {
+        "source": "system.app_captain_bff",
+        "target": "system.notifications",
+        "description": "Offers, reassignments, SOS acks, payout updates",
+        "technology": "Async"
+      }
+    ]
+  },
+  "level2_containers": {
+    "containers": [
+      {
+        "id": "container.app_captain_mobile",
+        "system_id": "system.app_captain",
+        "type": "mobile",
+        "name": "APP-CAPTAIN Mobile Client",
+        "technologies": [
+          "React Native (assumed)",
+          "TypeScript",
+          "Android focus"
+        ],
+        "responsibilities": [
+          "UI/UX",
+          "local cache",
+          "offline queue for updates",
+          "device permissions"
+        ],
+        "entrypoints": [
+          "UI interactions",
+          "push notifications"
+        ],
+        "data_stores": [
+          "Secure storage for tokens (OS keystore)",
+          "Local cache (orders/trips minimal)"
+        ]
+      },
+      {
+        "id": "container.app_captain_bff",
+        "system_id": "system.app_captain_bff",
+        "type": "api",
+        "name": "APP-CAPTAIN BFF",
+        "technologies": [
+          "NestJS",
+          "OpenAPI",
+          "OPA policies",
+          "JWT",
+          "RBAC/ABAC"
+        ],
+        "responsibilities": [
+          "Orchestrate DSH/AMN/WLT/Identity",
+          "apply guards",
+          "shape responses for mobile"
+        ],
+        "entrypoints": [
+          "/auth/*",
+          "/api/dls/*",
+          "/api/amn/*",
+          "/wallet/*",
+          "/notify/*"
+        ],
+        "data_stores": [
+          "No user PII at rest; ephemeral caches"
+        ]
+      }
+    ],
+    "relationships": [
+      {
+        "source": "container.app_captain_mobile",
+        "target": "container.app_captain_bff",
+        "description": "All traffic",
+        "technology": "HTTPS/JSON + WebSockets"
+      }
+    ]
+  },
+  "components": [
+    {
+      "container_id": "container.app_captain_mobile",
+      "id": "comp.auth",
+      "name": "Auth & Profile",
+      "tech": "RN/TS",
+      "responsibilities": [
+        "OTP login",
+        "profile/doc status"
+      ],
+      "interfaces": [
+        "/auth/login",
+        "/auth/otp/verify",
+        "/auth/refresh",
+        "/api/identity/captains/me",
+        "/api/identity/captains/docs"
+      ]
+    },
+    {
+      "container_id": "container.app_captain_mobile",
+      "id": "comp.availability",
+      "name": "Availability & Presence",
+      "tech": "RN/TS",
+      "responsibilities": [
+        "online/offline",
+        "service toggles"
+      ],
+      "interfaces": [
+        "/api/dls/availability",
+        "/api/amn/availability",
+        "/notify/register"
+      ]
+    },
+    {
+      "container_id": "container.app_captain_mobile",
+      "id": "comp.jobs_dsh",
+      "name": "DSH Jobs",
+      "tech": "RN/TS",
+      "responsibilities": [
+        "offers",
+        "accept/reject",
+        "status updates",
+        "PoD"
+      ],
+      "interfaces": [
+        "/api/dls/jobs/offers",
+        "/api/dls/jobs/:id/accept",
+        "/api/dls/jobs/:id/reject",
+        "/api/dls/jobs/:id/status",
+        "/api/dls/jobs/:id/pod/code",
+        "/api/dls/jobs/:id/pod/photo",
+        "/api/dls/location"
+      ]
+    },
+    {
+      "container_id": "container.app_captain_mobile",
+      "id": "comp.trips_amn",
+      "name": "AMN Trips",
+      "tech": "RN/TS",
+      "responsibilities": [
+        "offers",
+        "lifecycle",
+        "negotiation (if enabled)",
+        "SOS"
+      ],
+      "interfaces": [
+        "/api/amn/offers",
+        "/api/amn/trips/:id/accept",
+        "/api/amn/trips/:id/status",
+        "/api/amn/trips/:id/negotiate",
+        "/api/amn/trips/:id/sos"
+      ]
+    },
+    {
+      "container_id": "container.app_captain_mobile",
+      "id": "comp.nav",
+      "name": "Navigation",
+      "tech": "RN/TS",
+      "responsibilities": [
+        "map view",
+        "external maps deeplink"
+      ],
+      "interfaces": []
+    },
+    {
+      "container_id": "container.app_captain_mobile",
+      "id": "comp.earnings",
+      "name": "Earnings & Payouts",
+      "tech": "RN/TS",
+      "responsibilities": [
+        "earnings view",
+        "payout request",
+        "history"
+      ],
+      "interfaces": [
+        "/wallet/me/balance",
+        "/wallet/me/earnings",
+        "/wallet/payouts"
+      ]
+    },
+    {
+      "container_id": "container.app_captain_mobile",
+      "id": "comp.support",
+      "name": "Support & Help",
+      "tech": "RN/TS",
+      "responsibilities": [
+        "FAQ",
+        "contact support"
+      ],
+      "interfaces": []
+    }
+  ],
+  "code": [
+    {
+      "component_id": "comp.auth",
+      "repo": "PLACEHOLDER",
+      "path": "apps/captain/src/modules/auth",
+      "build": "mobile",
+      "runtime": "RN",
+      "dependencies": [
+        "@bthwani/ui",
+        "@bthwani/api-client"
+      ]
+    },
+    {
+      "component_id": "comp.jobs_dsh",
+      "repo": "PLACEHOLDER",
+      "path": "apps/captain/src/modules/dsh",
+      "build": "mobile",
+      "runtime": "RN",
+      "dependencies": [
+        "map-sdk",
+        "@bthwani/api-client"
+      ]
+    },
+    {
+      "component_id": "comp.trips_amn",
+      "repo": "PLACEHOLDER",
+      "path": "apps/captain/src/modules/amn",
+      "build": "mobile",
+      "runtime": "RN",
+      "dependencies": [
+        "map-sdk",
+        "@bthwani/api-client"
+      ]
+    },
+    {
+      "component_id": "comp.earnings",
+      "repo": "PLACEHOLDER",
+      "path": "apps/captain/src/modules/earnings",
+      "build": "mobile",
+      "runtime": "RN",
+      "dependencies": [
+        "@bthwani/api-client"
+      ]
+    }
+  ],
+  "app_captain_shell": {
+    "global_patterns": {
+      "design_system": {
+        "theme": "GOV-02 tokens; high contrast for outdoor use.",
+        "rtl": true,
+        "locales": [
+          "ar",
+          "en"
+        ],
+        "typography": "Legible fonts; numeric emphasis on ETA/fares.",
+        "motion": "Light transitions; progress feedback"
+      },
+      "navigation": {
+        "bottom_tab_bar": {
+          "id": "nav.captain_bottom_tabs",
+          "tabs": [
+            {
+              "id": "tab.home",
+              "icon": "power",
+              "label_ar": "الرئيسية",
+              "label_en": "Home"
+            },
+            {
+              "id": "tab.jobs",
+              "icon": "list-check",
+              "label_ar": "المهام",
+              "label_en": "Jobs"
+            },
+            {
+              "id": "tab.map",
+              "icon": "map",
+              "label_ar": "الخريطة",
+              "label_en": "Map"
+            },
+            {
+              "id": "tab.earnings",
+              "icon": "wallet",
+              "label_ar": "الأرباح",
+              "label_en": "Earnings"
+            },
+            {
+              "id": "tab.more",
+              "icon": "menu",
+              "label_ar": "المزيد",
+              "label_en": "More"
+            }
+          ]
+        },
+        "top_app_bar": {
+          "id": "ui.captain_app_bar",
+          "components": [
+            "Left: service filter chip (All/DSH/AMN)",
+            "Center: title + Online/Offline/On-trip",
+            "Right: notifications icon, SOS shortcut (if AMN enabled)"
+          ]
+        },
+        "status_strips": {
+          "availability_strip": "Online/Offline/Busy with active services",
+          "safety_strip": "SOS state/tips for AMN",
+          "network_strip": "Offline indicator + pending updates count"
+        }
+      },
+      "states": {
+        "online_offline": "Single switch; per-service toggles (AMN only if eligible).",
+        "active_job": "Mini-card pinned; tap to open.",
+        "offline_mode": "Allow finishing PoD/notes and sync later.",
+        "errors": "Problem+error_code with actionable CTAs"
+      }
+    }
+  },
+  "app_captain_core_flows": {
+    "flows": [
+      {
+        "id": "flow.captain_onboarding",
+        "name": "Captain Onboarding (Registration & Verification)",
+        "steps": [
+          "Install → phone login",
+          "Select services: DSH, AMN (AMN requires female eligibility)",
+          "Upload documents (ID, license, vehicle). AMN extras: selfie, family/mahram if applicable",
+          "Ops review via dashboards → permissions update",
+          "Post approval: can go Online per allowed service"
+        ],
+        "related_screens": [
+          "screen.captain_auth_landing",
+          "screen.captain_signup",
+          "screen.captain_documents_upload",
+          "screen.captain_onboarding_status"
+        ]
+      },
+      {
+        "id": "flow.daily_start",
+        "name": "Daily Start & Availability",
+        "steps": [
+          "Home → Online/Offline main switch",
+          "Choose active services (DSH/AMN)",
+          "Send availability & location to dispatch",
+          "Receive offers (push + in-app)"
+        ],
+        "related_screens": [
+          "screen.home_status",
+          "screen.jobs_offers_list"
+        ]
+      },
+      {
+        "id": "flow.dsh_delivery_job",
+        "name": "DSH Delivery Job Lifecycle",
+        "steps": [
+          "Offer → accept/reject within window",
+          "Navigate to store → mark arrived → pickup",
+          "Navigate to customer → masked contact",
+          "PoD: code and/or photo (masked faces/numbers)",
+          "Complete/Fail with reason → WLT earnings entry"
+        ],
+        "related_screens": [
+          "screen.job_offer_dsh",
+          "screen.job_detail_dsh",
+          "screen.job_navigation",
+          "screen.job_pod_code",
+          "screen.job_pod_photo"
+        ]
+      },
+      {
+        "id": "flow.amn_ride_job",
+        "name": "AMN Ride Trip Lifecycle",
+        "steps": [
+          "Offer → accept/decline",
+          "Arrive pickup → masked contact",
+          "Start trip (family/mahram rules)",
+          "Drive → negotiate only if enabled (80–120%) pre-start",
+          "End trip → fare calc → payment (cash/wallet/hybrid) → earnings update",
+          "SOS available any time"
+        ],
+        "related_screens": [
+          "screen.job_offer_amn",
+          "screen.job_detail_amn",
+          "screen.job_navigation",
+          "screen.job_sos_panel",
+          "screen.job_fare_summary"
+        ]
+      },
+      {
+        "id": "flow.earnings_and_payouts",
+        "name": "Earnings & Payout Requests",
+        "steps": [
+          "View earnings by period/service",
+          "See ledger-backed available balance",
+          "Create payout request (bank/cash office) per rules",
+          "Track payout status (Pending/In process/Paid)"
+        ],
+        "related_screens": [
+          "screen.earnings_home",
+          "screen.earnings_breakdown",
+          "screen.payout_request",
+          "screen.payout_history"
+        ]
+      },
+      {
+        "id": "flow.captain_safety_and_support",
+        "name": "Safety, SOS & Support",
+        "steps": [
+          "SOS button visible during AMN/DSH jobs",
+          "Trigger SOS → location + context to ops",
+          "Help center (FAQ + contact support)"
+        ],
+        "related_screens": [
+          "screen.job_sos_panel",
+          "screen.captain_support_center"
+        ]
+      }
+    ]
+  },
+  "interfaces_endpoints": {
+    "endpoint_ns_allowed": [
+      "/auth/*",
+      "/wallet/*",
+      "/api/dls/*",
+      "/api/amn/*",
+      "/notify/*",
+      "/health"
+    ],
+    "auth": {
+      "POST /auth/login": {
+        "idempotent": false,
+        "auth": "none → OTP",
+        "notes": "Start OTP flow"
+      },
+      "POST /auth/otp/verify": {
+        "idempotent": false,
+        "auth": "OTP",
+        "notes": "Issue JWT"
+      },
+      "POST /auth/refresh": {
+        "idempotent": true,
+        "auth": "JWT"
+      },
+      "POST /auth/logout": {
+        "idempotent": true,
+        "auth": "JWT"
+      }
+    },
+    "identity": {
+      "GET /api/identity/captains/me": {
+        "auth": "JWT"
+      },
+      "PATCH /api/identity/captains/docs": {
+        "auth": "JWT",
+        "idempotency": true
+      },
+      "GET /api/identity/captains/eligibility": {
+        "auth": "JWT"
+      }
+    },
+    "dsh": {
+      "GET /api/dls/jobs/offers": {
+        "auth": "JWT",
+        "cursor": true,
+        "limit": true
+      },
+      "POST /api/dls/jobs/:id/accept": {
+        "auth": "JWT",
+        "idempotency": true
+      },
+      "POST /api/dls/jobs/:id/reject": {
+        "auth": "JWT",
+        "idempotency": true
+      },
+      "PATCH /api/dls/jobs/:id/status": {
+        "auth": "JWT",
+        "idempotency": true
+      },
+      "POST /api/dls/jobs/:id/pod/code": {
+        "auth": "JWT",
+        "idempotency": true
+      },
+      "POST /api/dls/jobs/:id/pod/photo": {
+        "auth": "JWT",
+        "idempotency": true,
+        "privacy": "mask faces/numbers"
+      },
+      "POST /api/dls/location": {
+        "auth": "JWT",
+        "idempotency": true
+      }
+    },
+    "amn": {
+      "GET /api/amn/offers": {
+        "auth": "JWT",
+        "cursor": true,
+        "limit": true
+      },
+      "POST /api/amn/trips/:id/accept": {
+        "auth": "JWT",
+        "idempotency": true
+      },
+      "PATCH /api/amn/trips/:id/status": {
+        "auth": "JWT",
+        "idempotency": true
+      },
+      "POST /api/amn/trips/:id/negotiate": {
+        "auth": "JWT",
+        "idempotency": true,
+        "notes": "80–120% if enabled"
+      },
+      "POST /api/amn/trips/:id/sos": {
+        "auth": "JWT",
+        "idempotency": true
+      }
+    },
+    "wallet": {
+      "GET /wallet/me/balance": {
+        "auth": "JWT"
+      },
+      "GET /wallet/me/earnings": {
+        "auth": "JWT",
+        "filters": [
+          "service",
+          "period"
+        ]
+      },
+      "POST /wallet/payouts": {
+        "auth": "JWT",
+        "idempotency": true,
+        "step_up": true
+      }
+    },
+    "notify": {
+      "POST /notify/register": {
+        "auth": "JWT",
+        "idempotency": true
+      }
+    }
+  },
+  "retention_privacy": {
+    "pii_class": "PII",
+    "datasets": [
+      {
+        "dataset": "pod_images",
+        "retention_days": "VAR_POD_RETENTION_DAYS (baseline 180)",
+        "access_roles": [
+          "ops",
+          "support"
+        ],
+        "export_policy": "masked"
+      },
+      {
+        "dataset": "trip_logs",
+        "retention_days": "config per service",
+        "access_roles": [
+          "ops",
+          "support"
+        ],
+        "export_policy": "masked"
+      },
+      {
+        "dataset": "earnings_summaries",
+        "retention_days": "per FIN policy",
+        "access_roles": [
+          "finance",
+          "ops"
+        ],
+        "export_policy": "masked"
+      }
+    ]
+  },
+  "runtime_vars_catalog": [
+    {
+      "var_key": "VAR_POD_RETENTION_DAYS",
+      "default_value": 180,
+      "scope_priority": "Region>Service>Global",
+      "editable": true,
+      "description": "Days to retain PoD media",
+      "guard": "G-PRIVACY-EXPORT"
+    },
+    {
+      "var_key": "VAR_NOTIF_DEDUP_WINDOW_MIN",
+      "default_value": 10,
+      "scope_priority": "Global",
+      "editable": true,
+      "description": "Notifications deduplication window",
+      "guard": "G-TRACE=1.0"
+    },
+    {
+      "var_key": "VAR_AMN_NEGOTIATION_ENABLED",
+      "default_value": true,
+      "scope_priority": "City>Region>Global",
+      "editable": true,
+      "description": "Enable negotiation 80–120%",
+      "guard": "G-PARITY>=0.90"
+    },
+    {
+      "var_key": "VAR_WLT_PROVIDER_PRIMARY",
+      "default_value": "kuraimi_epay",
+      "scope_priority": "Global",
+      "editable": true,
+      "description": "Primary wallet/payment provider",
+      "guard": "G-LEDGER-INVARIANTS"
+    }
+  ],
+  "observability": {
+    "events": [
+      "captain.status_change",
+      "captain.job_offer_seen",
+      "captain.job_accept",
+      "captain.job_reject",
+      "captain.job_status_update",
+      "captain.pod_submitted",
+      "captain.sos_triggered",
+      "captain.earnings_view",
+      "captain.payout_request_created"
+    ],
+    "guard_metrics": [
+      "captain.job_accept_latency_p75",
+      "captain.pod_failure_rate",
+      "captain.sos_response_time",
+      "captain.app_crash_rate",
+      "captain.guard_violations"
+    ],
+    "slos": [
+      {
+        "metric": "ui.lcp_p75_ms",
+        "target": 2000,
+        "window": "7d"
+      },
+      {
+        "metric": "ui.inp_p75_ms",
+        "target": 150,
+        "window": "7d"
+      },
+      {
+        "metric": "captain.job_accept_latency_p75",
+        "target": 5000,
+        "window": "7d"
+      }
+    ]
+  },
+  "traceability_map": [
+    {
+      "screen_id": "screen.job_offer_dsh",
+      "endpoints": [
+        "GET /api/dls/jobs/offers"
+      ]
+    },
+    {
+      "screen_id": "screen.job_detail_dsh",
+      "endpoints": [
+        "PATCH /api/dls/jobs/:id/status"
+      ]
+    },
+    {
+      "screen_id": "screen.job_pod_code",
+      "endpoints": [
+        "POST /api/dls/jobs/:id/pod/code"
+      ]
+    },
+    {
+      "screen_id": "screen.job_pod_photo",
+      "endpoints": [
+        "POST /api/dls/jobs/:id/pod/photo"
+      ]
+    },
+    {
+      "screen_id": "screen.job_offer_amn",
+      "endpoints": [
+        "GET /api/amn/offers"
+      ]
+    },
+    {
+      "screen_id": "screen.job_detail_amn",
+      "endpoints": [
+        "PATCH /api/amn/trips/:id/status",
+        "POST /api/amn/trips/:id/negotiate"
+      ]
+    },
+    {
+      "screen_id": "screen.job_sos_panel",
+      "endpoints": [
+        "POST /api/amn/trips/:id/sos"
+      ]
+    },
+    {
+      "screen_id": "screen.earnings_home",
+      "endpoints": [
+        "GET /wallet/me/balance",
+        "GET /wallet/me/earnings"
+      ]
+    },
+    {
+      "screen_id": "screen.payout_request",
+      "endpoints": [
+        "POST /wallet/payouts"
+      ]
+    }
+  ],
+  "error_catalog": [
+    {
+      "error_code": "CAP-OTP-INVALID",
+      "http": 401,
+      "desc": "رمز التحقق غير صحيح"
+    },
+    {
+      "error_code": "CAP-NOT-ELIGIBLE-AMN",
+      "http": 403,
+      "desc": "غير مؤهل لخدمة أمانة"
+    },
+    {
+      "error_code": "CAP-OFFER-EXPIRED",
+      "http": 409,
+      "desc": "انتهت صلاحية العرض"
+    },
+    {
+      "error_code": "CAP-POD-INVALID",
+      "http": 422,
+      "desc": "كود التسليم غير صحيح"
+    },
+    {
+      "error_code": "CAP-PAYOUT-LIMIT",
+      "http": 422,
+      "desc": "المبلغ المطلوب يخالف الحدود"
+    }
+  ],
+  "service_links_policy": {
+    "no_kawader_link": true,
+    "no_ma3ruf_link": true,
+    "snd_specialized_hidden_from_executor": true,
+    "origin_abstraction": "Any upstream source appears to captain as DSH/AMN only"
+  },
+  "decisions": [
+    {
+      "id": "DEC-DASH-20251104-A1",
+      "title": "Global guards & Expansion Gate removal",
+      "status": "accepted",
+      "rationale": "Unified invariants & safety",
+      "date": "2025-11-04"
+    },
+    {
+      "id": "DEC-LANDING-2025-11-06",
+      "title": "Hosts, robots, CWV",
+      "status": "accepted",
+      "rationale": "Web safety & performance",
+      "date": "2025-11-06"
+    },
+    {
+      "id": "DEC-UI-BARS-2025-11-06-A",
+      "title": "Neutral UI Bars + guards",
+      "status": "accepted",
+      "rationale": "Consistent UI ops",
+      "date": "2025-11-06"
+    }
+  ],
+  "risks": [
+    {
+      "id": "R1",
+      "desc": "Captain attempts to change payout destination from app",
+      "severity": "med",
+      "mitigation": "Step-Up + server-side approval only"
+    },
+    {
+      "id": "R2",
+      "desc": "PoD photo leaks PII",
+      "severity": "med",
+      "mitigation": "Auto-mask faces/numbers; retention 180d; masked export only"
+    },
+    {
+      "id": "R3",
+      "desc": "Unauthorized AMN access",
+      "severity": "high",
+      "mitigation": "Female eligibility check + ABAC per city + masked contact"
+    }
+  ]
+}
+

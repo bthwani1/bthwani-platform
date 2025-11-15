@@ -1,0 +1,133 @@
+{
+  "meta": {
+    "entity_code": "APP-CAPTAIN",
+    "version": "2025-11-15.r2",
+    "description": "Error catalog for APP-CAPTAIN with HTTP status codes and Arabic descriptions"
+  },
+  "error_catalog": [
+    {
+      "error_code": "CAP-OTP-INVALID",
+      "http": 401,
+      "title_ar": "رمز التحقق غير صحيح",
+      "title_en": "Invalid OTP Code",
+      "description_ar": "رمز التحقق المدخل غير صحيح أو منتهي الصلاحية",
+      "description_en": "The provided OTP code is invalid or expired",
+      "recovery_actions": [
+        "Request new OTP",
+        "Verify phone number"
+      ]
+    },
+    {
+      "error_code": "CAP-NOT-ELIGIBLE-AMN",
+      "http": 403,
+      "title_ar": "غير مؤهل لخدمة أمانة",
+      "title_en": "Not Eligible for AMN Service",
+      "description_ar": "المستخدم غير مؤهل لاستخدام خدمة أمانة (يقتصر على الكباتن الإناث)",
+      "description_en": "User is not eligible for AMN service (restricted to female captains)",
+      "recovery_actions": [
+        "Contact support for eligibility review",
+        "Check service requirements"
+      ]
+    },
+    {
+      "error_code": "CAP-OFFER-EXPIRED",
+      "http": 409,
+      "title_ar": "انتهت صلاحية العرض",
+      "title_en": "Offer Expired",
+      "description_ar": "انتهت صلاحية عرض العمل ولم يعد متاحاً",
+      "description_en": "The job offer has expired and is no longer available",
+      "recovery_actions": [
+        "Check for new offers",
+        "Wait for next offer"
+      ]
+    },
+    {
+      "error_code": "CAP-POD-INVALID",
+      "http": 422,
+      "title_ar": "كود التسليم غير صحيح",
+      "title_en": "Invalid Delivery Code",
+      "description_ar": "كود إثبات التسليم المدخل غير صحيح",
+      "description_en": "The provided proof of delivery code is invalid",
+      "recovery_actions": [
+        "Re-enter the code",
+        "Contact customer for correct code",
+        "Use photo PoD as alternative"
+      ]
+    },
+    {
+      "error_code": "CAP-PAYOUT-LIMIT",
+      "http": 422,
+      "title_ar": "المبلغ المطلوب يخالف الحدود",
+      "title_en": "Payout Amount Out of Limits",
+      "description_ar": "المبلغ المطلوب للسحب خارج الحدود المسموحة (الحد الأدنى/الأقصى)",
+      "description_en": "The requested payout amount is outside allowed limits (min/max)",
+      "recovery_actions": [
+        "Check available balance",
+        "Adjust amount within limits",
+        "Review payout policy"
+      ]
+    },
+    {
+      "error_code": "CAP-AVAILABILITY-REQUIRED",
+      "http": 400,
+      "title_ar": "يجب تفعيل التوفر أولاً",
+      "title_en": "Availability Required",
+      "description_ar": "يجب تفعيل حالة التوفر قبل استلام العروض",
+      "description_en": "Must enable availability status before receiving offers",
+      "recovery_actions": [
+        "Go to Home screen",
+        "Toggle Online status"
+      ]
+    },
+    {
+      "error_code": "CAP-LOCATION-REQUIRED",
+      "http": 400,
+      "title_ar": "الموقع مطلوب",
+      "title_en": "Location Required",
+      "description_ar": "يجب تفعيل صلاحيات الموقع لتلقي العروض",
+      "description_en": "Location permissions must be enabled to receive offers",
+      "recovery_actions": [
+        "Enable location permissions",
+        "Check device settings"
+      ]
+    },
+    {
+      "error_code": "CAP-DOCS-PENDING",
+      "http": 403,
+      "title_ar": "المستندات قيد المراجعة",
+      "title_en": "Documents Under Review",
+      "description_ar": "المستندات المرفوعة قيد المراجعة من قبل الفريق",
+      "description_en": "Uploaded documents are under review by the team",
+      "recovery_actions": [
+        "Wait for approval",
+        "Check onboarding status",
+        "Contact support if delayed"
+      ]
+    },
+    {
+      "error_code": "CAP-SOS-ALREADY-ACTIVE",
+      "http": 409,
+      "title_ar": "حالة الطوارئ مفعلة بالفعل",
+      "title_en": "SOS Already Active",
+      "description_ar": "تم تفعيل حالة الطوارئ مسبقاً",
+      "description_en": "Emergency status is already active",
+      "recovery_actions": [
+        "Check SOS status",
+        "Contact emergency services directly if needed"
+      ]
+    },
+    {
+      "error_code": "CAP-NEGOTIATION-DISABLED",
+      "http": 403,
+      "title_ar": "التفاوض غير مفعّل",
+      "title_en": "Negotiation Disabled",
+      "description_ar": "ميزة التفاوض على الأجرة غير مفعّلة في هذه المنطقة",
+      "description_en": "Fare negotiation feature is disabled in this region",
+      "recovery_actions": [
+        "Accept standard fare",
+        "Contact support for inquiries"
+      ]
+    }
+  ]
+}
+

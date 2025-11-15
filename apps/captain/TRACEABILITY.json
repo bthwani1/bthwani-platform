@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "entity_code": "APP-CAPTAIN",
+    "version": "2025-11-15.r2",
+    "description": "Traceability map linking screens to API endpoints for APP-CAPTAIN"
+  },
+  "traceability_map": [
+    {
+      "screen_id": "screen.captain_auth_landing",
+      "endpoints": []
+    },
+    {
+      "screen_id": "screen.captain_login",
+      "endpoints": [
+        "POST /auth/login"
+      ]
+    },
+    {
+      "screen_id": "screen.captain_otp_verify",
+      "endpoints": [
+        "POST /auth/otp/verify"
+      ]
+    },
+    {
+      "screen_id": "screen.captain_signup",
+      "endpoints": [
+        "POST /auth/login"
+      ]
+    },
+    {
+      "screen_id": "screen.captain_documents_upload",
+      "endpoints": [
+        "PATCH /api/identity/captains/docs"
+      ]
+    },
+    {
+      "screen_id": "screen.captain_onboarding_status",
+      "endpoints": [
+        "GET /api/identity/captains/eligibility"
+      ]
+    },
+    {
+      "screen_id": "screen.home_status",
+      "endpoints": [
+        "GET /api/dls/availability",
+        "GET /api/amn/availability",
+        "POST /notify/register"
+      ]
+    },
+    {
+      "screen_id": "screen.jobs_offers_list",
+      "endpoints": [
+        "GET /api/dls/jobs/offers",
+        "GET /api/amn/offers"
+      ]
+    },
+    {
+      "screen_id": "screen.job_offer_dsh",
+      "endpoints": [
+        "GET /api/dls/jobs/offers",
+        "POST /api/dls/jobs/:id/accept",
+        "POST /api/dls/jobs/:id/reject"
+      ]
+    },
+    {
+      "screen_id": "screen.job_detail_dsh",
+      "endpoints": [
+        "PATCH /api/dls/jobs/:id/status",
+        "POST /api/dls/location"
+      ]
+    },
+    {
+      "screen_id": "screen.job_offer_amn",
+      "endpoints": [
+        "GET /api/amn/offers",
+        "POST /api/amn/trips/:id/accept"
+      ]
+    },
+    {
+      "screen_id": "screen.job_detail_amn",
+      "endpoints": [
+        "PATCH /api/amn/trips/:id/status",
+        "POST /api/amn/trips/:id/negotiate"
+      ]
+    },
+    {
+      "screen_id": "screen.job_navigation",
+      "endpoints": []
+    },
+    {
+      "screen_id": "screen.job_pod_code",
+      "endpoints": [
+        "POST /api/dls/jobs/:id/pod/code"
+      ]
+    },
+    {
+      "screen_id": "screen.job_pod_photo",
+      "endpoints": [
+        "POST /api/dls/jobs/:id/pod/photo"
+      ]
+    },
+    {
+      "screen_id": "screen.job_fare_summary",
+      "endpoints": []
+    },
+    {
+      "screen_id": "screen.job_sos_panel",
+      "endpoints": [
+        "POST /api/amn/trips/:id/sos"
+      ]
+    },
+    {
+      "screen_id": "screen.earnings_home",
+      "endpoints": [
+        "GET /wallet/me/balance",
+        "GET /wallet/me/earnings"
+      ]
+    },
+    {
+      "screen_id": "screen.earnings_breakdown",
+      "endpoints": [
+        "GET /wallet/me/earnings"
+      ]
+    },
+    {
+      "screen_id": "screen.payout_request",
+      "endpoints": [
+        "GET /wallet/me/balance",
+        "POST /wallet/payouts"
+      ]
+    },
+    {
+      "screen_id": "screen.payout_history",
+      "endpoints": []
+    },
+    {
+      "screen_id": "screen.captain_more",
+      "endpoints": []
+    },
+    {
+      "screen_id": "screen.captain_profile",
+      "endpoints": [
+        "GET /api/identity/captains/me"
+      ]
+    },
+    {
+      "screen_id": "screen.captain_vehicle",
+      "endpoints": [
+        "GET /api/identity/captains/me"
+      ]
+    },
+    {
+      "screen_id": "screen.captain_documents_status",
+      "endpoints": [
+        "GET /api/identity/captains/me",
+        "PATCH /api/identity/captains/docs"
+      ]
+    },
+    {
+      "screen_id": "screen.captain_support_center",
+      "endpoints": []
+    }
+  ]
+}
+

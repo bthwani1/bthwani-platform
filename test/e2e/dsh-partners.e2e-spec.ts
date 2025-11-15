@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe, Module } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { ConfigModule } from '@nestjs/config';
@@ -7,11 +7,31 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs/typings';
 import { SqliteDriver } from '@mikro-orm/sqlite';
 import { DatabaseModule } from '../../src/shared/database/database.module';
-import { MikroOrmModuleSyncOptions } from '@mikro-orm/nestjs/typings';
 import { generatePartnerToken, generateCustomerToken } from '../helpers/jwt.helper';
+import { MikroORM } from '@mikro-orm/core';
+
+@Module({
+  imports: [
+    MikroOrmModule.forRoot({
+      driver: SqliteDriver,
+      autoLoadEntities: true,
+      allowGlobalContext: true,
+      dbName: ':memory:',
+      entities: ['dist/**/*.entity.js'],
+      entitiesTs: ['src/**/*.entity.ts'],
+      migrations: {
+        disableForeignKeys: true,
+      },
+    } satisfies MikroOrmModuleSyncOptions),
+  ],
+  exports: [MikroOrmModule],
+})
+class TestDatabaseModule {}
 
 describe('DSH Partners (e2e)', () => {
   let app: INestApplication;
+  let moduleFixture: TestingModule;
+  let orm: MikroORM;
   let partnerToken: string;
   let customerToken: string;
   const partnerId = 'test-partner-123';
@@ -22,7 +42,7 @@ describe('DSH Partners (e2e)', () => {
     process.env.JWT_SECRET = 'test-secret-key-for-e2e-tests';
     process.env.JWT_ALG = 'HS256';
 
-    const moduleFixture: TestingModule = await Test.createTestingModule({
+    moduleFixture = await Test.createTestingModule({
       imports: [
         ConfigModule.forRoot({
           isGlobal: true,
@@ -46,24 +66,25 @@ describe('DSH Partners (e2e)', () => {
     );
 
     await app.init();
-    
+
     // Run migrations for in-memory database
     try {
-      const orm = moduleFixture.get('MikroORM');
-      if (orm && orm.getSchemaGenerator) {
-        const generator = orm.getSchemaGenerator();
-        await generator.createSchema();
-      }
+      orm = moduleFixture.get(MikroORM);
+      const migrator = orm.getMigrator();
+      await migrator.up();
     } catch (error) {
       // Schema generation failed, but continue with tests
       console.warn('Schema generation skipped:', error);
     }
-    
+
     partnerToken = generatePartnerToken(partnerId);
     customerToken = generateCustomerToken(customerId);
   });
 
   afterAll(async () => {
+    if (orm) {
+      await orm.close(true);
+    }
     if (app) {
       await app.close();
     }
@@ -123,4 +144,3 @@ describe('DSH Partners (e2e)', () => {
     });
   });
 });
-

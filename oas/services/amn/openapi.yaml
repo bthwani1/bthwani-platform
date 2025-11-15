@@ -1,11 +1,11 @@
 openapi: 3.0.3
 info:
   title: 'BThwani — Safe Taxi (AMN) API'
-  description: Core endpoints for the Safe Taxi service (AMN).
+  description: Core endpoints for the Safe Taxi service (AMN) - Passenger and Captain APIs for trip management, quotes, offers, SOS handling, and payment processing.
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: '0.0.0-seed'
+  version: '1.0.0'
 servers:
   - url: https://api-dev.bthwani.com
     description: Dev
@@ -13,7 +13,1029 @@ servers:
     description: Stage
   - url: https://api.bthwani.com
     description: Prod
-paths: {}
+paths:
+  /api/amn/quotes:
+    post:
+      operationId: amn_quote_create
+      summary: Create price quote and estimated arrival time
+      description: Create a price quote for a trip between pickup and dropoff locations
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuoteRequest'
+      responses:
+        '201':
+          description: Quote created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuoteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/trips:
+    post:
+      operationId: amn_trip_create
+      summary: Create new trip from accepted quote
+      description: Create a new trip based on an accepted quote
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTripRequest'
+      responses:
+        '201':
+          description: Trip created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      operationId: amn_trips_list
+      summary: List passenger trips
+      description: List trips for the authenticated passenger with cursor-based pagination
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: List of trips
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/trips/{trip_id}:
+    get:
+      operationId: amn_trip_get
+      summary: Get trip details
+      description: Get current status and details of a specific trip
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+      responses:
+        '200':
+          description: Trip details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/trips/{trip_id}/cancel:
+    post:
+      operationId: amn_trip_cancel
+      summary: Cancel trip (passenger)
+      description: Cancel a pending or in-progress trip
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                reason:
+                  type: string
+                  description: Cancellation reason
+      responses:
+        '200':
+          description: Trip cancelled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/trips/{trip_id}/rating:
+    post:
+      operationId: amn_trip_rate
+      summary: Rate completed trip
+      description: Submit rating and feedback for a completed trip
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RateTripRequest'
+      responses:
+        '200':
+          description: Rating submitted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/trips/{trip_id}/sos:
+    post:
+      operationId: amn_trip_sos
+      summary: Create SOS event (passenger)
+      description: Trigger an SOS event for an in-progress trip
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSosRequest'
+      responses:
+        '201':
+          description: SOS event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SosEventResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/trips/{trip_id}/offers:
+    post:
+      operationId: amn_trip_offer_create
+      summary: Create counter offer (passenger)
+      description: Create a counter offer for trip pricing
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOfferRequest'
+      responses:
+        '201':
+          description: Offer created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/trips/{trip_id}/offers/{offer_id}/accept:
+    post:
+      operationId: amn_trip_offer_accept
+      summary: Accept captain's offer (passenger)
+      description: Accept a counter offer from captain
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/OfferId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Offer accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/places/suggestions:
+    get:
+      operationId: amn_places_autocomplete
+      summary: Autocomplete places
+      description: Get place suggestions for pickup/dropoff locations
+      tags:
+        - Passenger
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: query
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Search query
+        - name: city_code
+          in: query
+          schema:
+            type: string
+          description: City code for filtering
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: List of place suggestions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PlacesAutocompleteResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/driver/trips/{trip_id}:
+    get:
+      operationId: amn_trip_get_assigned
+      summary: Get assigned trip details (captain)
+      description: Get details of assigned trip for captain
+      tags:
+        - Captain
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+      responses:
+        '200':
+          description: Trip details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/driver/trips/{trip_id}/accept:
+    post:
+      operationId: amn_trip_accept
+      summary: Accept assigned trip (captain)
+      description: Accept an assigned trip
+      tags:
+        - Captain
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                notes:
+                  type: string
+      responses:
+        '200':
+          description: Trip accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/driver/trips/{trip_id}/status:
+    post:
+      operationId: amn_trip_update_status
+      summary: Update trip status (captain)
+      description: Update trip status (arrived, onboard, in_trip, completed)
+      tags:
+        - Captain
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTripStatusRequest'
+      responses:
+        '200':
+          description: Status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/driver/trips/{trip_id}/payment-confirm:
+    post:
+      operationId: amn_trip_confirm_payment
+      summary: Confirm payment (captain)
+      description: Confirm payment receipt (cash) or verify wallet payment
+      tags:
+        - Captain
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmPaymentRequest'
+      responses:
+        '200':
+          description: Payment confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TripResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/driver/trips/{trip_id}/sos:
+    post:
+      operationId: amn_trip_sos_driver
+      summary: Create SOS event (captain)
+      description: Trigger an SOS event for an in-progress trip (captain)
+      tags:
+        - Captain
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSosRequest'
+      responses:
+        '201':
+          description: SOS event created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SosEventResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /api/amn/driver/trips/{trip_id}/offers/{offer_id}/respond:
+    post:
+      operationId: amn_trip_offer_respond
+      summary: Respond to passenger offer (captain)
+      description: Accept, reject, or counter passenger's offer
+      tags:
+        - Captain
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/TripId'
+        - $ref: '#/components/parameters/OfferId'
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RespondOfferRequest'
+      responses:
+        '200':
+          description: Offer response processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OfferResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 components:
-  schemas: {}
-  securitySchemes: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    TripId:
+      name: trip_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Trip ID
+    OfferId:
+      name: offer_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Offer ID
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Idempotency key for duplicate request prevention
+    Cursor:
+      name: cursor
+      in: query
+      schema:
+        type: string
+      description: Cursor for pagination
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Number of items per page
+
+  schemas:
+    GeoPoint:
+      type: object
+      required:
+        - lat
+        - lon
+      properties:
+        lat:
+          type: number
+          format: double
+          minimum: -90
+          maximum: 90
+        lon:
+          type: number
+          format: double
+          minimum: -180
+          maximum: 180
+
+    MoneyValue:
+      type: object
+      required:
+        - amount
+      properties:
+        amount:
+          type: string
+          description: Amount in minor units (no fractional digits for YER)
+          example: '5000'
+        currency:
+          type: string
+          default: YER
+          example: YER
+
+    CreateQuoteRequest:
+      type: object
+      required:
+        - pickup_location
+        - dropoff_location
+      properties:
+        pickup_location:
+          type: object
+          required:
+            - city
+            - coordinates
+          properties:
+            city:
+              type: string
+              example: SANA
+            coordinates:
+              $ref: '#/components/schemas/GeoPoint'
+        dropoff_location:
+          type: object
+          required:
+            - city
+            - coordinates
+          properties:
+            city:
+              type: string
+              example: SANA
+            coordinates:
+              $ref: '#/components/schemas/GeoPoint'
+        preferences:
+          type: object
+          properties:
+            family_mode:
+              type: boolean
+            mahram_required:
+              type: boolean
+
+    QuoteResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        passenger_id:
+          type: string
+        pickup_location:
+          type: object
+        dropoff_location:
+          type: object
+        pricing:
+          type: object
+        route:
+          type: object
+        preferences:
+          type: object
+        city_code:
+          type: string
+        is_expired:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+
+    CreateTripRequest:
+      type: object
+      required:
+        - quote_id
+        - payment_method
+      properties:
+        quote_id:
+          type: string
+          format: uuid
+        payment_method:
+          type: string
+          enum:
+            - wallet
+            - cash
+        notes_for_captain:
+          type: string
+        preferences:
+          type: object
+          properties:
+            family_mode:
+              type: boolean
+            mahram_required:
+              type: boolean
+
+    TripResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        passenger_id:
+          type: string
+        captain_id:
+          type: string
+          format: uuid
+        pickup_location:
+          type: object
+        dropoff_location:
+          type: object
+        status:
+          type: string
+          enum:
+            - pending
+            - searching
+            - accepted
+            - arrived
+            - onboard
+            - in_trip
+            - completed
+            - cancelled
+            - disputed
+        payment_method:
+          type: string
+          enum:
+            - wallet
+            - cash
+        payment_status:
+          type: string
+          enum:
+            - pending
+            - authorized
+            - captured
+            - confirmed
+            - failed
+            - refunded
+        pricing:
+          type: object
+        route:
+          type: object
+        preferences:
+          type: object
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        feedback:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    TripListResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/TripResponse'
+        nextCursor:
+          type: string
+        prevCursor:
+          type: string
+
+    CreateOfferRequest:
+      type: object
+      required:
+        - pricing
+      properties:
+        pricing:
+          type: object
+          required:
+            - total
+            - base_fare
+          properties:
+            total:
+              $ref: '#/components/schemas/MoneyValue'
+            base_fare:
+              $ref: '#/components/schemas/MoneyValue'
+        notes:
+          type: string
+
+    OfferResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        trip_id:
+          type: string
+          format: uuid
+        offer_type:
+          type: string
+          enum:
+            - passenger_counter
+            - captain_counter
+        offered_by:
+          type: string
+        pricing:
+          type: object
+        status:
+          type: string
+          enum:
+            - pending
+            - accepted
+            - rejected
+            - countered
+            - expired
+        notes:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        expires_at:
+          type: string
+          format: date-time
+
+    UpdateTripStatusRequest:
+      type: object
+      required:
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - arrived
+            - onboard
+            - in_trip
+            - completed
+        location:
+          type: object
+          properties:
+            coordinates:
+              $ref: '#/components/schemas/GeoPoint'
+
+    ConfirmPaymentRequest:
+      type: object
+      required:
+        - payment_method
+      properties:
+        payment_method:
+          type: string
+          enum:
+            - cash
+            - wallet
+        amount_received:
+          $ref: '#/components/schemas/MoneyValue'
+        notes:
+          type: string
+
+    CreateSosRequest:
+      type: object
+      required:
+        - location
+      properties:
+        location:
+          type: object
+          required:
+            - coordinates
+          properties:
+            coordinates:
+              $ref: '#/components/schemas/GeoPoint'
+            address:
+              type: string
+        description:
+          type: string
+
+    SosEventResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        trip_id:
+          type: string
+          format: uuid
+        reported_by:
+          type: string
+        reporter_type:
+          type: string
+          enum:
+            - passenger
+            - captain
+        location:
+          type: object
+        status:
+          type: string
+          enum:
+            - active
+            - escalated
+            - resolved
+            - false_alarm
+        severity:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
+            - critical
+        description:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    RateTripRequest:
+      type: object
+      required:
+        - rating
+      properties:
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        feedback:
+          type: string
+        safety_flags:
+          type: array
+          items:
+            type: string
+
+    RespondOfferRequest:
+      type: object
+      required:
+        - action
+      properties:
+        action:
+          type: string
+          enum:
+            - accept
+            - reject
+            - counter
+        counter_pricing:
+          type: object
+          properties:
+            total:
+              $ref: '#/components/schemas/MoneyValue'
+            base_fare:
+              $ref: '#/components/schemas/MoneyValue'
+        notes:
+          type: string
+
+    PlacesAutocompleteResponse:
+      type: object
+      properties:
+        suggestions:
+          type: array
+          items:
+            type: object
+            properties:
+              place_id:
+                type: string
+              description:
+                type: string
+              location:
+                $ref: '#/components/schemas/GeoPoint'
+              address:
+                type: string
+        nextCursor:
+          type: string
+
+    ErrorResponse:
+      type: object
+      required:
+        - type
+        - title
+        - status
+        - detail
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        code:
+          type: string
+        detail:
+          type: string
+        traceId:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'

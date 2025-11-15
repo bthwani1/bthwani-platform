@@ -1,19 +1,1101 @@
 openapi: 3.0.3
 info:
-  title: 'BThwani — Blood Donation (ESF) API'
-  description: Core endpoints for the peer-to-peer blood donation service (ESF).
+  title: BThwani — ESF Service API (اسعِفني)
+  version: '2025-01-15'
+  description: |
+    Emergency blood donation matching service (ESF - اسعِفني) for the BThwani platform.
+    
+    This service connects blood donation requesters with compatible donors in real-time.
+    
+    Features:
+    - ABO/Rh compatibility matching
+    - Encrypted chat between requesters and donors
+    - Real-time notifications with quiet hours
+    - Admin monitoring and configuration
+    - Support moderation tools
+    
+    Namespace: /esf/*
+    Aliases: /es3afni, /blood (redirect 308 until 2025-12-15, then 410)
+    Timezone: Asia/Aden
   contact:
     name: BThwani Support
     email: support@bthwani.com
-  version: '0.0.0-seed'
 servers:
   - url: https://api-dev.bthwani.com
-    description: Dev
+    description: Development environment
   - url: https://api-stage.bthwani.com
-    description: Stage
+    description: Staging environment
   - url: https://api.bthwani.com
-    description: Prod
-paths: {}
+    description: Production environment
+x-host-policy:
+  https://api.bthwani.com:
+    scope: SRV-ESF-01 v1.2 API
+    allowedOrigins:
+      - https://app.bthwani.com
+    notes:
+      - JWT bearerAuth required; Idempotency-Key mandatory for writes.
+      - Chat messages encrypted with AES-256-GCM.
+      - Phone numbers masked in all responses.
+tags:
+  - name: APP-USER
+    description: User-facing endpoints
+  - name: DASH-ADMIN
+    description: Admin dashboard endpoints
+  - name: DASH-SUPPORT
+    description: Support console endpoints
+paths:
+  /esf/health:
+    get:
+      operationId: esf_health
+      summary: Service health probe
+      description: Liveness/readiness probe for infrastructure monitoring
+      tags:
+        - SYSTEM
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security: []
+  /esf/requests:
+    post:
+      operationId: esf_request_create
+      summary: Create ESF request
+      description: Create a new blood donation request. Triggers matching engine and notifications.
+      tags:
+        - APP-USER
+      x-action-id: create_request
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: user_requester
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateRequest'
+      responses:
+        '201':
+          description: Request created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfRequest'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Idempotency-Key'
+    get:
+      operationId: esf_requests_list
+      summary: List my requests
+      description: List all requests created by the authenticated user
+      tags:
+        - APP-USER
+      x-action-id: list_requests
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,Pagination)
+      x-rbac-role: user_requester
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, matched, confirmed, completed, cancelled, closed]
+      responses:
+        '200':
+          description: List of requests
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfRequestList'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/requests/{request_id}:
+    get:
+      operationId: esf_request_get
+      summary: Get request details
+      description: Get details of a specific request. Accessible by requester or matched donor.
+      tags:
+        - APP-USER
+      x-action-id: get_request
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,PathParam)
+      x-rbac-role: user_requester
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Request details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfRequest'
+        '404':
+          description: Request not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/matches/inbox:
+    get:
+      operationId: esf_donor_matches_inbox
+      summary: Donor matches inbox
+      description: List all matches for the authenticated donor
+      tags:
+        - APP-USER
+      x-action-id: list_matches
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,Pagination)
+      x-rbac-role: user_donor
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: List of matches
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfMatchList'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/me/availability:
+    patch:
+      operationId: esf_donor_availability_update
+      summary: Update donor availability
+      description: Update donor availability status and profile information
+      tags:
+        - APP-USER
+      x-action-id: update_availability
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Idem,Auth,Problem)
+      x-rbac-role: user_donor
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAvailability'
+      responses:
+        '200':
+          description: Availability updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfDonorProfile'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Idempotency-Key'
+  /esf/me/profile:
+    get:
+      operationId: esf_me_profile_get
+      summary: Get ESF donor profile
+      description: Get the authenticated user's ESF donor profile
+      tags:
+        - APP-USER
+      x-action-id: get_profile
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem)
+      x-rbac-role: user_donor
+      responses:
+        '200':
+          description: Donor profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfDonorProfile'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/requests/{request_id}/messages:
+    get:
+      operationId: esf_request_messages_list
+      summary: List chat messages
+      description: List chat messages for a request. Messages are decrypted automatically.
+      tags:
+        - APP-USER
+      x-action-id: list_messages
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,Pagination)
+      x-rbac-role: user_requester
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: List of messages
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfChatMessageList'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+    post:
+      operationId: esf_request_message_create
+      summary: Send chat message
+      description: Send an encrypted chat message. Phone numbers and payment content are filtered.
+      tags:
+        - APP-USER
+      x-action-id: create_message
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Idem,Auth,Problem,PathParam)
+      x-rbac-role: user_requester
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Idempotency-Key'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMessage'
+      responses:
+        '201':
+          description: Message sent
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfChatMessage'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/admin/requests:
+    get:
+      operationId: esf_admin_requests_search
+      summary: Admin search
+      description: Search requests with filters. Step-Up authentication required.
+      tags:
+        - DASH-ADMIN
+      x-action-id: search_requests
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,Pagination,Step-Up)
+      x-rbac-role: admin_operator
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - name: city
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [pending, matched, confirmed, completed, cancelled, closed]
+        - name: abo_type
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [A, B, AB, O]
+        - name: rh_factor
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: ['+', '-']
+        - name: from
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: to
+          in: query
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: sla_breach
+          in: query
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfRequestList'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/admin/config:
+    get:
+      operationId: esf_admin_config_get
+      summary: Get runtime config
+      description: Get runtime configuration. Step-Up authentication required.
+      tags:
+        - DASH-ADMIN
+      x-action-id: get_config
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,Step-Up)
+      x-rbac-role: admin_operator
+      parameters:
+        - name: scope
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Configuration
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/EsfConfig'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+    patch:
+      operationId: esf_admin_config_update
+      summary: Update runtime config
+      description: Update runtime configuration. Step-Up authentication required.
+      tags:
+        - DASH-ADMIN
+      x-action-id: update_config
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Idem,Auth,Problem,Step-Up)
+      x-rbac-role: admin_operator
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateConfig'
+      responses:
+        '200':
+          description: Configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfConfig'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Idempotency-Key'
+  /esf/admin/metrics:
+    get:
+      operationId: esf_admin_metrics_get
+      summary: Get metrics
+      description: Get service metrics and KPIs. Step-Up authentication required.
+      tags:
+        - DASH-ADMIN
+      x-action-id: get_metrics
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,Step-Up)
+      x-rbac-role: admin_operator
+      responses:
+        '200':
+          description: Metrics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfMetrics'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/admin/alerts:
+    get:
+      operationId: esf_admin_alerts_get
+      summary: Get alerts
+      description: Get yellow/red alerts. Step-Up authentication required.
+      tags:
+        - DASH-ADMIN
+      x-action-id: get_alerts
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,Step-Up)
+      x-rbac-role: admin_operator
+      responses:
+        '200':
+          description: Alerts
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfAlerts'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/support/requests/{request_id}:
+    get:
+      operationId: esf_support_request_detail
+      summary: Support view of a request
+      description: Get request details with masking. RBAC/ABAC enforced.
+      tags:
+        - DASH-SUPPORT
+      x-action-id: get_request_support
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,PathParam)
+      x-rbac-role: support_agent
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Request details (masked)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfRequestSupport'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/support/requests/{request_id}/messages:
+    get:
+      operationId: esf_support_messages_list
+      summary: Support messages (masked)
+      description: Get chat messages with masking. Strict RBAC/ABAC enforced.
+      tags:
+        - DASH-SUPPORT
+      x-action-id: list_messages_support
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Auth,Problem,Pagination,PathParam)
+      x-rbac-role: support_agent
+      parameters:
+        - name: request_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: List of messages (masked)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EsfChatMessageListSupport'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+  /esf/support/actions:
+    post:
+      operationId: esf_support_action_apply
+      summary: Apply moderation action
+      description: Apply moderation action (warn, mute, temp ban, mark abuse, close request, escalate). Step-Up authentication required.
+      tags:
+        - DASH-SUPPORT
+      x-action-id: apply_action
+      x-entity-code: SRV-ESF-01
+      x-guards: PASS(Idem,Auth,Problem,Step-Up)
+      x-rbac-role: support_agent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApplyAction'
+      responses:
+        '200':
+          description: Action applied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Problem'
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/Idempotency-Key'
 components:
-  schemas: {}
-  securitySchemes: {}
+  parameters:
+    Idempotency-Key:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: UUID v4 for idempotency
+      schema:
+        type: string
+        format: uuid
+    Cursor:
+      name: cursor
+      in: query
+      required: false
+      description: Pagination cursor
+      schema:
+        type: string
+    Limit:
+      name: limit
+      in: query
+      required: false
+      description: Maximum number of items to return
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 200
+        default: 20
+  schemas:
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+    CreateRequest:
+      type: object
+      required:
+        - patient_name
+        - hospital_name
+        - city
+        - abo_type
+        - rh_factor
+      properties:
+        patient_name:
+          type: string
+          maxLength: 255
+        hospital_name:
+          type: string
+          maxLength: 255
+        city:
+          type: string
+          maxLength: 255
+        district:
+          type: string
+          maxLength: 255
+        hospital_address:
+          type: string
+          maxLength: 500
+        location:
+          type: object
+          properties:
+            lat:
+              type: number
+            lon:
+              type: number
+        abo_type:
+          type: string
+          enum: [A, B, AB, O]
+        rh_factor:
+          type: string
+          enum: ['+', '-']
+        notes:
+          type: string
+          maxLength: 1000
+    EsfRequest:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        requester_id:
+          type: string
+        patient_name:
+          type: string
+        hospital_name:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        hospital_address:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              type: number
+            lon:
+              type: number
+        abo_type:
+          type: string
+          enum: [A, B, AB, O]
+        rh_factor:
+          type: string
+          enum: ['+', '-']
+        status:
+          type: string
+          enum: [pending, matched, confirmed, completed, cancelled, closed]
+        notes:
+          type: string
+        matched_at:
+          type: string
+          format: date-time
+        confirmed_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        cancelled_at:
+          type: string
+          format: date-time
+        match_time_minutes:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    EsfRequestList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EsfRequest'
+        nextCursor:
+          type: string
+    EsfRequestSupport:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        patient_name:
+          type: string
+        hospital_name:
+          type: string
+        city:
+          type: string
+        district:
+          type: string
+        abo_type:
+          type: string
+          enum: [A, B, AB, O]
+        rh_factor:
+          type: string
+          enum: ['+', '-']
+        status:
+          type: string
+          enum: [pending, matched, confirmed, completed, cancelled, closed]
+        is_abuse:
+          type: boolean
+        abuse_reason:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+    UpdateAvailability:
+      type: object
+      properties:
+        is_available:
+          type: boolean
+        abo_type:
+          type: string
+          enum: [A, B, AB, O]
+        rh_factor:
+          type: string
+          enum: ['+', '-']
+        city:
+          type: string
+          maxLength: 255
+        district:
+          type: string
+          maxLength: 255
+        location:
+          type: object
+          properties:
+            lat:
+              type: number
+            lon:
+              type: number
+    EsfDonorProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+        abo_type:
+          type: string
+          enum: [A, B, AB, O]
+        rh_factor:
+          type: string
+          enum: ['+', '-']
+        is_available:
+          type: boolean
+        city:
+          type: string
+        district:
+          type: string
+        location:
+          type: object
+          properties:
+            lat:
+              type: number
+            lon:
+              type: number
+        last_donation_at:
+          type: string
+          format: date-time
+        cooldown_until:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    EsfMatch:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        request_id:
+          type: string
+          format: uuid
+        donor_id:
+          type: string
+        status:
+          type: string
+          enum: [pending, accepted, declined, expired]
+        distance_km:
+          type: integer
+        notified_at:
+          type: string
+          format: date-time
+        accepted_at:
+          type: string
+          format: date-time
+        declined_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+    EsfMatchList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EsfMatch'
+        nextCursor:
+          type: string
+    CreateMessage:
+      type: object
+      required:
+        - body
+      properties:
+        body:
+          type: string
+          minLength: 1
+          maxLength: 2000
+        is_urgent:
+          type: boolean
+    EsfChatMessage:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        request_id:
+          type: string
+          format: uuid
+        sender_id:
+          type: string
+        recipient_id:
+          type: string
+        direction:
+          type: string
+          enum: [requester_to_donor, donor_to_requester]
+        body_encrypted:
+          type: string
+        phone_masked:
+          type: string
+        links_masked:
+          type: array
+          items:
+            type: string
+        is_read:
+          type: boolean
+        is_urgent:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+    EsfChatMessageList:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/EsfChatMessage'
+        nextCursor:
+          type: string
+    EsfChatMessageListSupport:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              sender_id:
+                type: string
+              recipient_id:
+                type: string
+              direction:
+                type: string
+              body_encrypted:
+                type: string
+                example: '***'
+              phone_masked:
+                type: string
+              links_masked:
+                type: array
+                items:
+                  type: string
+              is_read:
+                type: boolean
+              is_urgent:
+                type: boolean
+              created_at:
+                type: string
+                format: date-time
+        nextCursor:
+          type: string
+    UpdateConfig:
+      type: object
+      required:
+        - key
+        - value
+      properties:
+        scope:
+          type: string
+          maxLength: 100
+        key:
+          type: string
+          maxLength: 255
+        value:
+          type: string
+        description:
+          type: string
+          maxLength: 500
+    EsfConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        scope:
+          type: string
+        key:
+          type: string
+        value:
+          type: string
+        description:
+          type: string
+        updated_by:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    EsfMetrics:
+      type: object
+      properties:
+        matchTimeMinutes:
+          type: number
+        noShowRate:
+          type: number
+        closureTimeHours:
+          type: number
+        activeDonorsCount:
+          type: integer
+        requestsPerCity:
+          type: object
+          additionalProperties:
+            type: integer
+    EsfAlerts:
+      type: object
+      properties:
+        yellow:
+          type: array
+          items:
+            type: string
+        red:
+          type: array
+          items:
+            type: string
+    ApplyAction:
+      type: object
+      required:
+        - action_type
+        - entity_type
+        - entity_id
+      properties:
+        action_type:
+          type: string
+          enum: [warn, mute, temp_ban, mark_abuse, close_request, escalate]
+        entity_type:
+          type: string
+        entity_id:
+          type: string
+        reason:
+          type: string
+          maxLength: 500
+        notes:
+          type: string
+          maxLength: 1000
+    ActionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        action_type:
+          type: string
+        entity_id:
+          type: string
+    Problem:
+      type: object
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          format: uri
+        title:
+          type: string
+        status:
+          type: integer
+        code:
+          type: string
+        detail:
+          type: string
+        traceId:
+          type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
