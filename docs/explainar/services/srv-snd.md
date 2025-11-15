@@ -56,17 +56,41 @@ _Full catalog available in the generated reference `docs/explainar/generated/snd
 
 The service exposes routes for requests, captain operations, admin configuration, and support. Refer to the generated reference `docs/explainar/generated/snd.generated.md`, which updates automatically and includes a SHA checksum at the end.
 
-## 5. Integrations & Runtime Variables
+## 5. Service Classification & Smart Engine
+
+### 5.1 Service Classification
+
+SND is classified as a **Secondary Service** in the Smart Engine system:
+
+- **Secondary Services**: Important services displayed in service tabs
+- **Characteristics**:
+  - Visible in service tabs
+  - Medium priority in search results
+  - Full feature set enabled by default
+
+### 5.2 Runtime Variables Integration
+
+SND integrates with the unified `RuntimeVariablesService` for:
+
+- **Service Flags**: `VAR_SVC_SND_ENABLED` (default: true)
+- **Scoped Configuration**: Zone > City > Service > Global precedence
+- **Caching Layer**: Performance optimization for frequent lookups
+- **Type-Safe Access**: Methods for service flags and configuration
+
+## 6. Integrations & Runtime Variables
 
 - **Dependent services**: `WLT` (ledger entries for instant requests only), `NOTIFICATIONS` (push notifications), `IDENTITY` (masked contacts).
+- **Shared services**: `RuntimeVariablesService`.
 - **Applications**: `APP-USER`, `APP-CAPTAIN`, dashboards (`admin`, `support`).
 - **Runtime examples**:
   - `VAR_SND_CHAT_ENCRYPTION_KEY` — chat encryption key (hex).
   - `VAR_SND_CHAT_RETENTION_DAYS` — chat message retention (default: 30).
   - `VAR_SND_PRICING_*` — pricing configuration variables.
+  - `VAR_SVC_SND_ENABLED` — enable/disable SND service globally.
+  - `VAR_WEBAPP_FEATURE_SND_MODE` — SND mode for web-app (default: "full").
   - Runtime keys managed through the control panel and documented in `runtime/RUNTIME_VARS_CATALOG.csv`.
 
-## 6. Pricing Engine (Instant Only)
+## 7. Pricing Engine (Instant Only)
 
 ### Pricing Calculation
 
@@ -82,7 +106,7 @@ The service exposes routes for requests, captain operations, admin configuration
 - **Specialized Provider**: Assignment to specialized service providers.
 - **Manual Queue**: Admin-controlled assignment.
 
-## 7. Proof-of-Close (Instant Only)
+## 8. Proof-of-Close (Instant Only)
 
 ### Workflow
 
@@ -91,7 +115,7 @@ The service exposes routes for requests, captain operations, admin configuration
 3. Automatic ledger entry creation via WLT adapter.
 4. Request status updates to `CLOSED`.
 
-## 8. Database Migrations & Seeders
+## 9. Database Migrations & Seeders
 
 ### 8.1 Migrations
 

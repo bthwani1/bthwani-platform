@@ -53,9 +53,31 @@ _Full catalog available in the generated reference `docs/explainar/generated/esf
 
 The service exposes routes for requests, matches, donor profiles, chat, admin configuration, and support. Refer to the generated reference `docs/explainar/generated/esf.generated.md`, which updates automatically and includes a SHA checksum at the end.
 
-## 5. Integrations & Runtime Variables
+## 5. Service Classification & Smart Engine
+
+### 5.1 Service Classification
+
+ESF is classified as a **Secondary Service** in the Smart Engine system:
+
+- **Secondary Services**: Important services displayed in service tabs
+- **Characteristics**:
+  - Visible in service tabs
+  - Medium priority in search results
+  - Full feature set enabled by default
+
+### 5.2 Runtime Variables Integration
+
+ESF integrates with the unified `RuntimeVariablesService` for:
+
+- **Service Flags**: `VAR_SVC_ESF_ENABLED` (default: true)
+- **Scoped Configuration**: Zone > City > Service > Global precedence
+- **Caching Layer**: Performance optimization for frequent lookups
+- **Type-Safe Access**: Methods for service flags and configuration
+
+## 6. Integrations & Runtime Variables
 
 - **Dependent services**: `IDENTITY` (blood type, masked contacts), `NOTIFICATIONS` (push notifications with quiet hours).
+- **Shared services**: `RuntimeVariablesService`.
 - **Applications**: `APP-USER`, dashboards (`admin`, `support`).
 - **Runtime examples**:
   - `VAR_ESF_MAX_RADIUS_KM` — maximum matching radius in km (default: 50).
@@ -64,9 +86,11 @@ The service exposes routes for requests, matches, donor profiles, chat, admin co
   - `VAR_ESF_SLA_MATCH_MINUTES` — SLA target for matching (default: 30).
   - `VAR_ESF_QUIET_HOURS` — quiet hours format: "HH:MM-HH:MM" (default: "22:00-08:00").
   - `VAR_CHAT_RETENTION_DAYS` — chat message retention (default: 30).
+  - `VAR_SVC_ESF_ENABLED` — enable/disable ESF service globally.
+  - `VAR_WEBAPP_FEATURE_ESF_MODE` — ESF mode for web-app (default: "full").
   - Runtime keys managed through the control panel and documented in `runtime/RUNTIME_VARS_CATALOG.csv`.
 
-## 6. Matching Engine
+## 7. Matching Engine
 
 ### ABO/Rh Compatibility
 
@@ -89,7 +113,7 @@ Strict compatibility rules enforced:
 4. Sort by proximity and availability.
 5. Return top `VAR_ESF_MATCH_BATCH_SIZE` matches.
 
-## 7. Database Migrations & Seeders
+## 8. Database Migrations & Seeders
 
 ### 7.1 Migrations
 

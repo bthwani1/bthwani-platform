@@ -60,16 +60,176 @@ _Full catalog available in the generated reference `docs/explainar/generated/dsh
 
 The service exposes 250+ routes spanning admin, customer, partner, captain, ops, and finance domains. Refer to the generated reference `docs/explainar/generated/dsh.generated.md`, which updates automatically and includes a SHA checksum at the end.
 
-## 5. Integrations & Runtime Variables
+## 5. DSH Categories System
+
+### 5.1 Overview
+
+The DSH service includes a comprehensive category system that organizes delivery and shopping services into 7 main categories. This system enables better discovery, filtering, and personalization for users.
+
+### 5.2 Category Structure
+
+The DSH Categories system (`DshCategoryEntity`) provides:
+
+- **7 Main Categories**:
+  1. `dsh_restaurants` (مطاعم) - Restaurants and cafes
+  2. `dsh_supermarkets` (سوبرماركت / بقالات) - Supermarkets and groceries
+  3. `dsh_fruits_veggies` (خضار وفواكه) - Fresh fruits and vegetables
+  4. `dsh_fashion` (أناقتي) - Fashion and style
+  5. `dsh_sweets_cafes` (حلا) - Sweets and cafes
+  6. `dsh_global_stores` (متاجر عالمية) - Global stores and websites
+  7. `dsh_quick_task` (طلبات فورية / مهام سريعة) - Instant requests / Quick tasks (Thwani)
+
+### 5.3 Category Features
+
+- **Tags System**: Categories support tags (NEARBY, NEW, TRENDING, FAVORITE, SEASONAL, HIGH_VALUE) for smart ranking and filtering
+- **Region/City Scoping**: Categories can be scoped to specific regions or cities
+- **Featured Categories**: Categories can be marked as featured for prominent display
+- **Sort Order**: Customizable display ordering
+- **Status Management**: Categories support statuses (ACTIVE, INACTIVE, ARCHIVED)
+- **Runtime Variables Integration**: Each category can be controlled via runtime variables (e.g., `VAR_DSH_CAT_RESTAURANTS_ENABLED`)
+
+### 5.4 API Endpoints
+
+- `GET /api/dls/categories` - List all active categories
+- `GET /api/dls/categories/featured` - List featured categories
+- `GET /api/dls/categories/:code` - Get category by code
+
+### 5.5 Thwani Integration
+
+**Thwani** (ثواني) is integrated as a DSH category (`dsh_quick_task`):
+
+- All Thwani requests automatically receive `dsh_category_code = 'dsh_quick_task'`
+- Thwani appears in DSH category listings
+- Thwani requests can be searched and filtered alongside other DSH categories
+- Thwani leverages DSH infrastructure (pricing, routing, proof-of-close, wallet constraints)
+
+**Thwani API Endpoints**:
+
+- `POST /api/dls/thwani/requests` - Create instant help request
+- `GET /api/dls/thwani/requests` - List user requests
+- `GET /api/dls/thwani/requests/:request_id` - Get request details
+- `POST /api/dls/thwani/requests/:request_id/close` - Close request with 6-digit code
+- `GET /api/dls/thwani/requests/:request_id/messages` - List chat messages
+- `POST /api/dls/thwani/requests/:request_id/messages` - Send chat message
+
+**Captain Endpoints**:
+
+- `GET /api/dls/thwani/captain/requests` - List instant requests for captain
+- `POST /api/dls/thwani/captain/requests/:request_id/accept` - Accept instant request
+- `POST /api/dls/thwani/captain/requests/:request_id/close-code` - Generate close code
+
+## 6. Unified Search Integration
+
+### 6.1 DSH Search Adapter
+
+The DSH service integrates with the Unified Search system via `DshSearchAdapter`:
+
+- **Search Capabilities**:
+  - Categories search (restaurants, supermarkets, fashion, etc.)
+  - Stores search (when stores entity exists)
+  - Products search (when products entity exists)
+- **Typeahead/Suggestions**: Real-time search suggestions with relevance scoring
+- **Relevance Algorithm**:
+  - Exact match: +100 points
+  - Starts with: +80 points
+  - Contains: +50 points
+  - Length similarity: +0-20 points
+- **Location Filtering**: Region and city-based filtering
+- **Cursor Pagination**: Efficient pagination for large result sets
+
+### 6.2 Search Integration Points
+
+- **Unified Search Service**: DSH participates in platform-wide unified search
+- **Search Adapters**: `DshSearchAdapter` implements `BaseSearchAdapter` interface
+- **Voice Search**: Ready for voice-to-text integration (Google Speech-to-Text, Azure Speech, AWS Transcribe)
+- **Image Search**: Ready for image-to-tags integration (Google Vision, AWS Rekognition, Azure Computer Vision)
+
+### 6.3 Runtime Variables
+
+- `VAR_SEARCH_AUTOSUGGEST_ENABLED` - Enable/disable autosuggest (default: true)
+- `VAR_SEARCH_AUTOSUGGEST_MIN_CHARS` - Minimum characters for autosuggest (default: 2)
+- `VAR_SEARCH_VOICE_ENABLED_DSH` - Enable voice search for DSH (default: false)
+- `VAR_SEARCH_IMAGE_ENABLED_DSH` - Enable image search for DSH (default: false)
+- `VAR_SEARCH_VOICE_PROVIDER` - Voice provider (google/azure/aws, default: google)
+- `VAR_SEARCH_IMAGE_PROVIDER` - Image provider (google/aws/azure, default: google)
+
+## 7. Smart Engine Integration
+
+### 7.1 Service Classification
+
+DSH is classified as a **Primary Service** in the Smart Engine system:
+
+- **Primary Services**: Core, high-frequency services prominently displayed
+- **Characteristics**:
+  - Always visible on home screen
+  - Featured in service cards
+  - High priority in search results
+  - Full feature set enabled by default
+
+### 7.2 Category Ranking
+
+DSH categories are ranked using the Smart Engine:
+
+- **Ranking Factors**:
+  - User favorites (+100 points)
+  - Recent usage (+50 points)
+  - Tags (TRENDING +30, NEW +20, SEASONAL +15, HIGH_VALUE +25)
+  - Location (region/city popularity)
+  - Featured status
+- **Personalization**: Category order personalized based on user behavior
+
+### 7.3 Item Ranking
+
+Stores, products, and listings are ranked based on:
+
+- Relevance to search query
+- User preferences (favorites, recent orders)
+- Engagement metrics (views, clicks, orders)
+- Tags and metadata
+- Location proximity
+
+## 8. Banner Service Integration
+
+### 8.1 DSH Banners
+
+The DSH service supports dynamic banners via the Banner Service:
+
+- **Banner Types**: DSH-specific banners for promotions and featured content
+- **Banner Features**:
+  - Region/City scoping
+  - Time-based scheduling (start_date, end_date)
+  - Action types (open_category, open_store, open_product)
+  - Priority-based ordering
+  - Tags for filtering
+- **Runtime Control**: Controlled via `VAR_UI_BANNER_DSH_ENABLED`
+- **Refresh Interval**: Configurable via `VAR_UI_BANNER_REFRESH_INTERVAL` (default: 300 seconds)
+
+### 8.2 Admin Endpoints
+
+- `POST /api/admin/banners` - Create banner
+- `GET /api/admin/banners` - List banners (with filters)
+- `GET /api/admin/banners/:id` - Get banner by ID
+- `PUT /api/admin/banners/:id` - Update banner
+- `DELETE /api/admin/banners/:id` - Delete banner
+
+**Filtering**: By type, status, is_active, region, city
+
+## 9. Integrations & Runtime Variables
 
 - **Dependent services**: `WLT` (payments/settlements), `ARB` (escrow bookings), `KNZ` and `SND` for cross-service fulfillment.
+- **Shared services**: `UnifiedSearchService`, `SmartEngineService`, `BannerService`, `RuntimeVariablesService`.
 - **Applications**: `APP-USER`, `APP-PARTNER`, `APP-CAPTAIN`, `APP-FIELD`, dashboards (`ops`, `finance`, `support`).
 - **Runtime examples**:
   - `VAR_DSH_DEFAULT_DELIVERY_MODE` — default delivery mode when partner mode not set.
   - `VAR_CHAT_RETENTION_DAYS` — chat retention period in days.
+  - `VAR_DSH_CAT_RESTAURANTS_ENABLED` — Enable/disable restaurants category.
+  - `VAR_DSH_CAT_QUICK_TASK_ENABLED` — Enable/disable quick tasks category (Thwani).
+  - `VAR_SVC_DSH_ENABLED` — Enable/disable DSH service globally.
+  - `VAR_UI_SMART_SUGGESTIONS_ENABLED` — Enable smart suggestions.
+  - `VAR_UI_BANNER_DSH_ENABLED` — Enable DSH banners.
   - Runtime keys managed through the control panel and documented in `runtime/RUNTIME_VARS_CATALOG.csv`.
 
-### 5.1 Partner Reminder Automation (T+4m)
+### 9.1 Partner Reminder Automation (T+4m)
 
 - **Activation conditions**: orders with `state ∈ {NEW, PENDING_PARTNER_ACCEPT}` on channels `partner_delivery` or `pickup`, with no accept/reject action recorded. A timer is scheduled at assignment (`T+4` minutes SLA).
 - **Pre-send checks (at T+4m)**: atomic verification that the order is still pending, store is available, reminder not sent within the dedup window, quiet hours (if enabled) allow it, and governance guards (rate limits, allowlists, privacy masking, audit immutability) all pass.
@@ -97,7 +257,7 @@ The service exposes 250+ routes spanning admin, customer, partner, captain, ops,
 - **Observability metrics**: `notif.partner.accept_reminder.sent{channel}`, `...delivered`, `...click_rate`, `...convert_accept_within_2m`, plus `notif.dedup_hits`, `notif.rate_limited`, and UI guard violations.
 - **Definition of Done**: templates approved in sandbox and production, time-travel tests cover T+4/T+6, audit trail shows the full chain, buttons open partner app/web, and guards (`G-IDEMPOTENCY`, `G-WEBHOOK-HMAC≤300s`, `G-PRIVACY-EXPORT`, `G-AUDIT-IMMUTABLE`, `G-RATE-LIMIT`) validated.
 
-## 6. Product Catalog Management (MPC & Store Listings)
+## 10. Product Catalog Management (MPC & Store Listings)
 
 - **Scope**: master product catalog (MPC) for canonical data, partner store listings for localized price/availability, pricing profiles, promotions, inventory, search/SEO, and import/export tooling.
 - **Catalog layers**:
@@ -135,7 +295,7 @@ The service exposes 250+ routes spanning admin, customer, partner, captain, ops,
 - **Acceptance gates (DoD)**: no product published without valid category + hero image + variant; CSV imports generate error reports; audit trail for every change; 1:1 trace between admin screens and `operation_id`; search performance targets met; policy OPA guards enforce classification/image/price constraints.
 - **Runtime levers**: see `runtime/RUNTIME_VARS_CATALOG.csv` entries (`VAR_MPC_PRICE_ROUNDING_MODE`, `VAR_DSH_CATALOG_IMPORT_MAX_ROWS`, `VAR_DSH_CATALOG_MODERATION_REQUIRED`, etc.) for operations toggled via control panel.
 
-## 7. Incentives & Loyalty Stack
+## 11. Incentives & Loyalty Stack
 
 - **Scope**: subscriptions (user/partner), captain levels, automatic discounts, coupons/promos, and rewards/points redemption are now modeled via `registry/dsh_incentives.json` and enforced inside the ordering flow through the new `DshIncentivesService`.
 - **Profiles**:
@@ -154,9 +314,9 @@ The service exposes 250+ routes spanning admin, customer, partner, captain, ops,
   - `DshOrdersService` now calls the incentives engine before persisting orders, storing adjustment line items, coupon/subscription metadata, guardrail hits, and points redeemed in `order.pricing`.
   - Wallet authorizations use the post-incentive total, ensuring ledger parity with invoice breakdown (basket, delivery, subscription discount, auto discount, coupon, rewards, guardrail rollbacks).
 
-## 8. Database Migrations & Seeders
+## 12. Database Migrations & Seeders
 
-### 8.1 Migrations
+### 12.1 Migrations
 
 The DSH service includes database migrations for core entities:
 
@@ -192,7 +352,7 @@ The DSH service includes database migrations for core entities:
   - Sets default value `dsh_quick_task` for existing records
   - Creates index on `dsh_category_code` for query performance
 
-### 8.2 Seeders
+### 12.2 Seeders
 
 #### Seeder: DSH Categories
 
@@ -217,7 +377,7 @@ The DSH service includes database migrations for core entities:
   node -e "require('./dist/migrations/seeders/SeedDshCategories').seedDshCategories(em).then(() => process.exit(0))"
   ```
 
-### 8.3 Migration Execution
+### 12.3 Migration Execution
 
 **To run migrations:**
 
@@ -238,7 +398,7 @@ npm run seed:dsh-categories
 
 **Note**: See `docs/MIGRATION_DEPLOYMENT.md` for detailed deployment instructions, including SQL fallback options if MikroORM CLI encounters entity discovery issues.
 
-## 9. References & Review
+## 13. References & Review
 
 - Sources: `oas/services/dsh/openapi.yaml`, `apps/**/SCREENS_CATALOG.csv`, `dashboards/**/SCREENS_CATALOG.csv`, `registry/SSOT_INDEX.json`, runtime catalog VARs.
 - Database: `migrations/Migration20250201000008_CreateDshCategoriesTable.ts`, `migrations/Migration20250201000009_AddDshCategoryCodeToThwaniRequests.ts`, `migrations/seeders/SeedDshCategories.ts`.

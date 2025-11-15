@@ -25,13 +25,38 @@ _To be documented as screens are defined._
 
 The service API specification is in development. Refer to `oas/services/mrf/openapi.yaml` for current status.
 
-## 5. Integrations & Runtime Variables
+## 5. Service Classification & Smart Engine
+
+### 5.1 Service Classification
+
+MRF is classified as a **Rare Service** in the Smart Engine system:
+
+- **Rare Services**: Specialized services accessible via search or direct navigation
+- **Characteristics**:
+  - Not always visible on home screen
+  - Lower priority in search results
+  - Full feature set enabled by default when accessed
+
+### 5.2 Runtime Variables Integration
+
+MRF integrates with the unified `RuntimeVariablesService` for:
+
+- **Service Flags**: `VAR_SVC_MRF_ENABLED` (default: true)
+- **Scoped Configuration**: Zone > City > Service > Global precedence
+- **Caching Layer**: Performance optimization for frequent lookups
+- **Type-Safe Access**: Methods for service flags and configuration
+
+## 6. Integrations & Runtime Variables
 
 - **Dependent services**: To be determined.
+- **Shared services**: `RuntimeVariablesService`.
 - **Applications**: `APP-USER`, dashboards (to be determined).
-- **Runtime variables**: To be documented as the service is developed.
+- **Runtime examples**:
+  - `VAR_SVC_MRF_ENABLED` — enable/disable MRF service globally.
+  - `VAR_WEBAPP_FEATURE_MRF_MODE` — MRF mode for web-app (default: "full").
+  - Runtime variables to be documented as the service is developed.
 
-## 6. Database Migrations & Seeders
+## 7. Database Migrations & Seeders
 
 ### 6.1 Migrations
 

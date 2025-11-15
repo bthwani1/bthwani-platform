@@ -64,24 +64,24 @@ The **APP-CAPTAIN** is the driver-facing mobile application for the BThwani plat
 
 ### 4.1 Representative Screens
 
-| Screen ID                    | Service | Description                    | Endpoint                                      |
-| ---------------------------- | ------- | ------------------------------ | --------------------------------------------- |
-| `screen.captain_auth_landing` | GLOBAL  | Welcome screen                 | Identity service                              |
-| `screen.captain_login`       | GLOBAL  | Phone login                    | `POST /auth/login`                            |
-| `screen.captain_otp_verify`   | GLOBAL  | OTP verification               | `POST /auth/otp/verify`                        |
-| `screen.home_status`         | GLOBAL  | Captain status & availability  | Routing/Dispatch service                      |
-| `screen.jobs_offers_list`     | GLOBAL  | Current offers (DSH/AMN)       | `GET /api/dls/captain/orders`, `GET /api/amn/captain/offers` |
-| `screen.job_offer_dsh`        | DSH     | Delivery offer                 | `GET /api/dls/captain/orders`                 |
-| `screen.job_detail_dsh`       | DSH     | Delivery details               | `GET /api/dls/captain/orders/{order_id}`      |
-| `screen.job_offer_amn`        | AMN     | Ride offer                     | `GET /api/amn/captain/offers`                 |
-| `screen.job_detail_amn`       | AMN     | Ride details                   | `GET /api/amn/trips/{trip_id}`                |
-| `screen.job_navigation`       | GLOBAL  | In-app navigation              | Routing/Dispatch service                      |
-| `screen.job_pod_code`         | DSH     | PoD code entry                 | `POST /api/dls/captain/orders/{order_id}/delivered` |
-| `screen.job_pod_photo`        | DSH     | PoD photo capture              | `POST /api/dls/captain/orders/{order_id}/delivered` |
-| `screen.job_sos_panel`        | AMN     | Emergency SOS                  | `POST /api/amn/trips/{trip_id}/sos`          |
-| `screen.earnings_home`        | WLT     | Earnings overview              | `GET /wallet/accounts/{account_id}/balance`    |
-| `screen.payout_request`       | WLT     | Payout request                 | `POST /wallet/payouts`                        |
-| `screen.payout_history`       | WLT     | Payout history                 | `GET /wallet/payouts`                         |
+| Screen ID                     | Service | Description                   | Endpoint                                                     |
+| ----------------------------- | ------- | ----------------------------- | ------------------------------------------------------------ |
+| `screen.captain_auth_landing` | GLOBAL  | Welcome screen                | Identity service                                             |
+| `screen.captain_login`        | GLOBAL  | Phone login                   | `POST /auth/login`                                           |
+| `screen.captain_otp_verify`   | GLOBAL  | OTP verification              | `POST /auth/otp/verify`                                      |
+| `screen.home_status`          | GLOBAL  | Captain status & availability | Routing/Dispatch service                                     |
+| `screen.jobs_offers_list`     | GLOBAL  | Current offers (DSH/AMN)      | `GET /api/dls/captain/orders`, `GET /api/amn/captain/offers` |
+| `screen.job_offer_dsh`        | DSH     | Delivery offer                | `GET /api/dls/captain/orders`                                |
+| `screen.job_detail_dsh`       | DSH     | Delivery details              | `GET /api/dls/captain/orders/{order_id}`                     |
+| `screen.job_offer_amn`        | AMN     | Ride offer                    | `GET /api/amn/captain/offers`                                |
+| `screen.job_detail_amn`       | AMN     | Ride details                  | `GET /api/amn/trips/{trip_id}`                               |
+| `screen.job_navigation`       | GLOBAL  | In-app navigation             | Routing/Dispatch service                                     |
+| `screen.job_pod_code`         | DSH     | PoD code entry                | `POST /api/dls/captain/orders/{order_id}/delivered`          |
+| `screen.job_pod_photo`        | DSH     | PoD photo capture             | `POST /api/dls/captain/orders/{order_id}/delivered`          |
+| `screen.job_sos_panel`        | AMN     | Emergency SOS                 | `POST /api/amn/trips/{trip_id}/sos`                          |
+| `screen.earnings_home`        | WLT     | Earnings overview             | `GET /wallet/accounts/{account_id}/balance`                  |
+| `screen.payout_request`       | WLT     | Payout request                | `POST /wallet/payouts`                                       |
+| `screen.payout_history`       | WLT     | Payout history                | `GET /wallet/payouts`                                        |
 
 _Full catalog available in `apps/captain/SCREENS_CATALOG.csv`._
 
@@ -89,18 +89,107 @@ _Full catalog available in `apps/captain/SCREENS_CATALOG.csv`._
 
 The application integrates with DSH, AMN, and WLT services. Refer to individual service documentation in `docs/explainar/services/` for complete API details.
 
-## 5. Integrations & Runtime Variables
+## 5. Service Classification & Smart Engine
+
+### 5.1 Service Integration
+
+APP-CAPTAIN integrates with the following services:
+
+- **Primary Services**: DSH (delivery jobs), AMN (safe rides), WLT (earnings, payouts)
+- **Service Classification**:
+  - DSH: Primary Service (full integration)
+  - AMN: Primary Service (full integration, female captains only)
+  - WLT: Primary Service (full integration for earnings)
+
+### 5.2 Smart Engine Integration
+
+- **Job Ranking**: Jobs ranked by proximity, ETA, and earnings
+- **Offer Prioritization**: High-value offers prioritized
+- **Personalization**: Service preferences and availability personalized per captain
+
+## 6. Navigation & User Experience
+
+### 6.1 Bottom Tab Bar Navigation
+
+- **Home Tab**: Status toggle, active jobs, quick actions
+- **Jobs Tab**: Job offers list (DSH/AMN)
+- **Earnings Tab**: Earnings overview, breakdown, payout requests
+- **Profile Tab**: Captain profile, documents, settings
+
+### 6.2 Top App Bar
+
+- **Title**: Context-aware title (Home, Jobs, Earnings, Profile)
+- **Status Indicator**: Online/Offline status with service toggles
+- **Notifications**: Notification badge with unread count
+
+### 6.3 Home Screen Features
+
+- **Status Toggle**: Online/Offline with service selection (DSH/AMN)
+- **Active Jobs**: Current jobs in progress
+- **Quick Stats**: Today's earnings, completed jobs
+- **Notifications**: Recent job offers and alerts
+
+### 6.4 Design System
+
+- **RTL Support**: Full RTL support for Arabic interface
+- **Theme**: Light/dark theme support
+- **Accessibility**: WCAG AA compliance
+- **Localization**: Arabic and English support
+
+## 7. Features & Capabilities
+
+### 7.1 DSH Delivery Jobs
+
+- **Job Offers**: Real-time delivery offers with ETA and earnings
+- **Job Acceptance**: Accept/reject offers with timer
+- **Job Tracking**: Navigation, arrival events, pickup confirmation
+- **PoD**: Proof-of-delivery with code and photo
+- **Chat**: Encrypted chat with customers and partners
+
+### 7.2 AMN Ride Jobs
+
+- **Ride Offers**: Safe ride offers with fare estimates
+- **Ride Acceptance**: Accept/reject offers
+- **Ride Tracking**: Navigation, arrival, start, end events
+- **SOS**: Emergency SOS panel with alerts
+- **Fare Summary**: Detailed fare breakdown with negotiation
+
+### 7.3 Earnings & Payouts
+
+- **Earnings Overview**: Period filters, totals, available balance
+- **Earnings Breakdown**: DSH/AMN/All tabs with detailed list
+- **Payout Requests**: Bank/cash office payout requests
+- **Payout History**: Payout tracking with status
+
+### 7.4 Onboarding & Eligibility
+
+- **Account Creation**: Phone + OTP authentication
+- **Document Upload**: ID, license, vehicle documents
+- **AMN Eligibility**: Female captain eligibility with additional documents
+- **Onboarding Status**: DSH/AMN approval status tracking
+
+### 7.5 Notification System
+
+- **Push Notifications**: Real-time job offers and alerts
+- **In-App Notifications**: Notification center with unread counts
+- **SOS Alerts**: Emergency alerts for AMN rides
+
+## 8. Integrations & Runtime Variables
 
 - **Primary services**: `DSH` (delivery jobs, PoD, location tracking), `AMN` (safe rides, SOS, fare negotiation), `WLT` (earnings, balances, payout requests).
+- **Shared services**: `RuntimeVariablesService`, `SmartEngineService`.
 - **Supporting services**: `IDENTITY` (authentication, profile, documents, eligibility), `ROUTING_DISPATCH` (availability, allocation, ETAs), `NOTIFICATIONS` (push notifications, alerts).
 - **Runtime examples**:
   - `VAR_POD_RETENTION_DAYS` — PoD image retention (default: 180 days).
   - `VAR_AMN_NEGOTIATION_ENABLED` — Enable fare negotiation (default: true).
   - `VAR_WLT_PROVIDER_PRIMARY` — Wallet provider (default: kuraimi_epay).
   - `VAR_NOTIF_DEDUP_WINDOW_MIN` — Notification deduplication (default: 10 minutes).
+  - `VAR_SVC_DSH_ENABLED` — Enable/disable DSH service.
+  - `VAR_SVC_AMN_ENABLED` — Enable/disable AMN service.
+  - `VAR_SVC_WLT_ENABLED` — Enable/disable WLT service.
   - Runtime keys managed through the control panel and documented in `runtime/RUNTIME_VARS_CATALOG.csv`.
 
-## 6. Navigation Structure
+## 9. Navigation Structure
 
 ### Bottom Tab Bar
 
@@ -126,6 +215,7 @@ The application integrates with DSH, AMN, and WLT services. Refer to individual 
 ## 8. Error Handling
 
 All errors follow RFC7807 Problem+JSON format with:
+
 - `error_code` (e.g., `CAP-OTP-INVALID`).
 - HTTP status code.
 - Arabic & English descriptions.
@@ -176,4 +266,3 @@ See `apps/captain/ERROR_CATALOG.json` for complete error catalog.
 - Last human review: 2025-01-15.
 
 **Source SHA256**: `[To be generated]`
-

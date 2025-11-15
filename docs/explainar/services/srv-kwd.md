@@ -60,16 +60,40 @@ _Full catalog available in the generated reference `docs/explainar/generated/kwd
 
 The service exposes routes for public listings (search, CRUD, report), admin (review, catalog, ranking), and support (reports, moderation). Refer to the generated reference `docs/explainar/generated/kwd.generated.md`, which updates automatically and includes a SHA checksum at the end.
 
-## 5. Integrations & Runtime Variables
+## 5. Service Classification & Smart Engine
+
+### 5.1 Service Classification
+
+KWD is classified as a **Secondary Service** in the Smart Engine system:
+
+- **Secondary Services**: Important services displayed in service tabs
+- **Characteristics**:
+  - Visible in service tabs
+  - Medium priority in search results
+  - Full feature set enabled by default
+
+### 5.2 Runtime Variables Integration
+
+KWD integrates with the unified `RuntimeVariablesService` for:
+
+- **Service Flags**: `VAR_SVC_KWD_ENABLED` (default: true)
+- **Scoped Configuration**: Zone > City > Service > Global precedence
+- **Caching Layer**: Performance optimization for frequent lookups
+- **Type-Safe Access**: Methods for service flags and configuration
+
+## 6. Integrations & Runtime Variables
 
 - **Dependent services**: Search index (Elasticsearch/OpenSearch), Analytics platform.
+- **Shared services**: `RuntimeVariablesService`.
 - **Applications**: `APP-USER`, dashboards (`admin`, `support`).
 - **Runtime examples**:
   - Ranking weights (sponsored, freshness, proximity, text_score).
   - Retention periods (posts: 180 days, logs: 365 days).
+  - `VAR_SVC_KWD_ENABLED` — enable/disable KWD service globally.
+  - `VAR_WEBAPP_FEATURE_KWD_MODE` — KWD mode for web-app (default: "search_details_only").
   - Runtime keys managed through the control panel and documented in `runtime/RUNTIME_VARS_CATALOG.csv`.
 
-## 6. Ranking Algorithm
+## 7. Ranking Algorithm
 
 ### Formula
 
@@ -89,7 +113,7 @@ The service exposes routes for public listings (search, CRUD, report), admin (re
 3. Then by proximity (if user location provided)
 4. Then by text relevance
 
-## 7. Database Migrations & Seeders
+## 8. Database Migrations & Seeders
 
 ### 7.1 Migrations
 
