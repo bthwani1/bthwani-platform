@@ -1,9 +1,57 @@
-﻿# compiled output
-/dist
-/node_modules
+﻿# ============================================
+# Dependencies
+# ============================================
+node_modules/
+.pnp/
+.pnp.*
 
+# ============================================
+# Build outputs
+# ============================================
+dist/
+build/
+out/
+.next/
+coverage/
+.nyc_output/
+
+# TypeScript build info
+*.tsbuildinfo
+tsconfig.build.tsbuildinfo
+
+# ============================================
+# Caches & tools
+# ============================================
+.nx/
+.turbo/
+.cache/
+.expo/
+
+# Android & iOS build artifacts
+android/build/
+ios/build/
+.gradle/
+
+# Playwright artifacts
+test-results/
+playwright-report/
+playwright/.cache/
+
+# ============================================
+# Environment & secrets
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.*
+*.pem
+*.key
+*.secret
+
+# ============================================
 # Logs
-logs
+# ============================================
+logs/
 *.log
 npm-debug.log*
 pnpm-debug.log*
@@ -11,15 +59,19 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 
-# OS
+# ============================================
+# OS files
+# ============================================
 .DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
 
-# Tests
-/coverage
-/.nyc_output
-
+# ============================================
 # IDEs and editors
-/.idea
+# ============================================
+.idea/
 .project
 .classpath
 .c9/
@@ -27,18 +79,15 @@ lerna-debug.log*
 .settings/
 *.sublime-workspace
 
-# IDE - VSCode
+# VSCode (with exceptions for shared settings)
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# Environment
-.env
-.env.local
-.env.*.local
-
+# ============================================
 # Temporary files
+# ============================================
 *.tmp
 *.temp

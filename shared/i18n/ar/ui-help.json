@@ -1,0 +1,49 @@
+{
+  "helper": {
+    "pattern": "[الأثر] + [الشرط] + [مثال]",
+    "example": {
+      "delivery_fee": "يُخصم 3% عند الدفع داخل التطبيق. مثال: داخل المدينة.",
+      "password_required": "مطلوب للتحقق. يجب أن يطابق وثيقة الهوية.",
+      "phone_verification": "سيتم إرسال رمز التحقق. مثال: +967 7XX XXX XXX."
+    }
+  },
+  "tooltip": {
+    "toggle": "تبديل التلميح",
+    "learn_more": "تعرف أكثر"
+  },
+  "panel": {
+    "learn_more": "تعرّف أكثر",
+    "close": "إغلاق",
+    "open": "فتح"
+  },
+  "confirm": {
+    "summary": "راجع التغييرات قبل المتابعة",
+    "cancel": "إلغاء",
+    "confirm": "تأكيد",
+    "review_changes": "مراجعة التغييرات"
+  },
+  "empty": {
+    "next": "ابدأ الآن",
+    "get_started": "ابدأ",
+    "no_data": "لا توجد بيانات",
+    "create_first": "أنشئ أول عنصر"
+  },
+  "docs": {
+    "view_ssot": "عرض المرجع المعتمد",
+    "learn_more": "تعرف أكثر",
+    "read_docs": "قراءة الوثائق"
+  },
+  "banner": {
+    "dismiss": "إغلاق",
+    "privacy_mode": "وضع الخصوصية مفعّل",
+    "sensitive_state": "عملية حساسة قيد التنفيذ"
+  },
+  "var": {
+    "scope": "النطاق",
+    "global": "عام",
+    "user": "المستخدم",
+    "partner": "الشريك",
+    "override_hint": "يمكن تجاوز هذا الإعداد من لوحة التحكم"
+  }
+}
+

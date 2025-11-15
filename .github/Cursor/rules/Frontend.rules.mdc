@@ -3,7 +3,9 @@ alwaysApply: false
 ---
 ## 1) الهدف والنطاق
 
-يحدّد هذا المستند قواعد استخدام Vue داخل بثواني، ويربط القرارات التنفيذية بمصادر الحقيقة المعتمدة. يجب الرجوع إليه قبل إنشاء أو تعديل أي مكوّنات Vue لضمان الالتزام بالحوكمة والـ SSoT.
+يحدّد هذا المستند قواعد استخدام الواجهات الأمامية (Frontend) داخل بثواني، ويربط القرارات التنفيذية بمصادر الحقيقة المعتمدة. يجب الرجوع إليه قبل إنشاء أو تعديل أي مكوّنات واجهة أمامية لضمان الالتزام بالحوكمة والـ SSoT.
+
+**ملاحظة مهمة**: هذا المستند يعكس الحالة الفعلية للمشروع. النقاط غير المكتملة موثقة بوضوح بـ `[TBD]` ويمكن مراجعتها في `docs/QUESTIONS_TBD.md`.
 
 ---
 
@@ -31,7 +33,10 @@ alwaysApply: false
    - يمكن أن يحتوي Skeleton عام (info, tags, securitySchemes…) لكن المسارات (paths) يجب أن تأتي من الـ per-service.
 
 5. **الكود الفعلي**  
-   - داخل `services/*`, `apps/*`, `dashboards/*` (NestJS, Prisma, Next.js, React Native…).
+   - داخل `src/modules/*` (NestJS Backend)
+   - داخل `apps/*` (React Native Mobile Apps)
+   - داخل `dashboards/*` (Next.js Web Dashboards)
+   - داخل `web/*` (Next.js Web App & Website)
 
 6. **أي شيء آخر**  
    - ملاحظات، TODO، تعليقات عشوائية → تعتبر `[TBD]` حتى يتم توثيقها واعتمادها رسميًا في الـ SSoT.
@@ -104,18 +109,65 @@ alwaysApply: false
 
 ---
 
-## 4) هيكلة الريبو (Monorepo Layout — Reference)
+## 4) التكنولوجيا المستخدمة
+
+### 4.1 Mobile Apps (React Native)
+
+- **Framework**: React Native
+- **Language**: TypeScript
+- **State Management**: [Recommended: Zustand أو Context API + useReducer]
+  - **ملاحظة مهمة**: قابل للتغيير حسب احتياجات المشروع. سيتم تحديده نهائياً عند بناء التطبيقات.
+- **Navigation**: [Recommended: React Navigation v6+]
+  - **ملاحظة مهمة**: المعيار الصناعي، لكن قابل للتغيير. سيتم تحديده نهائياً عند بناء التطبيقات.
+- **Styling**: [Recommended: React Native StyleSheet + Design Tokens]
+  - **ملاحظة مهمة**: سيتم تحديده نهائياً عند بناء التطبيقات.
+- **Location**: `apps/user/`, `apps/partner/`, `apps/captain/`, `apps/field/`
+
+**الحالة الفعلية:**
+- ✅ APP-USER: READY
+- ⏳ APP-PARTNER: DRAFT
+- ⏳ APP-CAPTAIN: DRAFT
+- ⏳ APP-FIELD: DRAFT
+
+### 4.2 Web Apps & Dashboards (Next.js)
+
+- **Framework**: Next.js
+- **Language**: TypeScript
+- **State Management**: [Recommended: Zustand (client state) + React Query (server state)]
+  - **ملاحظة مهمة**: قابل للتغيير حسب احتياجات المشروع. سيتم تحديده نهائياً عند بناء الواجهات.
+- **Navigation**: Next.js App Router (built-in)
+  - **ملاحظة**: مدمج في Next.js، لا حاجة لاختيار.
+- **Styling**: [Recommended: Tailwind CSS v3+]
+  - **ملاحظة مهمة**: مستخدم بالفعل في UX Helper Kit. قابل للتغيير. سيتم تحديده نهائياً عند بناء الواجهات.
+- **Location**: `dashboards/*/`, `web/webapp/`, `web/website/`
+
+**الحالة الفعلية:**
+- ⚠️ جميع Dashboards: DRAFT (لم ينتهي التصميم)
+- ⏳ Web App: قيد التطوير
+- ⏳ Website: قيد التطوير
+
+### 4.3 Backend Services (NestJS)
+
+- **Framework**: NestJS
+- **Language**: TypeScript
+- **ORM**: MikroORM
+- **Database**: PostgreSQL
+- **Location**: `src/modules/*/`
+
+---
+
+## 5) هيكلة الريبو (Monorepo Layout — Reference)
 
 يمكن تنفيذ الهيكلة باستخدام Nx أو أي تنظيم آخر، لكن المرجع هو:
 
 ```text
-apps/
+apps/                    # React Native Mobile Apps
   user/
   partner/
   captain/
   field/
 
-dashboards/
+dashboards/              # Next.js Web Dashboards
   admin/
   ops/
   finance/
@@ -127,7 +179,7 @@ dashboards/
   ssot/
   security/
 
-services/
+src/modules/            # NestJS Backend Services
   dsh/
   knz/
   amn/
@@ -450,13 +502,24 @@ OUTPUT:
 
 ### Wave 2 — التطبيقات (Apps)
 
-لكل تطبيق:
+**الحالة الفعلية:**
+
+| التطبيق | الحالة | SCREENS_CATALOG | ملاحظات |
+|---------|--------|-----------------|---------|
+| APP-USER | ✅ READY | ✅ موجود | مكتمل |
+| APP-PARTNER | ⏳ DRAFT | ⏳ موجود | قيد التطوير |
+| APP-CAPTAIN | ⏳ DRAFT | ⏳ موجود | قيد التطوير |
+| APP-FIELD | ⏳ DRAFT | ⏳ موجود | قيد التطوير |
+
+**العمل لكل تطبيق:**
 
 1. فرع:
-   - `feat/app-user-screens`
-   - `feat/app-partner-screens`
+   - `feat/app-user-screens` (✅ مكتمل)
+   - `feat/app-partner-screens` (⏳ قيد التطوير)
+   - `feat/app-captain-screens` (⏳ قيد التطوير)
+   - `feat/app-field-screens` (⏳ قيد التطوير)
 2. إنشاء:
-   - `apps/<app>/`.
+   - `apps/<app>/` (React Native).
    - `apps/<app>/SCREENS_CATALOG.csv` يضم:
      - `screen_id`
      - `screen_title`
@@ -468,14 +531,32 @@ OUTPUT:
 
 ### Wave 3 — لوحات التحكم (Dashboards)
 
-بنفس الفكرة؛ لوحة واحدة في كل موجة:
+**⚠️ ملاحظة حرجة**: جميع لوحات التحكم في حالة **DRAFT** ولم ينتهي تصميمها بعد.
+
+**الحالة الفعلية:**
+
+| اللوحة | الحالة | SCREENS_CATALOG | ملاحظات |
+|--------|--------|-----------------|---------|
+| admin | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| ops | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| finance | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| support | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| marketing | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| fleet | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| partner | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| bi | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| ssot | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| security | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+
+**العمل المستقبلي لكل لوحة:**
 
 1. فروع:
-   - `feat/dash-admin-screens`
-   - `feat/dash-ops-screens`
-   - `feat/dash-finance-screens`
+   - `feat/dash-admin-screens` (⏳ [TBD])
+   - `feat/dash-ops-screens` (⏳ [TBD])
+   - `feat/dash-finance-screens` (⏳ [TBD])
+   - باقي اللوحات (⏳ [TBD])
 2. ملفات:
-   - `dashboards/<name>/SCREENS_CATALOG.csv`
+   - `dashboards/<name>/SCREENS_CATALOG.csv` (Next.js)
    - اختياريًا: `docs/DASHBOARD_SPECS/<name>.md`
 3. Skeleton UI:
    - Bars / Tabs (مثلاً في Finance: Ledger, Settlements, COD, Payouts).
@@ -513,7 +594,132 @@ OUTPUT:
 
 ---
 
-## 10) التعامل مع النقص الحالي والحقول غير المكتملة
+## 10) قواعد الواجهات الأمامية
+
+### 10.1 React Native (Mobile Apps)
+
+- **Component Structure**: [Recommended: Component-based architecture]
+  - **ملاحظة**: سيتم تحديده نهائياً عند بناء التطبيقات.
+- **State Management**: [Recommended: Zustand أو Context API + useReducer]
+  - **ملاحظة**: قابل للتغيير حسب احتياجات المشروع. سيتم تحديده نهائياً عند بناء التطبيقات.
+- **Navigation**: [Recommended: React Navigation v6+]
+  - **ملاحظة**: المعيار الصناعي، لكن قابل للتغيير. سيتم تحديده نهائياً عند بناء التطبيقات.
+- **Styling**: [Recommended: React Native StyleSheet + Design Tokens]
+  - **ملاحظة**: سيتم تحديده نهائياً عند بناء التطبيقات.
+- **API Integration**: استخدام OpenAPI-generated clients
+- **Error Handling**: معالجة أخطاء موحدة حسب Error Shape
+- **RTL Support**: دعم RTL افتراضيًا
+- **Localization**: العربية + الإنجليزية
+
+### 10.2 Next.js (Web Apps & Dashboards)
+
+- **Component Structure**: [Recommended: Component-based architecture]
+  - **ملاحظة**: سيتم تحديده نهائياً عند بناء الواجهات.
+- **State Management**: [Recommended: Zustand (client state) + React Query (server state)]
+  - **ملاحظة**: قابل للتغيير حسب احتياجات المشروع. سيتم تحديده نهائياً عند بناء الواجهات.
+- **Styling**: [Recommended: Tailwind CSS v3+]
+  - **ملاحظة**: مستخدم بالفعل في UX Helper Kit. قابل للتغيير. سيتم تحديده نهائياً عند بناء الواجهات.
+- **Navigation**: Next.js App Router (built-in)
+  - **ملاحظة**: مدمج في Next.js، لا حاجة لاختيار.
+- **API Integration**: استخدام OpenAPI-generated clients
+- **Error Handling**: معالجة أخطاء موحدة حسب Error Shape
+- **RTL Support**: دعم RTL افتراضيًا
+- **Localization**: العربية + الإنجليزية
+- **Performance**: CWV (LCP ≤ 2000ms, INP ≤ 150ms, CLS ≤ 0.10)
+- **A11y**: WCAG AA compliance
+
+### 10.3 Design System
+
+- **Design Tokens**: THEME_TOKENS
+- **Runtime Variables**: VAR_UI_THEME_DEFAULT, VAR_UI_RTL_DEFAULT, VAR_UI_BRAND_RADIUS_LEVEL, VAR_UI_TRANSITION_MS
+- **Accessibility**: WCAG AA compliance
+- **Responsive Design**: Mobile-first approach
+
+### 10.4 UX Helper Kit (MANDATORY STANDARD)
+
+**⚠️ إلزامي**: جميع الواجهات الجديدة يجب أن تستخدم UX Helper Kit الموحد.
+
+#### 10.4.1 المكونات الإلزامية
+
+جميع الحقول الحرجة (critical fields) يجب أن تحتوي على:
+
+- **HelperText** - نص مساعد مرئي دائماً (≤80 حرف)
+  - **Golden Rule**: المعلومات الحرجة في HelperText، ليس في tooltip/placeholder فقط
+  - **Pattern**: [Impact] + [Condition] + [Short Example]
+  - **A11y**: ربط عبر `aria-describedby`
+
+- **TooltipIcon** - للتلميحات الثانوية فقط (لا معلومات حرجة)
+
+- **ContextPanel / BottomSheet** - للمعلومات الممتدة
+  - Desktop: ContextPanel (hotkey `?`)
+  - Mobile: BottomSheet (swipe to close)
+
+- **EmptyStateCard** - للحالات الفارغة مع CTA واحد رئيسي
+
+- **ConfirmDiffModal** - للعمليات الحساسة (تغييرات مالية، حذف، إلخ)
+
+- **InlineLink** - روابط للوثائق/SSoT
+
+- **Banners** - للتنبيهات السياقية (info/warning/error/success)
+
+#### 10.4.2 القواعد الإلزامية
+
+1. **لا معلومات حرجة في tooltips/placeholders**
+   - جميع المعلومات المطلوبة في HelperText (مرئي دائماً)
+   - Placeholders للأمثلة فقط (≤20 حرف)
+   - Tooltips للتعريفات الثانوية فقط
+
+2. **A11y Requirements**
+   - `aria-describedby` لربط المدخلات بنصوص المساعدة
+   - Focus trap في modals/panels
+   - ESC to close جميع overlays
+   - Keyboard navigation كامل
+
+3. **i18n Requirements**
+   - جميع النصوص من ملفات i18n (ar/en)
+   - لا hard-coded strings
+   - دعم RTL كامل
+
+4. **Microcopy Pattern**
+   - Format: [Impact] + [Condition] + [Short Example]
+   - ≤80 حرف للـ HelperText
+   - Tone: مباشر، action-first
+
+#### 10.4.3 المراجع الإلزامية
+
+قبل إنشاء أي واجهة جديدة، راجع:
+
+- `docs/GOV-02_HELPER_GUIDE.md` - دليل الحوكمة الكامل
+- `shared/ui/playbooks/HELPER_USAGE_APPS.md` - للتطبيقات
+- `shared/ui/playbooks/HELPER_USAGE_DASHBOARDS.md` - للوحات
+- `shared/ui/playbooks/HELPER_USAGE_WEB.md` - للويب
+- `shared/ui/components/` - جميع المكونات مع README
+
+#### 10.4.4 Checklist قبل PR
+
+- [ ] جميع الحقول الحرجة تحتوي على HelperText
+- [ ] لا معلومات حرجة في tooltips/placeholders
+- [ ] A11y attributes موجودة (`aria-describedby`, `role`, إلخ)
+- [ ] جميع النصوص من i18n (ar/en)
+- [ ] Empty states تحتوي على CTA واحد رئيسي
+- [ ] العمليات الحساسة تستخدم ConfirmDiffModal
+- [ ] روابط SSoT موجودة حيث مطلوب
+- [ ] RTL يعمل بشكل صحيح
+- [ ] Focus trap وESC to close يعملان
+
+#### 10.4.5 CI/CD Gates
+
+يجب أن تمر جميع PRs للواجهات:
+
+- `gates / a11y` - Pa11y/LHCI checks
+- `gates / i18n` - التحقق من عدم وجود hard-coded strings
+- `gates / helper-kit` - التحقق من استخدام المكونات الموحدة
+
+**ملاحظة**: هذا المعيار إلزامي لجميع الواجهات الجديدة. أي PR لا يلتزم بهذا المعيار سيتم رفضه حتى يتم التصحيح.
+
+---
+
+## 11) التعامل مع النقص الحالي والحقول غير المكتملة
 
 - عند غياب معلومة أو وجود شك:
   - لا تُخترَع قيمة أو منطق جديد.
@@ -526,11 +732,12 @@ OUTPUT:
 
 ---
 
-## 11) خلاصة تذكيرية
+## 12) خلاصة تذكيرية
 
 - **Cursor / الريبو:**
   - يعمل وفق هذا الدليل وملفات SSoT داخل المشروع.
   - لا يلمس `main` ولا `Master_OpenAPI` إلا عبر فروع + PR + حُرّاس.
+  - يستخدم React Native للتطبيقات و Next.js للوحات والويب.
 - **SSoT الخارجي / الحوكمة:**
   - يحدد القرارات والسياسات والـ Waves.
   - يراجع ما هو حساس أو عالمي قبل اعتباره نهائيًا.
@@ -538,5 +745,7 @@ OUTPUT:
   - يحدد الأولويات.
   - يكتب المهام (TASK).
   - يراجع الـ PRs ويغلق الـ Waves.
+
+**ملاحظة**: هذا الدليل يعكس الحالة الفعلية للمشروع. النقاط غير المكتملة (State Management, Navigation, Styling) موثقة بوضوح بـ `[TBD]` ويمكن مراجعتها في `docs/QUESTIONS_TBD.md`.
 
 بهذا الدليل تصبح بيئة Cursor نظيفة (لا ذكر فيها لأسماء أدوات خارجية)، وتبقى الحوكمة والـ SSoT خارج الريبو هي المصدر الأعلى، مع ربط منظم وواضح بين الاثنين.

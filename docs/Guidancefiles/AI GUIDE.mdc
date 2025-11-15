@@ -5,6 +5,8 @@ alwaysApply: false
 
 هذا الدليل يحدد طريقة تشغيل أدوات التطوير الذكية داخل مشروع بثواني، ويضبط العلاقة بين ملفات الـ SSoT، العقود، الهياكل التنفيذية، والحُرّاس. يجب الرجوع إليه قبل بدء أي موجة تطوير للتأكد من الالتزام بالحوكمة ومراحل التنفيذ.
 
+**ملاحظة مهمة**: هذا الدليل يعكس الحالة الفعلية للمشروع. النقاط غير المكتملة موثقة بوضوح بـ `[TBD]` ويمكن مراجعتها في `docs/QUESTIONS_TBD.md`.
+
 ---
 
 ## 2) مصادر المعلومات وترتيبها
@@ -14,19 +16,21 @@ alwaysApply: false
 1. **القرارات والوثائق المعتمدة**  
    (مثل ملفات/قرارات الخدمات SRV-*، السياسات المالية، سياسات الخصوصية والأمن).
 2. **سجلات وملفات الريبو**:
-   - `registry/SSOT_INDEX.json`
-   - `runtime/RUNTIME_VARS_CATALOG.csv`
-   - `oas/services/*/openapi.yaml`
-   - `oas/master/Master_OpenAPI.yaml`
-   - `apps/**/SCREENS_CATALOG.csv`
-   - `dashboards/**/SCREENS_CATALOG.csv`
-   - المستندات في `docs/`.
+   - `registry/SSOT_INDEX.json` — حالة الخدمات والتطبيقات واللوحات
+   - `runtime/RUNTIME_VARS_CATALOG.csv` — متغيرات التشغيل
+   - `oas/services/*/openapi.yaml` — عقود API لكل خدمة
+   - `oas/master/Master_OpenAPI.yaml` — العقد الموحد (يُبنى آلياً)
+   - `apps/**/SCREENS_CATALOG.csv` — كتالوج الشاشات للتطبيقات
+   - `dashboards/**/SCREENS_CATALOG.csv` — كتالوج الشاشات للوحات (⚠️ معظمها [TBD])
+   - المستندات في `docs/` — التوثيق الشامل
+   - `docs/QUESTIONS_TBD.md` — النقاط المفتوحة غير المحسومة
 
 أي تضارب بين هذه الطبقات يجب:
 
 - توثيقه باستخدام `[TBD]` مع شرح واضح لما هو غير محسوم.
 - عدم معالجته بالتخمين.
 - معالجته من خلال تحديث مشترك للقرار + الملفات المتأثرة، حتى تصبح منسجمة.
+- تسجيله في `docs/QUESTIONS_TBD.md` إذا كان يحتاج قرار من الحوكمة.
 
 ---
 
@@ -108,38 +112,128 @@ alwaysApply: false
 
 ---
 
-## 5) Waves التنفيذ
+## 5) التكنولوجيا المستخدمة
 
-### Wave 0 — Bootstrap
+### 5.1 Backend
 
-- إنشاء وضبط:
+- **Framework**: NestJS (TypeScript)
+- **ORM**: MikroORM
+- **Database**: PostgreSQL
+- **API**: OpenAPI 3.1
+- **Authentication**: JWT (Passport.js)
+
+### 5.2 Frontend - Mobile Apps
+
+- **Framework**: React Native
+- **Language**: TypeScript
+- **State Management**: [Recommended: Zustand أو Context API + useReducer]
+  - **ملاحظة**: قابل للتغيير حسب احتياجات المشروع. سيتم تحديده نهائياً عند بناء التطبيقات.
+- **Navigation**: [Recommended: React Navigation v6+]
+  - **ملاحظة**: المعيار الصناعي، لكن قابل للتغيير. سيتم تحديده نهائياً عند بناء التطبيقات.
+
+### 5.3 Frontend - Web Apps & Dashboards
+
+- **Framework**: Next.js (TypeScript)
+- **State Management**: [Recommended: Zustand (client state) + React Query (server state)]
+  - **ملاحظة**: قابل للتغيير حسب احتياجات المشروع. سيتم تحديده نهائياً عند بناء الواجهات.
+- **Styling**: [Recommended: Tailwind CSS v3+]
+  - **ملاحظة**: مستخدم بالفعل في UX Helper Kit. قابل للتغيير. سيتم تحديده نهائياً عند بناء الواجهات.
+
+### 5.4 Shared Services
+
+- **Smart Engine**: `src/shared/services/smart-engine.service.ts` — تصنيف وترتيب الخدمات
+- **Unified Search**: `src/shared/services/unified-search.service.ts` — بحث موحد عبر الخدمات
+- **Runtime Variables**: `src/shared/services/runtime-variables.service.ts` — إدارة متغيرات التشغيل
+- **Banner Service**: `src/shared/services/banner.service.ts` — إدارة البنرات الديناميكية
+
+---
+
+## 6) Waves التنفيذ — الحالة الفعلية
+
+### Wave 0 — Bootstrap ✅
+
+- ✅ إنشاء وضبط:
   - `docs/AI GUIDE.mdc`
   - `docs/ReposiGOV.mdc`
   - `docs/SER_OVER ai.mdc`
+  - `docs/DASHBOARDS_OVERVIEW.mdc`
 
-### Wave 1 — عقود الخدمات
+### Wave 1 — عقود الخدمات (جاري)
 
-- لكل خدمة:
-  - تحديث `oas/services/<service_code>/openapi.yaml`.
-  - ربط الحالة في `registry/SSOT_INDEX.json` (DRAFT / READY / LOCKED).
+**الحالة الفعلية:**
 
-### Wave 2 — التطبيقات
+| الخدمة | الحالة | OpenAPI | ملاحظات |
+|--------|--------|---------|---------|
+| DSH | ✅ READY | ✅ v2.2 | مكتمل |
+| WLT | ⏳ DRAFT | ⏳ v1.0 | قيد التطوير |
+| ARB | ⏳ DRAFT | ⏳ v2.0 | قيد التطوير |
+| KNZ | ⏳ DRAFT | ⏳ v1.1 | قيد التطوير |
+| AMN | ⏳ DRAFT | ⏳ v1.0 | قيد التطوير |
+| KWD | ✅ READY | ✅ v1.0 | مكتمل |
+| SND | ⏳ DRAFT | ⏳ v1.0 | قيد التطوير |
+| MRF | ⏳ DRAFT | ⏳ v2.0 | قيد التطوير |
+| ESF | ✅ READY | ✅ v1.2 | مكتمل |
 
+**العمل لكل خدمة:**
+- تحديث `oas/services/<service_code>/openapi.yaml`.
+- ربط الحالة في `registry/SSOT_INDEX.json` (DRAFT / READY / LOCKED).
+
+### Wave 2 — التطبيقات (جاري)
+
+**الحالة الفعلية:**
+
+| التطبيق | الحالة | SCREENS_CATALOG | ملاحظات |
+|---------|--------|-----------------|---------|
+| APP-USER | ✅ READY | ✅ موجود | مكتمل |
+| APP-PARTNER | ⏳ DRAFT | ⏳ موجود | قيد التطوير |
+| APP-CAPTAIN | ⏳ DRAFT | ⏳ موجود | قيد التطوير |
+| APP-FIELD | ⏳ DRAFT | ⏳ موجود | قيد التطوير |
+
+**العمل لكل تطبيق:**
 - ضبط `apps/**/SCREENS_CATALOG.csv`.
 - إنشاء هياكل UI رئيسية مرتبطة بالخدمات لكل تطبيق.
 
-### Wave 3 — اللوحات
+### Wave 3 — اللوحات (⚠️ لم يبدأ التصميم)
 
+**⚠️ ملاحظة حرجة**: جميع لوحات التحكم في حالة DRAFT ولم ينتهي تصميمها بعد.
+
+**الحالة الفعلية:**
+
+| اللوحة | الحالة | SCREENS_CATALOG | ملاحظات |
+|--------|--------|-----------------|---------|
+| admin | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| ops | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| finance | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| support | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| marketing | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| fleet | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| partner | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| bi | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| ssot | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+| security | ⏳ DRAFT | ⏳ [TBD] | لم ينتهي التصميم |
+
+**العمل المستقبلي لكل لوحة:**
 - ضبط `dashboards/**/SCREENS_CATALOG.csv`.
 - تصميم الهياكل (Bars/Tabs + الشاشات الرئيسية لكل لوحة).
 
-### Wave 4 — VAR_* + Guards
+### Wave 4 — VAR_* + Guards (جاري)
 
-- ملء `runtime/RUNTIME_VARS_CATALOG.csv`.
+**الحالة الفعلية:**
+- ✅ `runtime/RUNTIME_VARS_CATALOG.csv` موجود ويحتوي على متغيرات أساسية
+- ⏳ سكربتات الحُرّاس قيد التطوير
+- ⏳ ربط سكربتات الحُرّاس بـ `.github/workflows/gates.yml` قيد التطوير
+
+**العمل:**
+- ملء `runtime/RUNTIME_VARS_CATALOG.csv` بالمتغيرات المطلوبة.
 - ربط سكربتات الحُرّاس بـ `.github/workflows/gates.yml`.
 
-### Wave 5 — Master OpenAPI + Source Kit
+### Wave 5 — Master OpenAPI + Source Kit (جاري)
 
+**الحالة الفعلية:**
+- ⏳ بناء `oas/master/Master_OpenAPI.yaml` من ملفات الخدمات (قيد التطوير)
+- ⏳ إعداد حزمة `KIT.zip` (قيد التطوير)
+
+**العمل:**
 - بناء `oas/master/Master_OpenAPI.yaml` من ملفات الخدمات.
 - إعداد حزمة `KIT.zip` تحتوي على:
   - ملفات OAS (master + per-service).
@@ -150,7 +244,39 @@ alwaysApply: false
 
 ---
 
-## 6) التعامل مع التعارضات مع القواعد
+## 7) Smart Engine & Unified Search (UX Engine v6)
+
+### 7.1 Service Classification
+
+الخدمات مصنفة إلى ثلاث طبقات:
+
+- **Primary Services**: DSH, WLT, ARB, KNZ, AMN — تكامل كامل مع Smart Engine
+- **Secondary Services**: KWD, SND, ESF — تكامل كامل مع Smart Engine
+- **Rare Services**: MRF — تكامل كامل مع Smart Engine
+
+### 7.2 Smart Engine Integration
+
+- **Service Ranking**: ترتيب الخدمات حسب الاستخدام والتاريخ
+- **Category Ranking**: ترتيب الفئات داخل كل خدمة
+- **Item Ranking**: ترتيب العناصر (منتجات، عروض، إلخ) داخل كل فئة
+- **Personalization**: تخصيص الترتيب حسب تفضيلات المستخدم
+
+### 7.3 Unified Search
+
+- **Text Search**: بحث نصي عبر جميع الخدمات
+- **Voice Search**: بحث صوتي (Google, Azure, AWS) — [TBD] تفعيل
+- **Image Search**: بحث بالصور (Google, Azure, AWS) — [TBD] تفعيل
+- **Adapters**: DshSearchAdapter, KnzSearchAdapter, ArbSearchAdapter
+
+### 7.4 Banner Service
+
+- **Dynamic Banners**: بنرات ديناميكية للخدمات (DSH, KNZ, ARB)
+- **Runtime Control**: التحكم عبر `VAR_UI_BANNER_*` متغيرات
+- **Scoping**: نطاق جغرافي (Region/City) وخدمة محددة
+
+---
+
+## 8) التعامل مع التعارضات مع القواعد
 
 - أي تغيير يكتشف تعارضًا مع القواعد أو الثوابت:
   - يجب توثيقه فورًا (تعليق في الكود/الـ OAS، ملاحظة في GUARDS، أو في وصف الـ PR).
@@ -161,7 +287,34 @@ alwaysApply: false
 
 ---
 
-## 7) اللغة والزمن
+## 9) التعامل مع النقاط غير المكتملة [TBD]
+
+### 9.1 مبدأ العمل
+
+- **النقاط غير المكتملة موثقة بوضوح** باستخدام `[TBD]` مع شرح لما ينقص
+- **لا يتم اختراع معلومات جديدة** — كل معلومة يجب أن تأتي من SSoT أو قرار واضح
+- **التوثيق في QUESTIONS_TBD.md** — جميع النقاط المفتوحة تُسجل في `docs/QUESTIONS_TBD.md`
+
+### 9.2 أمثلة على النقاط [TBD] الحالية
+
+- ⚠️ **لوحات التحكم**: جميع اللوحات في حالة DRAFT ولم ينتهي تصميمها
+- ⚠️ **التطبيقات**: APP-PARTNER, APP-CAPTAIN, APP-FIELD قيد التطوير
+- ⚠️ **الخدمات**: WLT, ARB, KNZ, AMN, SND, MRF قيد التطوير
+- ⚠️ **Voice/Image Search**: موجودة لكنها [TBD] تفعيل
+- ⚠️ **State Management**: [TBD] للواجهات الأمامية
+
+### 9.3 عملية الحسم
+
+1. تحديد النقطة المفتوحة
+2. تسجيلها في `docs/QUESTIONS_TBD.md`
+3. مناقشتها مع الحوكمة/SSoT
+4. اتخاذ القرار وتوثيقه
+5. تحديث الملفات المتأثرة
+6. إزالة `[TBD]` بعد الحسم
+
+---
+
+## 10) اللغة والزمن
 
 - اللغة الأساسية في النصوص الموجهة للبشر: **العربية** (RTL).
 - المصطلحات الفنية (service codes, API, enums, schemas) تبقى بالإنجليزية.

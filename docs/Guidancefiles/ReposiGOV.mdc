@@ -19,7 +19,16 @@ alwaysApply: false
 
 **مبدأ أساسي**: كل شيء متعلق بالمنصة يجب أن يكون في هذا المستودع. لا توجد مستودعات خارجية منفصلة للكود التشغيلي. إذا كان كود خدمة ما غير موجود في `src/modules/<service-code>/`، فهذا يعتبر **عيبًا حرجًا (Sev-1)** ويجب تسجيله في `registry/APPROVALS_LOG.md` مع خطة إصلاح واضحة.
 
-**ملاحظة مهمة**: حالياً، خدمة DSH لديها مواصفات جاهزة (`oas/services/dsh/openapi.yaml`) وتوثيق كامل (`docs/explainar/services/srv-dsh.md`)، لكن **كود التشغيل مفقود** من `src/modules/dsh/`. هذا العيب مسجل في `registry/APPROVALS_LOG.md` ويجب معالجته كأولوية.
+**ملاحظة مهمة**: الحالة الفعلية للمشروع:
+
+- ✅ **DSH**: مواصفات جاهزة (`oas/services/dsh/openapi.yaml`) وتوثيق كامل (`docs/explainar/services/srv-dsh.md`) — **READY**
+- ✅ **KWD**: مواصفات جاهزة وتوثيق كامل — **READY**
+- ✅ **ESF**: مواصفات جاهزة وتوثيق كامل — **READY**
+- ⏳ **WLT, ARB, KNZ, AMN, SND, MRF**: قيد التطوير — **DRAFT**
+- ⚠️ **لوحات التحكم**: جميعها في حالة **DRAFT** ولم ينتهي تصميمها بعد
+- ⚠️ **التطبيقات**: APP-USER ✅ READY، الباقي ⏳ DRAFT
+
+للتفاصيل الكاملة، راجع `registry/SSOT_INDEX.json` و `docs/QUESTIONS_TBD.md`.
 
 ---
 
@@ -315,6 +324,14 @@ alwaysApply: false
 
 ## 7) اللغة، الوقت، وتصميم الواجهات
 
+### 7.1 التكنولوجيا المستخدمة
+
+- **Mobile Apps**: React Native (TypeScript)
+- **Web Apps & Dashboards**: Next.js (TypeScript)
+- **Backend Services**: NestJS (TypeScript)
+
+### 7.2 معايير الواجهات
+
 - واجهات الويب/التطبيقات واللوحات:
   - اتجاه RTL افتراضيًا.
   - العربية للنصوص والأسماء، الإنجليزية للأكواد والمصطلحات التقنية.
@@ -326,6 +343,15 @@ alwaysApply: false
 - لوحات التحكم الحساسة (Finance, Security):
   - يجب أن تُشير بوضوح إلى الأفعال التي تتطلب Step-Up أو Dual-Sign.
   - تخضع دائمًا لحُرّاس A11y، RBAC/ABAC، Performance، وPrivacy Export.
+
+### 7.3 النقاط غير المكتملة [TBD]
+
+- ⚠️ **State Management**: [TBD] للواجهات الأمامية (React Native و Next.js)
+- ⚠️ **Navigation**: [TBD] للواجهات الأمامية
+- ⚠️ **Styling**: [TBD] للواجهات الأمامية
+- ⚠️ **لوحات التحكم**: جميعها في حالة DRAFT ولم ينتهي تصميمها
+
+للتفاصيل الكاملة، راجع `docs/QUESTIONS_TBD.md`.
 
 ---
 

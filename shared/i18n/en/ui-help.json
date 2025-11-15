@@ -1,0 +1,49 @@
+{
+  "helper": {
+    "pattern": "[Impact] + [Condition] + [Example]",
+    "example": {
+      "delivery_fee": "3% fee when paying in-app. Example: intra-city.",
+      "password_required": "Required for verification. Must match ID document.",
+      "phone_verification": "Verification code will be sent. Example: +967 7XX XXX XXX."
+    }
+  },
+  "tooltip": {
+    "toggle": "Toggle tooltip",
+    "learn_more": "Learn more"
+  },
+  "panel": {
+    "learn_more": "Learn more",
+    "close": "Close panel",
+    "open": "Open"
+  },
+  "confirm": {
+    "summary": "Review changes before proceeding",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "review_changes": "Review changes"
+  },
+  "empty": {
+    "next": "Get started",
+    "get_started": "Get started",
+    "no_data": "No data available",
+    "create_first": "Create your first item"
+  },
+  "docs": {
+    "view_ssot": "View SSoT",
+    "learn_more": "Learn more",
+    "read_docs": "Read documentation"
+  },
+  "banner": {
+    "dismiss": "Dismiss",
+    "privacy_mode": "Privacy mode is enabled",
+    "sensitive_state": "Sensitive operation in progress"
+  },
+  "var": {
+    "scope": "Scope",
+    "global": "Global",
+    "user": "User",
+    "partner": "Partner",
+    "override_hint": "Can be overridden from control panel"
+  }
+}
+

@@ -5,47 +5,86 @@ alwaysApply: false
 
 يوفّر هذا المستند نظرة شاملة على لوحات التحكم في بثواني، ويحدد الغرض الرئيسي لكل لوحة وعلاقتها بالخدمات. يشكّل مرجعًا قبل تصميم أو تحديث أي UI للوحة.
 
+**⚠️ ملاحظة حرجة**: جميع لوحات التحكم في حالة **DRAFT** ولم ينتهي تصميمها بعد. هذا المستند يعكس الحالة الفعلية والتخطيط المستقبلي.
+
 ---
 
 ## 2) لوحات التحكم الرئيسية
 
 | dashboard_code | الاسم | النطاق | الخدمات المحورية | الحالة | ملاحظات |
 | --- | --- | --- | --- | --- | --- |
-| admin | لوحة الإدارة العامة | حوكمة عليا، مراجعة القرارات | جميع الخدمات | `[TBD]` | بوابة موحدة |
-| ops | العمليات | مراقبة الطلبات والرحلات | DSH, AMN, SND | `[TBD]` | |
-| finance | المالية | Ledger, تسويات، تقارير مالية | WLT, DSH, ARB | `[TBD]` | تفتح من `fin.bthwani.com` |
-| support | الدعم | تذاكر، متابعة المستخدمين | DSH, AMN, ARB, ESF, MRF | `[TBD]` | خصوصية عالية |
-| marketing | التسويق | حملات، عروض، Marketplace | KNZ, DSH | `[TBD]` | |
-| fleet | الأسطول | إدارة الكباتن، التتبع | AMN, DSH | `[TBD]` | |
-| partner | بوابة الشريك | أداء الشركاء، الطلبات | DSH, ARB | `[TBD]` | |
-| bi | ذكاء الأعمال | بيانات تحليلات متقدمة | جميع الخدمات | `[TBD]` | |
-| ssot | SSoT Control | متابعة القرارات والمستندات | جميع الخدمات | `[TBD]` | |
-| security | الأمن | الحوادث الأمنية، السياسات | WLT, ESF, MRF, ARB | `[TBD]` | |
+| admin | لوحة الإدارة العامة | حوكمة عليا، مراجعة القرارات | جميع الخدمات | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم — بوابة موحدة |
+| ops | العمليات | مراقبة الطلبات والرحلات | DSH, AMN, SND | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم |
+| finance | المالية | Ledger, تسويات، تقارير مالية | WLT, DSH, ARB | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم — تفتح من `fin.bthwani.com` |
+| support | الدعم | تذاكر، متابعة المستخدمين | DSH, AMN, ARB, ESF, MRF | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم — خصوصية عالية |
+| marketing | التسويق | حملات، عروض، Marketplace | KNZ, DSH | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم |
+| fleet | الأسطول | إدارة الكباتن، التتبع | AMN, DSH | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم |
+| partner | بوابة الشريك | أداء الشركاء، الطلبات | DSH, ARB | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم |
+| bi | ذكاء الأعمال | بيانات تحليلات متقدمة | جميع الخدمات | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم |
+| ssot | SSoT Control | متابعة القرارات والمستندات | جميع الخدمات | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم |
+| security | الأمن | الحوادث الأمنية، السياسات | WLT, ESF, MRF, ARB | ⏳ **DRAFT** | ⚠️ لم ينتهي التصميم |
 
 ---
 
 ## 3) SCREENS_CATALOG لكل لوحة
 
-| dashboard_code | ملف SCREENS_CATALOG | ملاحظات تصميمية |
-| --- | --- | --- |
-| admin | `dashboards/admin/SCREENS_CATALOG.csv` | Tabs رئيسية + إعدادات الحوكمة |
-| ops | `dashboards/ops/SCREENS_CATALOG.csv` | لوحات مراقبة الطلبات والرحلات |
-| finance | `dashboards/finance/SCREENS_CATALOG.csv` | واجهات مالية حساسة، Step-Up إلزامي |
-| support | `dashboards/support/SCREENS_CATALOG.csv` | واجهات مقنّعة، Privacy Guard |
-| marketing | `dashboards/marketing/SCREENS_CATALOG.csv` | حملات وعروض |
-| fleet | `dashboards/fleet/SCREENS_CATALOG.csv` | تتبع الكباتن، أداء الرحلات |
-| partner | `dashboards/partner/SCREENS_CATALOG.csv` | رؤية بيانات الشركاء |
-| bi | `dashboards/bi/SCREENS_CATALOG.csv` | تقارير وتحليلات |
-| ssot | `dashboards/ssot/SCREENS_CATALOG.csv` | متابعة القرارات |
-| security | `dashboards/security/SCREENS_CATALOG.csv` | مراقبة الأمن والخصوصية |
+**⚠️ ملاحظة**: جميع ملفات SCREENS_CATALOG في حالة [TBD] ولم يتم إنشاؤها بعد.
+
+| dashboard_code | ملف SCREENS_CATALOG | الحالة | ملاحظات تصميمية |
+| --- | --- | --- | --- |
+| admin | `dashboards/admin/SCREENS_CATALOG.csv` | ⏳ [TBD] | Tabs رئيسية + إعدادات الحوكمة |
+| ops | `dashboards/ops/SCREENS_CATALOG.csv` | ⏳ [TBD] | لوحات مراقبة الطلبات والرحلات |
+| finance | `dashboards/finance/SCREENS_CATALOG.csv` | ⏳ [TBD] | واجهات مالية حساسة، Step-Up إلزامي |
+| support | `dashboards/support/SCREENS_CATALOG.csv` | ⏳ [TBD] | واجهات مقنّعة، Privacy Guard |
+| marketing | `dashboards/marketing/SCREENS_CATALOG.csv` | ⏳ [TBD] | حملات وعروض |
+| fleet | `dashboards/fleet/SCREENS_CATALOG.csv` | ⏳ [TBD] | تتبع الكباتن، أداء الرحلات |
+| partner | `dashboards/partner/SCREENS_CATALOG.csv` | ⏳ [TBD] | رؤية بيانات الشركاء |
+| bi | `dashboards/bi/SCREENS_CATALOG.csv` | ⏳ [TBD] | تقارير وتحليلات |
+| ssot | `dashboards/ssot/SCREENS_CATALOG.csv` | ⏳ [TBD] | متابعة القرارات |
+| security | `dashboards/security/SCREENS_CATALOG.csv` | ⏳ [TBD] | مراقبة الأمن والخصوصية |
 
 ---
 
-## 4) ملاحظات
+## 4) خطة التصميم المستقبلية
+
+### 4.1 الأولويات المقترحة
+
+1. **Finance** — أولوية عالية
+   - الخدمات: WLT, DSH, ARB
+   - الميزات: Ledger, Settlements, Payouts, Reports
+   - النطاق: `fin.bthwani.com`
+
+2. **Ops** — أولوية عالية
+   - الخدمات: DSH, AMN, SND
+   - الميزات: Order Monitoring, Dispatch, SLA Tracking
+
+3. **Admin** — أولوية متوسطة
+   - الخدمات: جميع الخدمات
+   - الميزات: Service Lifecycle, Decision Management, SSOT Integration
+
+4. **Support** — أولوية متوسطة
+   - الخدمات: DSH, AMN, ARB, ESF, MRF
+   - الميزات: Ticket Management, Privacy Masking, Escalations
+
+5. باقي اللوحات — حسب الحاجة
+
+### 4.2 عملية التصميم
+
+- لكل لوحة:
+  1. تحليل الاحتياجات من الخدمات المرتبطة
+  2. إنشاء `dashboards/<name>/SCREENS_CATALOG.csv`
+  3. تصميم الهياكل (Bars/Tabs + الشاشات الرئيسية)
+  4. ربط الشاشات بـ API endpoints
+  5. تطبيق Guards (RBAC, Step-Up, Privacy)
+  6. اختبار واعتماد
+
+---
+
+## 5) ملاحظات
 
 - يجب تحديث الحالة (`status`) بالتوازي مع `registry/SSOT_INDEX.json`.  
 - أي لوحة جديدة أو تغيير جذري يتطلب موافقة SSoT قبل إضافته هنا.  
-- عند وجود أسئلة مفتوحة حول تصميم لوحة ما، يتم توثيقها بـ `[TBD]` في هذا المستند وفي `docs/QUESTIONS_TBD.mdc`.
+- عند وجود أسئلة مفتوحة حول تصميم لوحة ما، يتم توثيقها بـ `[TBD]` في هذا المستند وفي `docs/QUESTIONS_TBD.md`.
 - عند تعديل ظهور خدمة على الويب أو الويب-آب، يجب التأكد من أن جداول `web/webapp/SERVICES.md` و`web/website/SERVICES.md` محدثة ومتطابقة مع أوضاع APP-USER ومفاتيح التشغيل `VAR_WEBAPP_FEATURE_*`.
 
 ---

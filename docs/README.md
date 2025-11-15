@@ -8,6 +8,7 @@ This folder contains human-readable references that complement runtime code, con
 | ---------------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | `Guidancefiles/` | Governance, playbooks, and execution guides (AI GUIDE, ReposiGOV, dashboards primer, etc.).                                      |
 | `explainar/`     | Auto-generated references that connect OpenAPI specs with app/dashboards screens. Generated via `scripts/generate_explainar.py`. |
+| `STANDARDS/`     | **MANDATORY** standards for all new implementations (UX Helper Kit, etc.). See `STANDARDS/README.md`.                            |
 
 ## Key References
 
@@ -15,6 +16,8 @@ This folder contains human-readable references that complement runtime code, con
 - `Guidancefiles/ReposiGOV.mdc`: branch protection, guard descriptions, change lifecycle.
 - `Guidancefiles/AI GUIDE.mdc`: execution waves and priorities.
 - `Guidancefiles/DASHBOARDS_OVERVIEW.mdc`: dashboards taxonomy and KPIs.
+- `STANDARDS/`: **MANDATORY** standards for all new implementations.
+  - `STANDARDS/UX_HELPER_KIT_STANDARD.md`: UX Helper Kit mandatory standard.
 - `explainar/generated/*.generated.md`: per-service explainers (do not hand-edit).
 
 ## Workflow
